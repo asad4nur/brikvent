@@ -57,8 +57,8 @@ export default function Modules({ t }: { t: Dictionary["modules"] }) {
       if (i !== -1) setActive(i);
     };
     const onClick = (e: MouseEvent) => {
-      const link = (e.target as Element).closest?.("a[href^='#']");
-      if (link) open(link.getAttribute("href")!);
+      const link = (e.target as Element).closest?.<HTMLAnchorElement>("a[href*='#']");
+      if (link && link.pathname === window.location.pathname) open(link.hash);
     };
     const initial = setTimeout(() => open(window.location.hash), 0);
     document.addEventListener("click", onClick);

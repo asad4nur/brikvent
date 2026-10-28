@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
@@ -53,14 +54,23 @@ function Chevron({ open }: { open: boolean }) {
 }
 
 export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale }) {
-  const products: Product[] = t.productsList.map((p, i) => ({ ...p, ...productMeta[i] }));
+  const home = `/${lang}`;
+  // Absolute anchors, so the links also work from the policy pages.
+  const products: Product[] = t.productsList.map((p, i) => ({
+    ...p,
+    ...productMeta[i],
+    href: `${home}${productMeta[i].href}`,
+  }));
   const links = [
-    { name: t.links.solutions, href: "#solutions" },
-    { name: t.links.pricing, href: "#pricing" },
-    { name: t.links.integrations, href: "#integrations" },
-    { name: t.links.faq, href: "#faq" },
+    { name: t.links.solutions, href: `${home}#solutions` },
+    { name: t.links.pricing, href: `${home}#pricing` },
+    { name: t.links.integrations, href: `${home}#integrations` },
+    { name: t.links.faq, href: `${home}#faq` },
   ];
   const otherLang: Locale = lang === "en" ? "bn" : "en";
+  // Same page in the other language, e.g. /en/terms -> /bn/terms.
+  const pathname = usePathname();
+  const switchHref = pathname.replace(/^\/(en|bn)(?=\/|$)/, `/${otherLang}`);
   const [scrolled, setScrolled] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -121,7 +131,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
             {t.announcement}
           </span>
           <Link
-            href="#orders"
+            href={`${home}#orders`}
             className="hidden font-medium text-[#CCFF00] hover:underline sm:inline"
           >
             {t.learnMore}
@@ -203,7 +213,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
                     </p>
                   </div>
                   <Link
-                    href="#platform"
+                    href={`${home}#platform`}
                     onClick={closeAll}
                     className="shrink-0 text-sm font-semibold text-[#00A63E] hover:underline"
                   >
@@ -228,7 +238,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
         {/* Desktop actions */}
         <div className="hidden shrink-0 items-center gap-2 whitespace-nowrap lg:flex min-[90rem]:gap-3">
           <Link
-            href={`/${otherLang}`}
+            href={switchHref}
             hrefLang={otherLang}
             lang={otherLang}
             aria-label={t.switchLanguageLabel}
@@ -238,19 +248,19 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
             {t.switchLanguage}
           </Link>
           <Link
-            href="#login"
+            href={`${home}#login`}
             className="rounded-full px-4 py-2 text-sm font-medium min-[90rem]:text-[15px] text-neutral-700 transition-colors hover:text-neutral-950"
           >
             {t.login}
           </Link>
           <Link
-            href="#demo"
+            href={`${home}#demo`}
             className="hidden rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-900 transition-colors hover:border-neutral-300 hover:bg-neutral-50 xl:inline-flex"
           >
             {t.demo}
           </Link>
           <Link
-            href="#signup"
+            href={`${home}#signup`}
             className="group inline-flex items-center gap-2 rounded-full bg-neutral-950 py-2 pl-5 pr-2 text-sm font-semibold text-white transition-colors hover:bg-neutral-800"
           >
             {t.trial}
@@ -263,7 +273,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
         {/* Mobile language switch + menu toggle */}
         <div className="flex items-center gap-2 lg:hidden">
         <Link
-          href={`/${otherLang}`}
+          href={switchHref}
           hrefLang={otherLang}
           lang={otherLang}
           aria-label={t.switchLanguageLabel}
@@ -337,7 +347,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
 
           <div className="grid gap-2 pt-4">
             <Link
-              href="#signup"
+              href={`${home}#signup`}
               onClick={closeAll}
               className="rounded-full bg-neutral-950 py-3 text-center text-sm font-semibold text-white"
             >
@@ -345,14 +355,14 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
             </Link>
             <div className="grid grid-cols-2 gap-2">
               <Link
-                href="#demo"
+                href={`${home}#demo`}
                 onClick={closeAll}
                 className="rounded-full border border-neutral-200 py-3 text-center text-sm font-medium text-neutral-900"
               >
                 {t.demo}
               </Link>
               <Link
-                href="#login"
+                href={`${home}#login`}
                 onClick={closeAll}
                 className="rounded-full border border-neutral-200 py-3 text-center text-sm font-medium text-neutral-900"
               >

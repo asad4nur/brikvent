@@ -462,10 +462,29 @@ const bn: Dictionary = {
     demo: "ডেমো বুক করুন",
   },
 
+  legalPage: { updated: "সর্বশেষ হালনাগাদ", back: "হোমে ফিরুন" },
+
   footer: {
     description: "বাংলাদেশের অল-ইন-ওয়ান কমার্স প্ল্যাটফর্ম: অনলাইন স্টোর, POS, ইউনিফাইড ইনবক্স, কুরিয়ার আর হিসাব, সবকিছু একটাই ইনভেন্টরিতে।",
     productOf: "{company} এর একটি প্রোডাক্ট",
-    columns: { product: "প্রোডাক্ট", why: "কেন Brikvent", support: "সাপোর্ট" },
+    columns: { product: "প্রোডাক্ট", why: "কেন Brikvent", support: "সাপোর্ট", company: "প্রতিষ্ঠান" },
+    legalLinks: {
+      about: "আমাদের সম্পর্কে",
+      terms: "শর্তাবলি",
+      refund: "রিটার্ন ও রিফান্ড পলিসি",
+      privacy: "প্রাইভেসি পলিসি",
+      delivery: "ডেলিভারি পলিসি",
+    },
+    contact: {
+      title: "যোগাযোগ",
+      phone: "ফোন",
+      email: "ইমেইল",
+      address: "ঠিকানা",
+      license: "ট্রেড লাইসেন্স নম্বর",
+      follow: "আমাদের ফলো করুন",
+    },
+    paymentsAlt:
+      "PayStation দ্বারা যাচাইকৃত পেমেন্ট: Visa, Mastercard, American Express, NexusPay, UnionPay, বিকাশ, নগদ, রকেট, উপায়, OK Wallet, Tap, AB Direct, Islamic Wallet, CellFin, citytouch, Dmoney, mCash সহ আরও অনেক",
     links: {
       howItWorks: "যেভাবে কাজ করে",
       madeForBangladesh: "বাংলাদেশের জন্য তৈরি",

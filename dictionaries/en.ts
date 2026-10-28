@@ -462,10 +462,29 @@ const en = {
     demo: "Book a demo",
   },
 
+  legalPage: { updated: "Last updated", back: "Back to home" },
+
   footer: {
     description: "The all-in-one commerce platform for Bangladesh: online store, POS, unified inbox, courier and accounts on one shared inventory.",
     productOf: "A product of {company}",
-    columns: { product: "Product", why: "Why Brikvent", support: "Support" },
+    columns: { product: "Product", why: "Why Brikvent", support: "Support", company: "Company" },
+    legalLinks: {
+      about: "About us",
+      terms: "Terms & Conditions",
+      refund: "Return & Refund Policy",
+      privacy: "Privacy Policy",
+      delivery: "Delivery Policy",
+    },
+    contact: {
+      title: "Contact",
+      phone: "Phone",
+      email: "Email",
+      address: "Address",
+      license: "Trade License No.",
+      follow: "Follow us",
+    },
+    paymentsAlt:
+      "Payments verified by PayStation: Visa, Mastercard, American Express, NexusPay, UnionPay, bKash, Nagad, Rocket, Upay, OK Wallet, Tap, AB Direct, Islamic Wallet, CellFin, citytouch, Dmoney, mCash and more",
     links: {
       howItWorks: "How it works",
       madeForBangladesh: "Made for Bangladesh",
