@@ -7,14 +7,19 @@ import {
   Boxes,
   ChartColumnBig,
   ChevronDown,
-  Infinity as MetaIcon,
+  Languages,
+  Megaphone,
   Menu,
   MessagesSquare,
   ScanBarcode,
   ShoppingBag,
+  Truck,
+  Wallet,
   X,
   type LucideIcon,
 } from "lucide-react";
+import type { Dictionary } from "@/dictionaries/en";
+import type { Locale } from "@/lib/i18n";
 import Logo from "./logo";
 
 type Product = {
@@ -24,50 +29,16 @@ type Product = {
   icon: LucideIcon;
 };
 
-const products: Product[] = [
-  {
-    name: "E-commerce",
-    description: "Launch a storefront that syncs with your stock in real time.",
-    href: "#ecommerce",
-    icon: ShoppingBag,
-  },
-  {
-    name: "Point of Sale",
-    description: "Fast in-store checkout, receipts and cash drawer control.",
-    href: "#pos",
-    icon: ScanBarcode,
-  },
-  {
-    name: "Unified Inbox",
-    description: "Messenger, Instagram and WhatsApp chats in one place.",
-    href: "#inbox",
-    icon: MessagesSquare,
-  },
-  {
-    name: "Meta Commerce",
-    description: "Sync catalogs to Facebook & Instagram Shops automatically.",
-    href: "#meta",
-    icon: MetaIcon,
-  },
-  {
-    name: "Inventory",
-    description: "One stock count across every channel and warehouse.",
-    href: "#inventory",
-    icon: Boxes,
-  },
-  {
-    name: "Analytics",
-    description: "Sales, margins and best sellers in a single dashboard.",
-    href: "#analytics",
-    icon: ChartColumnBig,
-  },
-];
-
-const links = [
-  { name: "Solutions", href: "#solutions" },
-  { name: "Pricing", href: "#pricing" },
-  { name: "Integrations", href: "#integrations" },
-  { name: "Resources", href: "#resources" },
+// Anchor and icon per product; names and descriptions come from the dictionary.
+const productMeta: Pick<Product, "href" | "icon">[] = [
+  { href: "#ecommerce", icon: ShoppingBag },
+  { href: "#pos", icon: ScanBarcode },
+  { href: "#inventory", icon: Boxes },
+  { href: "#orders", icon: Truck },
+  { href: "#inbox", icon: MessagesSquare },
+  { href: "#marketing", icon: Megaphone },
+  { href: "#accounting", icon: Wallet },
+  { href: "#analytics", icon: ChartColumnBig },
 ];
 
 function Chevron({ open }: { open: boolean }) {
@@ -81,7 +52,15 @@ function Chevron({ open }: { open: boolean }) {
   );
 }
 
-export default function Navbar() {
+export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale }) {
+  const products: Product[] = t.productsList.map((p, i) => ({ ...p, ...productMeta[i] }));
+  const links = [
+    { name: t.links.solutions, href: "#solutions" },
+    { name: t.links.pricing, href: "#pricing" },
+    { name: t.links.integrations, href: "#integrations" },
+    { name: t.links.faq, href: "#faq" },
+  ];
+  const otherLang: Locale = lang === "en" ? "bn" : "en";
   const [scrolled, setScrolled] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -136,16 +115,16 @@ export default function Navbar() {
       <div className="bg-neutral-950 text-white">
         <div className="mx-auto flex h-9 max-w-[1440px] items-center justify-center gap-2 px-4 text-xs sm:text-sm min-[90rem]:h-10">
           <span className="rounded-full bg-[#CCFF00] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-neutral-950">
-            New
+            {t.announcementBadge}
           </span>
           <span className="truncate text-neutral-300">
-            Unified Inbox for Messenger, Instagram &amp; WhatsApp is live
+            {t.announcement}
           </span>
           <Link
-            href="#inbox"
+            href="#orders"
             className="hidden font-medium text-[#CCFF00] hover:underline sm:inline"
           >
-            Learn more →
+            {t.learnMore}
           </Link>
         </div>
       </div>
@@ -154,7 +133,7 @@ export default function Navbar() {
         aria-label="Main"
         className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-6 px-4 sm:px-6 lg:h-[72px] lg:px-8 xl:px-12 min-[90rem]:h-20 min-[90rem]:px-20"
       >
-        <Link href="/" onClick={closeAll} className="shrink-0" aria-label="Brikvent home">
+        <Link href={`/${lang}`} onClick={closeAll} className="shrink-0" aria-label="Brikvent home">
           <Logo className="h-9 w-auto lg:h-10 min-[90rem]:h-11" />
         </Link>
 
@@ -179,7 +158,7 @@ export default function Navbar() {
                   : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950"
               }`}
             >
-              Products
+              {t.products}
               <Chevron open={productsOpen} />
             </button>
 
@@ -217,10 +196,10 @@ export default function Navbar() {
                 <div className="flex items-center justify-between border-t border-neutral-100 bg-neutral-50 px-6 py-4">
                   <div>
                     <p className="text-sm font-semibold text-neutral-950">
-                      One platform. Every channel.
+                      {t.megaTitle}
                     </p>
                     <p className="text-[13px] text-neutral-500">
-                      Online store, POS and social inbox, all sharing one inventory.
+                      {t.megaBody}
                     </p>
                   </div>
                   <Link
@@ -228,7 +207,7 @@ export default function Navbar() {
                     onClick={closeAll}
                     className="shrink-0 text-sm font-semibold text-[#00A63E] hover:underline"
                   >
-                    See the platform →
+                    {t.megaLink}
                   </Link>
                 </div>
               </div>
@@ -237,7 +216,7 @@ export default function Navbar() {
 
           {links.map((l) => (
             <Link
-              key={l.name}
+              key={l.href}
               href={l.href}
               className="rounded-full px-4 py-2 text-sm font-medium min-[90rem]:text-[15px] text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-950"
             >
@@ -249,35 +228,56 @@ export default function Navbar() {
         {/* Desktop actions */}
         <div className="hidden shrink-0 items-center gap-2 whitespace-nowrap lg:flex min-[90rem]:gap-3">
           <Link
+            href={`/${otherLang}`}
+            hrefLang={otherLang}
+            lang={otherLang}
+            aria-label={t.switchLanguageLabel}
+            className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 px-3 py-1.5 text-sm font-semibold text-neutral-800 transition-colors hover:border-neutral-300 hover:bg-neutral-50"
+          >
+            <Languages size={15} strokeWidth={2} aria-hidden className="text-brand" />
+            {t.switchLanguage}
+          </Link>
+          <Link
             href="#login"
             className="rounded-full px-4 py-2 text-sm font-medium min-[90rem]:text-[15px] text-neutral-700 transition-colors hover:text-neutral-950"
           >
-            Log in
+            {t.login}
           </Link>
           <Link
             href="#demo"
             className="hidden rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-900 transition-colors hover:border-neutral-300 hover:bg-neutral-50 xl:inline-flex"
           >
-            Book a demo
+            {t.demo}
           </Link>
           <Link
             href="#signup"
             className="group inline-flex items-center gap-2 rounded-full bg-neutral-950 py-2 pl-5 pr-2 text-sm font-semibold text-white transition-colors hover:bg-neutral-800"
           >
-            Start free trial
+            {t.trial}
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#CCFF00] text-neutral-950 transition-transform group-hover:translate-x-0.5">
               <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
             </span>
           </Link>
         </div>
 
-        {/* Mobile toggle */}
+        {/* Mobile language switch + menu toggle */}
+        <div className="flex items-center gap-2 lg:hidden">
+        <Link
+          href={`/${otherLang}`}
+          hrefLang={otherLang}
+          lang={otherLang}
+          aria-label={t.switchLanguageLabel}
+          className="flex h-10 items-center gap-1.5 rounded-full border border-neutral-200 px-3 text-sm font-semibold text-neutral-800"
+        >
+          <Languages size={15} strokeWidth={2} aria-hidden className="text-brand" />
+          {t.switchLanguage}
+        </Link>
         <button
           type="button"
           onClick={() => setMobileOpen((v) => !v)}
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-label={mobileOpen ? t.closeMenu : t.openMenu}
           className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 text-neutral-900 transition-colors hover:bg-neutral-50 lg:hidden"
         >
           {mobileOpen ? (
@@ -286,6 +286,7 @@ export default function Navbar() {
             <Menu size={18} strokeWidth={2} aria-hidden />
           )}
         </button>
+        </div>
       </nav>
 
       {/* Mobile menu */}
@@ -302,7 +303,7 @@ export default function Navbar() {
             aria-expanded={mobileProductsOpen}
             className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-base font-medium text-neutral-900 hover:bg-neutral-50"
           >
-            Products
+            {t.products}
             <Chevron open={mobileProductsOpen} />
           </button>
           {mobileProductsOpen && (
@@ -325,7 +326,7 @@ export default function Navbar() {
 
           {links.map((l) => (
             <Link
-              key={l.name}
+              key={l.href}
               href={l.href}
               onClick={closeAll}
               className="block rounded-xl px-3 py-3 text-base font-medium text-neutral-900 hover:bg-neutral-50"
@@ -340,7 +341,7 @@ export default function Navbar() {
               onClick={closeAll}
               className="rounded-full bg-neutral-950 py-3 text-center text-sm font-semibold text-white"
             >
-              Start free trial
+              {t.trial}
             </Link>
             <div className="grid grid-cols-2 gap-2">
               <Link
@@ -348,14 +349,14 @@ export default function Navbar() {
                 onClick={closeAll}
                 className="rounded-full border border-neutral-200 py-3 text-center text-sm font-medium text-neutral-900"
               >
-                Book a demo
+                {t.demo}
               </Link>
               <Link
                 href="#login"
                 onClick={closeAll}
                 className="rounded-full border border-neutral-200 py-3 text-center text-sm font-medium text-neutral-900"
               >
-                Log in
+                {t.login}
               </Link>
             </div>
           </div>
