@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import type { Dictionary } from "@/dictionaries/en";
+import ProductArt from "@/components/product-art";
 import InboxChat from "./InboxChat";
 import {
   Boxes,
@@ -280,9 +281,7 @@ function StockScreen() {
   return (
     <div className="space-y-3">
       <Panel className="rise flex items-center gap-4">
-        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-lime to-brand">
-          <Boxes size={22} strokeWidth={1.75} aria-hidden />
-        </span>
+        <ProductArt look="bluePanjabi" className="h-16 w-14 shrink-0 rounded-xl ring-1 ring-neutral-200" />
         <div>
           <p className="text-sm font-semibold text-neutral-950">Blue Panjabi · L</p>
           <p className="text-xs text-neutral-500">SKU BP-L · one shared stock</p>

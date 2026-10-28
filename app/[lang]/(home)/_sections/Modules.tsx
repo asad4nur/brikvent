@@ -14,6 +14,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
+import ProductArt, { type ProductLook } from "@/components/product-art";
 
 // Staggers the .rise entrance animation inside each mock.
 const delay = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
@@ -199,10 +200,10 @@ function Chip({ tone = "neutral", children }: { tone?: "neutral" | "green" | "am
 }
 
 function StoreMock() {
-  const products = [
-    ["Linen Kurti", "৳1,250", "৳1,600"],
-    ["Silk Three-Piece", "৳2,450", "৳3,100"],
-    ["Cotton Panjabi", "৳1,850", "৳2,300"],
+  const products: [string, string, string, ProductLook][] = [
+    ["Linen Kurti", "৳1,250", "৳1,600", "linenKurti"],
+    ["Silk Three-Piece", "৳2,450", "৳3,100", "silkThreePiece"],
+    ["Cotton Panjabi", "৳1,850", "৳2,300", "cottonPanjabi"],
   ];
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white">
@@ -225,9 +226,17 @@ function StoreMock() {
         </span>
       </div>
       <div className="grid grid-cols-3 gap-2 px-3 pb-3">
-        {products.map(([name, price, was], i) => (
-          <div key={name} className="rise" style={delay(150 + i * 100)}>
-            <div className="aspect-[4/5] rounded-lg bg-gradient-to-br from-neutral-100 to-neutral-200" />
+        {products.map(([name, price, was, look], i) => (
+          <div key={name} className="rise group" style={delay(150 + i * 100)}>
+            <div className="relative overflow-hidden rounded-lg">
+              <ProductArt
+                look={look}
+                className="block aspect-[4/5] w-full transition-transform duration-500 group-hover:scale-105"
+              />
+              <span className="absolute left-1.5 top-1.5 rounded-full bg-red-500 px-1.5 py-0.5 text-[9px] font-bold text-white">
+                −{Math.round((1 - parseInt(price.replace(/\D/g, "")) / parseInt(was.replace(/\D/g, ""))) * 100)}%
+              </span>
+            </div>
             <p className="mt-2 truncate text-[11px] font-medium text-neutral-800 sm:text-xs">{name}</p>
             <p className="text-[11px] sm:text-xs">
               <span className="font-semibold text-neutral-950">{price}</span>{" "}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Boxes, Check, MapPin, SendHorizontal } from "lucide-react";
+import ProductArt from "@/components/product-art";
 
 type Message =
   | { from: "customer" | "seller"; kind: "text"; text: string }
@@ -238,15 +239,7 @@ function Bubble({ m, st }: { m: Message; st: (typeof styles)["Messenger"] }) {
 
       {m.kind === "image" && (
         <div className={`${bubble} p-1.5`}>
-          <div className="flex h-28 w-32 items-end justify-center overflow-hidden rounded-xl bg-gradient-to-b from-rose-100 to-rose-200">
-            <svg viewBox="0 0 60 80" className="h-24 w-auto" aria-hidden>
-              <path
-                d="M23 6h14l3 9-5 5 13 54H12l13-54-5-5z"
-                className="fill-rose-400"
-              />
-              <path d="M25 20h10l-1 6h-8z" className="fill-rose-300" />
-            </svg>
-          </div>
+          <ProductArt look="roseKurti" className="block h-36 w-28 rounded-xl" />
           <p className="px-1.5 pb-0.5 pt-1.5">{m.text}</p>
         </div>
       )}

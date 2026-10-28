@@ -5,11 +5,11 @@ import {
   Check,
   Globe,
   MessageCircle,
-  Package,
   ScanBarcode,
   ThumbsUp,
   type LucideIcon,
 } from "lucide-react";
+import ProductArt from "@/components/product-art";
 
 type Channel = {
   name: string;
@@ -163,9 +163,7 @@ export default function HeroVisual() {
         </div>
 
         <div className="mt-3 flex items-center gap-3">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-lime to-brand text-neutral-950">
-            <Package size={22} strokeWidth={1.75} aria-hidden />
-          </span>
+          <ProductArt look="tealThreePiece" className="h-14 w-12 shrink-0 rounded-xl ring-1 ring-neutral-200" />
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-neutral-950">
               Teal Three-Piece
