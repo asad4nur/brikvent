@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { FileBadge, Mail, MapPin, Phone } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
@@ -164,18 +163,6 @@ export default function Footer({
             </div>
           ))}
         </nav>
-      </div>
-
-      {/* Accepted payment methods, verified by PayStation */}
-      <div className="mx-auto max-w-[1440px] px-4 pb-10 sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
-        <Image
-          src="/paystation-payment-methods.png"
-          alt={t.paymentsAlt}
-          width={1920}
-          height={378}
-          sizes="(min-width: 1440px) 1280px, 100vw"
-          className="h-auto w-full"
-        />
       </div>
 
       <div className="border-t border-neutral-200">
