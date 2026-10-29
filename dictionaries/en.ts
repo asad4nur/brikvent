@@ -520,6 +520,11 @@ const en = {
     privacy: "Privacy policy",
     terms: "Terms of service",
   },
+  whatsapp: {
+    label: "Chat on WhatsApp",
+    hint: "Questions? We reply fast.",
+    message: "Hi Brikvent, I'd like to know more about Brikvent.",
+  },
 };
 
 export default en;

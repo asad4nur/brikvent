@@ -521,6 +521,11 @@ const bn: Dictionary = {
     privacy: "প্রাইভেসি পলিসি",
     terms: "শর্তাবলি",
   },
+  whatsapp: {
+    label: "হোয়াটসঅ্যাপে কথা বলুন",
+    hint: "কোনো প্রশ্ন? দ্রুত উত্তর পাবেন।",
+    message: "হ্যালো Brikvent, আমি Brikvent সম্পর্কে আরও জানতে চাই।",
+  },
 };
 
 export default bn;

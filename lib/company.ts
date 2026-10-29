@@ -9,7 +9,8 @@ export const company = {
   // Webbriks Bangladesh office, from webbriks.com.
   phone: "+880 1977-201923",
   phoneHref: "tel:+8801977201923",
-  whatsappHref: "https://wa.me/8801977201923",
+  // Sales and support chat, used by the floating WhatsApp button.
+  whatsappHref: "https://wa.me/8801824541177",
   address: {
     en: "House 35, 3rd Floor, Road 4, Nikunjo 2, Khilkhet, Dhaka, Bangladesh",
     bn: "বাসা ৩৫, ৩য় তলা, রোড ৪, নিকুঞ্জ ২, খিলক্ষেত, ঢাকা, বাংলাদেশ",
