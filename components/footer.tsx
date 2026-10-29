@@ -77,7 +77,7 @@ export default function Footer({
 
   return (
     <footer className="border-t border-neutral-200 bg-white">
-      <div className="mx-auto grid max-w-[1440px] gap-12 px-4 py-14 sm:px-6 lg:grid-cols-[1.2fr_2fr] lg:px-8 lg:py-20 xl:px-12 min-[90rem]:px-20">
+      <div className="mx-auto grid max-w-[1440px] gap-12 px-4 pb-10 pt-14 sm:px-6 lg:grid-cols-[1.2fr_2fr] lg:px-8 lg:pb-12 lg:pt-20 xl:px-12 min-[90rem]:px-20">
         <div>
           <Link href={home} aria-label="Brikvent home" className="inline-block">
             <Logo className="h-10 w-auto" />
@@ -90,58 +90,23 @@ export default function Footer({
             </span>
           </p>
 
-          {/* Business details required for payment gateway verification */}
-          <address className="mt-7 space-y-3 text-sm not-italic text-neutral-600">
-            <p className="text-sm font-semibold text-neutral-950">{c.title}</p>
-            <p className="flex gap-2.5">
-              <MapPin size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-brand" aria-hidden />
-              <span>
-                <span className="sr-only">{c.address}: </span>
-                {company.address[lang]}
-              </span>
-            </p>
-            <p className="flex gap-2.5">
-              <Phone size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-brand" aria-hidden />
-              <span className="sr-only">{c.phone}: </span>
-              <a href={company.phoneHref} className="hover:text-neutral-950">
-                {company.phone}
-              </a>
-            </p>
-            <p className="flex gap-2.5">
-              <Mail size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-brand" aria-hidden />
-              <span className="sr-only">{c.email}: </span>
-              <a href={`mailto:${company.email}`} className="hover:text-neutral-950">
-                {company.email}
-              </a>
-            </p>
-            <p className="flex gap-2.5">
-              <FileBadge size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-brand" aria-hidden />
-              <span>
-                {c.license}: <span className="font-medium text-neutral-900">{company.tradeLicense}</span>
-              </span>
-            </p>
-          </address>
-
-          <div className="mt-6">
-            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">{c.follow}</p>
-            <ul className="mt-3 flex gap-2">
-              {company.socials.map((s) => (
-                <li key={s.name}>
-                  <a
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.name}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-600 transition-colors hover:border-brand hover:bg-brand hover:text-white"
-                  >
-                    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden>
-                      <path d={socialIcons[s.name]} fillRule="evenodd" />
-                    </svg>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <ul className="mt-6 flex items-center gap-2" aria-label={c.follow}>
+            {company.socials.map((s) => (
+              <li key={s.name}>
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.name}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-600 transition-colors hover:border-brand hover:bg-brand hover:text-white"
+                >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden>
+                    <path d={socialIcons[s.name]} fillRule="evenodd" />
+                  </svg>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
 
         <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-3">
@@ -163,6 +128,36 @@ export default function Footer({
             </div>
           ))}
         </nav>
+      </div>
+
+      {/* Business details required for payment gateway verification */}
+      <div className="mx-auto max-w-[1440px] px-4 pb-12 sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
+        <address className="grid gap-3 rounded-3xl border border-neutral-200 bg-neutral-50 p-4 not-italic sm:grid-cols-2 sm:p-5 lg:grid-cols-[1.6fr_1fr_1fr_1.2fr]">
+          {[
+            { icon: MapPin, label: c.address, value: company.address[lang] },
+            { icon: Phone, label: c.phone, value: company.phone, href: company.phoneHref },
+            { icon: Mail, label: c.email, value: company.email, href: `mailto:${company.email}` },
+            { icon: FileBadge, label: c.license, value: company.tradeLicense },
+          ].map(({ icon: Icon, label, value, href }) => (
+            <div key={label} className="flex items-start gap-3 rounded-2xl bg-white p-3.5 ring-1 ring-neutral-200/70">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-lime/30 text-brand-dark">
+                <Icon size={17} strokeWidth={2} aria-hidden />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+                  {label}
+                </span>
+                {href ? (
+                  <a href={href} className="mt-0.5 block break-words text-sm font-medium text-neutral-900 hover:text-brand-dark">
+                    {value}
+                  </a>
+                ) : (
+                  <span className="mt-0.5 block break-words text-sm font-medium text-neutral-900">{value}</span>
+                )}
+              </span>
+            </div>
+          ))}
+        </address>
       </div>
 
       <div className="border-t border-neutral-200">
