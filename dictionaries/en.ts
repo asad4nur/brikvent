@@ -271,8 +271,8 @@ const en = {
 
   local: {
     eyebrow: "Made for Bangladesh",
-    title: "Built for cash on delivery, couriers and bKash.",
-    body: "Global tools assume card payments and English-only shoppers. Brikvent starts from how shops here actually sell, so the local parts are built in, not bolted on with paid plugins.",
+    title: "Works the way Bangladesh sells.",
+    body: "Cash on delivery, bKash, Nagad and local couriers work from day one. No extra apps to buy and no plugins to set up.",
     features: [
       { title: "COD confirmation calls", body: "Every cash-on-delivery order gets an automatic call. Customers press 1 to confirm or 2 to cancel." },
       { title: "Fraud checker", body: "See a customer's past deliveries and returns before you hand the parcel to the rider." },
@@ -285,7 +285,7 @@ const en = {
     ],
     integrationsTitle: "Connects to the tools you already use",
     integrationsNote: "Set up once from your dashboard",
-    integrationGroups: ["Payments", "Couriers", "Sales channels", "Marketing", "Messaging"],
+    integrationGroups: ["Payments", "Local couriers", "International couriers", "Sales channels", "Marketing", "Messaging"],
   },
 
   pricing: {
@@ -424,19 +424,40 @@ const en = {
       "One login, one monthly bill in taka",
     ],
     afterFoot: "1 login · 1 bill · 1 stock count",
-    costTitle: "What you'd pay elsewhere",
-    costBody: "A shop doing 500 orders a month at an average of ৳1,500 (৳7,50,000 in sales). Here's the monthly bill on each platform.",
-    us: "Us",
-    // Same order as competitorComparison in lib/pricing.ts.
-    competitors: [
-      { model: "Subscription + free order quota", note: "300 orders free, then 200 × ৳1. POS and Conversions API included." },
-      { model: "Subscription", note: "3 outlets and Unified Inbox included." },
-      { model: "Traffic-based", note: "Visitor limits. No POS or multi-branch." },
-      { model: "Setup fee + quota", note: "৳5,000 setup fee up front. Product and order limits." },
-      { model: "Flat + AI call charges", note: "৳4,999 plus call charges." },
-      { model: "1.5% commission", note: "The bill keeps growing as your sales grow." },
+    valueTitle: "Pay less. Get more.",
+    valueBody: "A shop with 500 orders a month (about ৳1,500 each) pays far less on Brikvent, and gets more in the box.",
+    usLabel: "Brikvent",
+    usPrice: "{price}/mo",
+    usCaption: "at 500 orders a month",
+    usPoints: [
+      "No setup fee and no commission",
+      "Online store and POS on every plan",
+      "Unlimited sales orders, no visitor limits",
+      "Courier booking, fraud check and COD calls built in",
+      "Multi-outlet stock and Unified Inbox on Growth",
+      "Accounts, reports and Bangla support included",
     ],
-    footnote: "Competitor prices from our market research, October 2026. Check each platform for current pricing.",
+    othersLabel: "Other platforms",
+    othersPrice: "{min} – {max}/mo",
+    othersCaption: "for the same 500 orders",
+    othersPoints: [
+      "Setup fees of up to ৳5,000",
+      "Commission of up to 1.5% on every sale",
+      "Visitor, product or order limits",
+      "POS or multiple branches missing on some plans",
+      "Calls and extras charged on top",
+    ],
+    barsTitle: "Monthly bill at 500 orders",
+    us: "Us",
+    rows: {
+      starter: { name: "Brikvent Starter", note: "300 orders free, then ৳1 each" },
+      growth: { name: "Brikvent Growth", note: "3 outlets and Unified Inbox included" },
+      traffic: { name: "Traffic-based builder", note: "Visitor limits, no POS" },
+      setupFee: { name: "Builder with setup fee", note: "Plus ৳5,000 one-time setup" },
+      flatCalls: { name: "Flat price + call charges", note: "৳4,999 plus AI call charges" },
+      commission: { name: "Commission-based platform", note: "1.5% of sales, grows as you sell" },
+    },
+    footnote: "Other platform prices are typical figures from our market research, October 2026.",
   },
 
   faq: {
@@ -447,7 +468,7 @@ const en = {
       { q: "Do you take a commission on my sales?", a: "No. You pay a flat monthly plan in taka. There is no percentage cut, no setup fee and no traffic limit." },
       { q: "What happens if I go over my free orders?", a: "Your store keeps taking orders. Extra orders are added to that month's bill: ৳1 each on Starter and ৳0.50 each on Growth. Business and Enterprise include unlimited orders." },
       { q: "Do I need a website already?", a: "No. Pick a theme, add your products and you're live on a free brikvent.com subdomain. You can connect your own domain at any time, with SSL included." },
-      { q: "Which payment methods and couriers are supported?", a: "bKash, Nagad, Rocket, SSLCommerz, PayStation, cash and card for payments. Steadfast and Pathao for one-click courier booking with delivery status sync." },
+      { q: "Which payment methods and couriers are supported?", a: "Payments: bKash, Nagad, Rocket, Upay, SSLCommerz, PayStation, Stripe, PayPal, cards and cash. Couriers: Steadfast and Pathao in Bangladesh, and DHL Express, FedEx, UPS and Aramex for international shipping, with one-click booking and delivery status sync." },
       { q: "Can I use only the POS, or only the online store?", a: "Yes. Turn on just the parts you need. Every plan includes both POS and the online store, and they always share the same stock." },
       { q: "How do the confirmation calls and SMS work?", a: "Calls and SMS use prepaid credits that you top up from your dashboard (1 credit = ৳1). You record your own greeting, and customers press 1 to confirm or 2 to cancel." },
       { q: "Can my staff log in with limited access?", a: "Yes. Create roles for cashiers, packers or managers and choose exactly which modules each role can open. The number of users depends on your plan." },

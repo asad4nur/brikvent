@@ -9,15 +9,30 @@ import HeroVisual from "./HeroVisual";
 // Staggers the .rise entrance animation.
 const delay = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
+// Payments, couriers, channels and marketing tools, shown as a scrolling strip.
 const integrations = [
   "bKash",
   "Nagad",
   "Rocket",
   "SSLCommerz",
+  "PayStation",
+  "Stripe",
+  "PayPal",
   "Steadfast",
   "Pathao",
-  "Meta",
+  "DHL Express",
+  "FedEx",
+  "UPS",
+  "Aramex",
+  "Facebook",
+  "Messenger",
+  "Instagram",
   "WhatsApp",
+  "Meta Ads",
+  "Google Ads",
+  "Google Analytics",
+  "Google Tag Manager",
+  "TikTok",
 ];
 
 export default function Hero({ t, numberLocale }: { t: Dictionary["hero"]; numberLocale: string }) {
@@ -121,16 +136,25 @@ export default function Hero({ t, numberLocale }: { t: Dictionary["hero"]; numbe
           <p className="shrink-0 text-xs font-medium uppercase tracking-wider text-neutral-500">
             {t.integrationsLabel}
           </p>
-          <ul className="flex flex-wrap gap-x-7 gap-y-2">
-            {integrations.map((name) => (
-              <li
-                key={name}
-                className="text-[15px] font-semibold tracking-tight text-neutral-400 transition-colors hover:text-neutral-900"
-              >
-                {name}
-              </li>
-            ))}
-          </ul>
+          {/* The list renders twice so the strip loops without a gap; the
+              copy is hidden from screen readers. */}
+          <div className="marquee-wrap relative min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
+            <div className="marquee flex w-max">
+              {[false, true].map((copy) => (
+                <ul key={String(copy)} aria-hidden={copy || undefined} className="flex shrink-0 items-center">
+                  {integrations.map((name) => (
+                    <li
+                      key={name}
+                      className="flex items-center whitespace-nowrap pr-8 text-[15px] font-semibold tracking-tight text-neutral-400 transition-colors hover:text-neutral-900"
+                    >
+                      <span aria-hidden className="mr-8 h-1 w-1 rounded-full bg-neutral-300" />
+                      {name}
+                    </li>
+                  ))}
+                </ul>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

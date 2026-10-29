@@ -105,7 +105,27 @@ html[lang="bn"] h1 {
   animation: ping-soft 1.2s ease-out infinite;
 }
 
+/* Endless integrations strip: the track holds the list twice and slides
+   by half its width, then repeats. Hover pauses it. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  animation: marquee 45s linear infinite;
+}
+
+.marquee-wrap:hover .marquee {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .marquee,
   .rise,
   .flow-line,
   .pop,

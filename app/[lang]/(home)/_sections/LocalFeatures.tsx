@@ -25,11 +25,12 @@ const featureIcons: LucideIcon[] = [
 
 // Brand names, grouped in the same order as `integrationGroups` in the dictionary.
 const integrations: string[][] = [
-  ["bKash", "Nagad", "Rocket", "SSLCommerz", "PayStation"],
+  ["bKash", "Nagad", "Rocket", "Upay", "SSLCommerz", "PayStation", "Stripe", "PayPal", "Visa & Mastercard"],
   ["Steadfast", "Pathao"],
-  ["Facebook", "Instagram", "WhatsApp", "Messenger"],
-  ["Meta Pixel & CAPI", "Meta Ads", "TikTok Pixel", "Google Tag Manager"],
-  ["SMS gateway", "Email (SMTP)"],
+  ["DHL Express", "FedEx", "UPS", "Aramex"],
+  ["Facebook", "Instagram", "Messenger", "WhatsApp"],
+  ["Meta Pixel & CAPI", "Meta Ads", "Google Ads", "Google Analytics", "Google Tag Manager", "TikTok Pixel"],
+  ["SMS gateway", "Email (SMTP)", "Voice call (IVR)"],
 ];
 
 export default function LocalFeatures({ t }: { t: Dictionary["local"] }) {
@@ -82,7 +83,7 @@ export default function LocalFeatures({ t }: { t: Dictionary["local"] }) {
             </h3>
             <p className="text-sm text-neutral-500">{t.integrationsNote}</p>
           </div>
-          <dl className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+          <dl className="mt-8 grid gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
             {integrations.map((items, i) => (
               <div key={t.integrationGroups[i]}>
                 <dt className="text-xs font-semibold uppercase tracking-wider text-neutral-500">

@@ -185,17 +185,20 @@ const allRows = featureTable.flatMap((g) => g.rows);
 export const planIncludes = (plan: PlanId, feature: FeatureId) =>
   allRows.find((r) => r.id === feature)?.plans.includes(plan) ?? false;
 
-// Monthly cost at 500 orders (average order ৳1,500, ৳7,50,000 in sales).
-// Source: competitor research in the pricing PDF. Re-check before launch, as
-// competitors change their prices. Pricing model and notes are in the
-// dictionaries (comparison.competitors), in the same order.
-export const competitorComparison: { name: string; cost: string; ours?: true }[] = [
-  { name: "Brikvent Starter", cost: "৳699", ours: true },
-  { name: "Brikvent Growth", cost: "৳1,999", ours: true },
-  { name: "Uddoktify", cost: "৳890–1,390" },
-  { name: "ShopZero", cost: "৳2,499" },
-  { name: "SeloraX", cost: "~৳5,450" },
-  { name: "Banikh", cost: "৳11,250" },
+// Monthly bill for a shop with 500 orders (average ৳1,500, ৳7,50,000 in
+// sales). Other platforms are shown by type, not by name; the figures come
+// from competitor research in the pricing PDF. Labels are in the
+// dictionaries (comparison.rows), keyed by id.
+export type CostRowId = "starter" | "growth" | "traffic" | "setupFee" | "flatCalls" | "commission";
+
+// `value` sizes the bar; `from` is the low end when the cost is a range.
+export const costComparison: { id: CostRowId; cost: string; value: number; from?: number; ours?: true }[] = [
+  { id: "starter", cost: "৳699", value: 699, ours: true },
+  { id: "growth", cost: "৳1,999", value: 1999, ours: true },
+  { id: "traffic", cost: "৳890–1,390", value: 1390, from: 890 },
+  { id: "setupFee", cost: "৳2,499", value: 2499 },
+  { id: "flatCalls", cost: "~৳5,450", value: 5450 },
+  { id: "commission", cost: "৳11,250", value: 11250 },
 ];
 
 export const lowestMonthlyPrice = Math.min(...plans.map((p) => p.monthly));

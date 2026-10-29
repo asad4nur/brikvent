@@ -1,7 +1,13 @@
-import { Check, X } from "lucide-react";
+import { Check, Sparkles, X } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
-import { localizeDigits } from "@/lib/i18n";
-import { competitorComparison } from "@/lib/pricing";
+import { fill, localizeDigits } from "@/lib/i18n";
+import { costComparison } from "@/lib/pricing";
+import CostBars from "./CostBars";
+
+const cheapest = costComparison.find((r) => r.ours)!;
+const others = costComparison.filter((r) => !r.ours);
+const othersMin = Math.min(...others.map((r) => r.from ?? r.value));
+const othersMax = Math.max(...others.map((r) => r.value));
 
 export default function Comparison({
   t,
@@ -66,53 +72,72 @@ export default function Comparison({
           </div>
         </div>
 
-        {/* What the alternatives cost */}
+        {/* Value comparison: Brikvent vs other platform types (no names) */}
         <div className="reveal mx-auto mt-20 max-w-5xl lg:mt-28">
           <div className="text-center">
-            <h3 className="text-2xl font-semibold tracking-tight text-neutral-950 sm:text-4xl">
-              {t.costTitle}
+            <h3 className="text-3xl font-semibold tracking-tight text-neutral-950 sm:text-5xl">
+              {t.valueTitle}
             </h3>
-            <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-neutral-600">
-              {t.costBody}
+            <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-neutral-600 sm:text-lg">
+              {t.valueBody}
             </p>
           </div>
 
-          <ul className="mt-10 space-y-2.5">
-            {competitorComparison.map((c, i) => (
-              <li
-                key={c.name}
-                className={`grid items-center gap-x-6 gap-y-1 rounded-2xl border px-5 py-4 sm:grid-cols-[1.1fr_1fr_auto] ${
-                  c.ours
-                    ? "border-brand/40 bg-lime/15"
-                    : "border-neutral-200 bg-white"
-                }`}
-              >
-                <div className="min-w-0">
-                  <p className="flex items-center gap-2 font-semibold text-neutral-950">
-                    {c.name}
-                    {c.ours && (
-                      <span className="rounded-full bg-brand px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
-                        {t.us}
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-sm text-neutral-500">{t.competitors[i].model}</p>
-                </div>
-                <p className="text-sm text-neutral-600">{t.competitors[i].note}</p>
-                <p
-                  className={`text-xl font-semibold tabular-nums sm:text-right ${
-                    c.ours ? "text-brand-dark" : "text-neutral-950"
-                  }`}
-                >
-                  {localizeDigits(c.cost, numberLocale)}
-                  <span className="text-xs font-medium text-neutral-500">{t.perMonthShort}</span>
-                </p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 text-center text-xs text-neutral-400">
-            {t.footnote}
-          </p>
+          <div className="mt-10 grid gap-4 md:grid-cols-[1.15fr_1fr]">
+            <div className="relative overflow-hidden rounded-3xl border-2 border-brand bg-gradient-to-br from-lime/25 via-white to-white p-6 sm:p-8">
+              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-brand-dark">
+                <Sparkles size={15} strokeWidth={2.25} aria-hidden />
+                {t.usLabel}
+              </p>
+              <p className="mt-3 text-4xl font-semibold tracking-tight text-neutral-950 sm:text-5xl">
+                {fill(t.usPrice, { price: localizeDigits(cheapest.cost, numberLocale) })}
+              </p>
+              <p className="mt-1 text-sm text-neutral-500">{t.usCaption}</p>
+              <ul className="mt-6 space-y-3">
+                {t.usPoints.map((item) => (
+                  <li key={item} className="flex gap-3 text-[15px] text-neutral-800">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand text-white">
+                      <Check size={12} strokeWidth={3} aria-hidden />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rounded-3xl border border-neutral-200 bg-neutral-50 p-6 sm:p-8">
+              <p className="text-sm font-semibold uppercase tracking-wider text-neutral-500">
+                {t.othersLabel}
+              </p>
+              <p className="mt-3 text-3xl font-semibold tracking-tight text-neutral-400 sm:text-4xl">
+                {fill(t.othersPrice, {
+                  min: localizeDigits(`৳${othersMin.toLocaleString("en-IN")}`, numberLocale),
+                  max: localizeDigits(`৳${othersMax.toLocaleString("en-IN")}`, numberLocale),
+                })}
+              </p>
+              <p className="mt-1 text-sm text-neutral-500">{t.othersCaption}</p>
+              <ul className="mt-6 space-y-3">
+                {t.othersPoints.map((item) => (
+                  <li key={item} className="flex gap-3 text-[15px] text-neutral-600">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-500">
+                      <X size={12} strokeWidth={3} aria-hidden />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-3xl border border-neutral-200 bg-white p-6 sm:p-8">
+            <p className="text-sm font-semibold uppercase tracking-wider text-neutral-500">
+              {t.barsTitle}
+            </p>
+            <div className="mt-6">
+              <CostBars t={t} numberLocale={numberLocale} />
+            </div>
+          </div>
+          <p className="mt-4 text-center text-xs text-neutral-400">{t.footnote}</p>
         </div>
       </div>
     </section>
