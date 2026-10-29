@@ -117,17 +117,22 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
         scrolled || mobileOpen
-          ? "border-b border-neutral-200/80 bg-white/85 backdrop-blur-xl"
-          : "border-b border-transparent bg-white"
+          ? "bg-gradient-to-r from-white/90 via-[#f4fce4]/90 to-white/90 shadow-[0_10px_30px_-18px_rgba(0,166,62,0.35)] backdrop-blur-xl"
+          : "bg-gradient-to-r from-white via-[#f6fdea] to-white"
       }`}
     >
+      {/* Brand glow line along the bottom edge */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-brand/50 to-transparent"
+      />
       {/* Announcement bar */}
-      <div className="bg-neutral-950 text-white">
+      <div className="announce relative overflow-hidden bg-gradient-to-r from-[#04120a] via-[#0b2a16] to-[#04120a] text-white">
         <div className="mx-auto flex h-9 max-w-[1440px] items-center justify-center gap-2 px-4 text-xs sm:text-sm min-[90rem]:h-10">
           <span className="rounded-full bg-[#CCFF00] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-neutral-950">
             {t.announcementBadge}
           </span>
-          <span className="truncate text-neutral-300">
+          <span className="truncate text-neutral-200">
             {t.announcement}
           </span>
           <Link
@@ -164,8 +169,8 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
               onClick={() => setProductsOpen(true)}
               className={`flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium min-[90rem]:text-[15px] transition-colors ${
                 productsOpen
-                  ? "bg-neutral-100 text-neutral-950"
-                  : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950"
+                  ? "bg-lime/30 text-neutral-950"
+                  : "text-neutral-600 hover:bg-lime/25 hover:text-neutral-950"
               }`}
             >
               {t.products}
@@ -187,7 +192,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
                       key={p.name}
                       href={p.href}
                       onClick={closeAll}
-                      className="group flex gap-3 rounded-xl p-3 transition-colors hover:bg-neutral-50"
+                      className="group flex gap-3 rounded-xl p-3 transition-colors hover:bg-lime/10"
                     >
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-700 transition-colors group-hover:border-[#00A63E]/30 group-hover:bg-[#CCFF00]/25 group-hover:text-[#00A63E]">
                         <p.icon size={20} strokeWidth={1.75} aria-hidden />
@@ -203,7 +208,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
                     </Link>
                   ))}
                 </div>
-                <div className="flex items-center justify-between border-t border-neutral-100 bg-neutral-50 px-6 py-4">
+                <div className="flex items-center justify-between border-t border-neutral-100 bg-gradient-to-r from-lime/15 via-[#f4fce4] to-white px-6 py-4">
                   <div>
                     <p className="text-sm font-semibold text-neutral-950">
                       {t.megaTitle}
@@ -228,7 +233,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
             <Link
               key={l.href}
               href={l.href}
-              className="rounded-full px-4 py-2 text-sm font-medium min-[90rem]:text-[15px] text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-950"
+              className="rounded-full px-4 py-2 text-sm font-medium min-[90rem]:text-[15px] text-neutral-600 transition-colors hover:bg-lime/25 hover:text-neutral-950"
             >
               {l.name}
             </Link>
@@ -242,7 +247,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
             hrefLang={otherLang}
             lang={otherLang}
             aria-label={t.switchLanguageLabel}
-            className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 px-3 py-1.5 text-sm font-semibold text-neutral-800 transition-colors hover:border-neutral-300 hover:bg-neutral-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-brand/25 bg-lime/15 px-3 py-1.5 text-sm font-semibold text-neutral-800 transition-colors hover:border-brand/50 hover:bg-lime/35"
           >
             <Languages size={15} strokeWidth={2} aria-hidden className="text-brand" />
             {t.switchLanguage}
@@ -255,7 +260,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
           </Link>
           <Link
             href={`${home}#demo`}
-            className="hidden rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-900 transition-colors hover:border-neutral-300 hover:bg-neutral-50 xl:inline-flex"
+            className="hidden rounded-full border border-neutral-200 bg-white/70 px-4 py-2 text-sm font-medium text-neutral-900 transition-colors hover:border-brand/40 hover:bg-white xl:inline-flex"
           >
             {t.demo}
           </Link>
@@ -277,7 +282,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
           hrefLang={otherLang}
           lang={otherLang}
           aria-label={t.switchLanguageLabel}
-          className="flex h-10 items-center gap-1.5 rounded-full border border-neutral-200 px-3 text-sm font-semibold text-neutral-800"
+          className="flex h-10 items-center gap-1.5 rounded-full border border-brand/25 bg-lime/15 px-3 text-sm font-semibold text-neutral-800"
         >
           <Languages size={15} strokeWidth={2} aria-hidden className="text-brand" />
           {t.switchLanguage}

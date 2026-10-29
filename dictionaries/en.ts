@@ -16,7 +16,7 @@ const en = {
     announcementBadge: "New",
     announcement: "AI Calling Agent now confirms COD orders for you",
     learnMore: "Learn more →",
-    products: "Products",
+    products: "Features",
     productsList: [
       { name: "Online Store", description: "Themes, flash sales, combos and your own domain, synced to stock." },
       { name: "Point of Sale", description: "Barcode checkout, bKash or split payments and thermal receipts." },
@@ -489,7 +489,7 @@ const en = {
   footer: {
     description: "The all-in-one commerce platform for Bangladesh: online store, POS, unified inbox, courier and accounts on one shared inventory.",
     productOf: "A product of {company}",
-    columns: { product: "Product", why: "Why Brikvent", support: "Support", company: "Company" },
+    columns: { product: "Features", why: "Why Brikvent", support: "Support", company: "Company" },
     legalLinks: {
       about: "About us",
       terms: "Terms & Conditions",

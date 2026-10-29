@@ -17,7 +17,7 @@ const bn: Dictionary = {
     announcementBadge: "নতুন",
     announcement: "AI Calling Agent এখন আপনার হয়ে COD অর্ডার কনফার্ম করে",
     learnMore: "বিস্তারিত →",
-    products: "প্রোডাক্টস",
+    products: "ফিচারসমূহ",
     productsList: [
       { name: "অনলাইন স্টোর", description: "থিম, ফ্ল্যাশ সেল, কম্বো আর নিজের ডোমেইন, স্টকের সাথে সিঙ্ক করা।" },
       { name: "পয়েন্ট অফ সেল (POS)", description: "বারকোড চেকআউট, বিকাশ বা ভাগে পেমেন্ট আর থার্মাল রিসিট।" },
@@ -490,7 +490,7 @@ const bn: Dictionary = {
   footer: {
     description: "বাংলাদেশের অল-ইন-ওয়ান কমার্স প্ল্যাটফর্ম: অনলাইন স্টোর, POS, ইউনিফাইড ইনবক্স, কুরিয়ার আর হিসাব, সবকিছু একটাই ইনভেন্টরিতে।",
     productOf: "{company} এর একটি প্রোডাক্ট",
-    columns: { product: "প্রোডাক্ট", why: "কেন Brikvent", support: "সাপোর্ট", company: "প্রতিষ্ঠান" },
+    columns: { product: "ফিচারসমূহ", why: "কেন Brikvent", support: "সাপোর্ট", company: "প্রতিষ্ঠান" },
     legalLinks: {
       about: "আমাদের সম্পর্কে",
       terms: "শর্তাবলি",

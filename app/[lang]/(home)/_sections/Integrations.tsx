@@ -8,15 +8,41 @@ import {
   Truck,
   type LucideIcon,
 } from "lucide-react";
+import {
+  siDhl,
+  siFacebook,
+  siFedex,
+  siGoogleads,
+  siGoogleanalytics,
+  siGoogletagmanager,
+  siInstagram,
+  siMastercard,
+  siMessenger,
+  siMeta,
+  siPaypal,
+  siStripe,
+  siTiktok,
+  siUps,
+  siVisa,
+  siWhatsapp,
+  type SimpleIcon,
+} from "simple-icons";
 import Logo from "@/components/logo";
 import type { Dictionary } from "@/dictionaries/en";
 import { fill, localizeDigits } from "@/lib/i18n";
 
-// Each tool shows a small colored monogram in its brand color (letters, not
-// logos, so no trademark artwork is reproduced).
-type Tool = { name: string; mono: string; bg: string; fg?: string };
+// Tools with an icon in Simple Icons (CC0) show the brand's own mark; the
+// rest (mostly Bangladeshi brands) show a monogram in their brand color
+// until official logo files are added.
+type Tool = { name: string; mono: string; bg: string; fg?: string; logos?: SimpleIcon[] };
 
 const tool = (name: string, mono: string, bg: string, fg?: string): Tool => ({ name, mono, bg, fg });
+const branded = (name: string, ...logos: SimpleIcon[]): Tool => ({
+  name,
+  mono: "",
+  bg: "#fff",
+  logos,
+});
 
 // Same order as `integrationGroups` in the dictionary.
 const groups: { icon: LucideIcon; tools: Tool[] }[] = [
@@ -32,9 +58,9 @@ const groups: { icon: LucideIcon; tools: Tool[] }[] = [
       tool("ShurjoPay", "SP", "#f37021"),
       tool("UddoktaPay", "UP", "#1e88e5"),
       tool("EPS", "EPS", "#0e7c3a"),
-      tool("Stripe", "S", "#635bff"),
-      tool("PayPal", "PP", "#003087"),
-      tool("Visa & Mastercard", "V/M", "#1a1f71"),
+      branded("Stripe", siStripe),
+      branded("PayPal", siPaypal),
+      branded("Visa & Mastercard", siVisa, siMastercard),
     ],
   },
   {
@@ -51,30 +77,30 @@ const groups: { icon: LucideIcon; tools: Tool[] }[] = [
   {
     icon: Plane,
     tools: [
-      tool("DHL Express", "DHL", "#ffcc00", "#d40511"),
-      tool("FedEx", "Fx", "#4d148c"),
-      tool("UPS", "UPS", "#351c15", "#ffb500"),
+      branded("DHL Express", siDhl),
+      branded("FedEx", siFedex),
+      branded("UPS", siUps),
       tool("Aramex", "Ax", "#e1261c"),
     ],
   },
   {
     icon: Store,
     tools: [
-      tool("Facebook", "f", "#1877f2"),
-      tool("Instagram", "IG", "#e1306c"),
-      tool("Messenger", "M", "#0084ff"),
-      tool("WhatsApp", "W", "#25d366"),
+      branded("Facebook", siFacebook),
+      branded("Instagram", siInstagram),
+      branded("Messenger", siMessenger),
+      branded("WhatsApp", siWhatsapp),
     ],
   },
   {
     icon: Megaphone,
     tools: [
-      tool("Meta Pixel & CAPI", "∞", "#0866ff"),
-      tool("Meta Ads", "∞", "#0866ff"),
-      tool("Google Ads", "G", "#4285f4"),
-      tool("Google Analytics", "GA", "#f9ab00", "#1c1917"),
-      tool("Google Tag Manager", "GTM", "#246fdb"),
-      tool("TikTok Pixel", "T", "#111111"),
+      branded("Meta Pixel & CAPI", siMeta),
+      branded("Meta Ads", siMeta),
+      branded("Google Ads", siGoogleads),
+      branded("Google Analytics", siGoogleanalytics),
+      branded("Google Tag Manager", siGoogletagmanager),
+      branded("TikTok Pixel", siTiktok),
     ],
   },
   {
@@ -91,25 +117,39 @@ const all = groups.flatMap((g) => g.tools);
 const byName = (name: string) => all.find((t) => t.name === name)!;
 
 // Tools that circle the Brikvent hub, inner ring first.
-const innerRing = ["bKash", "Nagad", "Steadfast", "Pathao", "Facebook", "WhatsApp"].map(byName);
+const innerRing = ["Facebook", "WhatsApp", "Messenger", "Instagram", "Stripe", "PayPal"].map(byName);
 const outerRing = [
-  "Stripe",
-  "PayPal",
   "DHL Express",
+  "bKash",
   "Google Ads",
-  "Instagram",
-  "RedX",
-  "SSLCommerz",
+  "Steadfast",
   "FedEx",
+  "Nagad",
+  "TikTok Pixel",
+  "Pathao",
 ].map(byName);
 
 function Mono({ t, size = "sm" }: { t: Tool; size?: "sm" | "lg" }) {
+  const box = size === "lg" ? "h-8 min-w-8 text-[11px]" : "h-5 min-w-5 text-[8px]";
+  if (t.logos) {
+    const glyph = size === "lg" ? "h-5 w-5" : "h-3.5 w-3.5";
+    return (
+      <span
+        aria-hidden
+        className={`flex shrink-0 items-center justify-center gap-0.5 rounded-md bg-white px-0.5 ring-1 ring-neutral-200 ${box}`}
+      >
+        {t.logos.map((logo) => (
+          <svg key={logo.slug} viewBox="0 0 24 24" className={glyph} fill={`#${logo.hex}`}>
+            <path d={logo.path} />
+          </svg>
+        ))}
+      </span>
+    );
+  }
   return (
     <span
       aria-hidden
-      className={`flex shrink-0 items-center justify-center rounded-md font-bold leading-none tracking-tight ${
-        size === "lg" ? "h-8 w-8 text-[11px]" : "h-5 w-5 text-[8px]"
-      }`}
+      className={`flex shrink-0 items-center justify-center rounded-md px-0.5 font-bold leading-none tracking-tight ${box}`}
       style={{ background: t.bg, color: t.fg ?? "#fff" }}
     >
       {t.mono}

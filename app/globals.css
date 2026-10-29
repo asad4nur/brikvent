@@ -161,6 +161,60 @@ html[lang="bn"] h1 {
   animation: border-spin 6s linear infinite;
 }
 
+/* Dark card with a brand neon edge: a bright arc runs around the border
+   while the outer glow breathes. */
+@keyframes neon-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 22px -6px rgba(204, 255, 0, 0.35),
+      0 0 60px -22px rgba(0, 166, 62, 0.55);
+  }
+  50% {
+    box-shadow:
+      0 0 38px -4px rgba(204, 255, 0, 0.55),
+      0 0 90px -16px rgba(0, 166, 62, 0.75);
+  }
+}
+
+.neon-card {
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(#0a0a0a, #0a0a0a) padding-box,
+    conic-gradient(
+        from var(--border-angle),
+        rgba(204, 255, 0, 0.15) 0deg,
+        #ccff00 70deg,
+        #00a63e 130deg,
+        rgba(0, 166, 62, 0.15) 200deg,
+        rgba(204, 255, 0, 0.15) 360deg
+      )
+      border-box;
+  animation:
+    border-spin 5s linear infinite,
+    neon-pulse 3.2s ease-in-out infinite;
+}
+
+/* Lime light that sweeps across the announcement bar now and then. */
+@keyframes announce-sweep {
+  0%,
+  60% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.announce::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(204, 255, 0, 0.18), transparent);
+  animation: announce-sweep 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
 /* Light sweep across a button on hover. */
 .shine {
   position: relative;
@@ -216,6 +270,8 @@ html[lang="bn"] h1 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .announce::after,
+  .neon-card,
   .orbit,
   .orbit-reverse,
   .drift,

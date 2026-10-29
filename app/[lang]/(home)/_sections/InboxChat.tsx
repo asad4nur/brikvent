@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Boxes, Check, MapPin, SendHorizontal } from "lucide-react";
+import ChannelIcon, { type Channel } from "@/components/channel-icon";
 import ProductArt from "@/components/product-art";
 
 type Message =
@@ -11,7 +12,7 @@ type Message =
   | { from: "system"; kind: "stock" | "order"; text: string };
 
 type Thread = {
-  channel: "Messenger" | "WhatsApp";
+  channel: Extract<Channel, "Messenger" | "WhatsApp">;
   name: string;
   initials: string;
   context: string;
@@ -58,16 +59,27 @@ const threads: Thread[] = [
   },
 ];
 
+// Other open conversations in the list (not animated).
+const otherChats: { name: string; channel: Channel; preview: string }[] = [
+  { name: "Tanvir Ahmed", channel: "Instagram", preview: "সিলেটে ডেলিভারি চার্জ কত?" },
+  { name: "Sadia Islam", channel: "Website", preview: "অর্ডার করলে কতদিনে পাব?" },
+];
+
+const channelLabel: Record<Channel, string> = {
+  Messenger: "Messenger",
+  WhatsApp: "WhatsApp",
+  Instagram: "Instagram",
+  Website: "Website live chat",
+};
+
 const styles = {
   Messenger: {
-    dot: "bg-blue-500",
     chip: "bg-blue-50 text-blue-600",
     canvas: "bg-white",
     seller: "bg-gradient-to-br from-blue-500 to-violet-500 text-white",
     customer: "bg-neutral-100 text-neutral-900",
   },
   WhatsApp: {
-    dot: "bg-green-500",
     chip: "bg-green-50 text-green-700",
     canvas: "bg-[#efeae2]",
     seller: "bg-[#d9fdd3] text-neutral-900",
@@ -112,42 +124,24 @@ export default function InboxChat({ summary }: { summary: string }) {
       <p className="sr-only">{summary}</p>
 
       {/* Conversation list */}
-      <ul className="hidden space-y-2 sm:block" aria-hidden>
+      <ul className="hidden space-y-2 overflow-hidden sm:block" aria-hidden>
         {threads.map((th, i) => {
           const active = i === thread;
-          const st = styles[th.channel];
           const last = active && visible.length ? visible[visible.length - 1] : th.messages[0];
           return (
-            <li
+            <ChatRow
               key={th.name}
-              className={`rounded-2xl border p-3 transition-colors duration-300 ${
-                active ? "border-brand/40 bg-white shadow-sm" : "border-neutral-200 bg-white/60"
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <span className={`h-2 w-2 shrink-0 rounded-full ${st.dot}`} />
-                <span className="truncate text-xs font-semibold text-neutral-950">{th.name}</span>
-                {!active && (
-                  <span className="ml-auto rounded-full bg-brand px-1.5 text-[10px] font-bold text-white">
-                    1
-                  </span>
-                )}
-              </div>
-              <p className="mt-1 truncate text-[11px] text-neutral-500">
-                {last.kind === "image" ? "📷 ছবি" : last.kind === "location" ? "📍 লোকেশন" : last.text}
-              </p>
-              <p className="mt-1 text-[10px] font-medium text-neutral-400">{th.channel}</p>
-            </li>
+              name={th.name}
+              channel={th.channel}
+              active={active}
+              unread={!active}
+              preview={last.kind === "image" ? "📷 ছবি" : last.kind === "location" ? "📍 লোকেশন" : last.text}
+            />
           );
         })}
-        <li className="rounded-2xl border border-neutral-200 bg-white/60 p-3">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 shrink-0 rounded-full bg-pink-500" />
-            <span className="truncate text-xs font-semibold text-neutral-950">Tanvir Ahmed</span>
-          </div>
-          <p className="mt-1 truncate text-[11px] text-neutral-500">সিলেটে ডেলিভারি চার্জ কত?</p>
-          <p className="mt-1 text-[10px] font-medium text-neutral-400">Instagram</p>
-        </li>
+        {otherChats.map((c) => (
+          <ChatRow key={c.name} name={c.name} channel={c.channel} preview={c.preview} />
+        ))}
       </ul>
 
       {/* Chat */}
@@ -164,7 +158,8 @@ export default function InboxChat({ summary }: { summary: string }) {
             <p className="truncate text-[13px] font-semibold text-neutral-950">{t.name}</p>
             <p className="truncate text-[11px] text-neutral-500">{t.context}</p>
           </div>
-          <span className={`ml-auto shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${s.chip}`}>
+          <span className={`ml-auto flex shrink-0 items-center gap-1.5 rounded-full py-0.5 pl-0.5 pr-2 text-[10px] font-semibold ${s.chip}`}>
+            <ChannelIcon channel={t.channel} size="sm" />
             {t.channel}
           </span>
         </div>
@@ -204,6 +199,38 @@ export default function InboxChat({ summary }: { summary: string }) {
         </div>
       </div>
     </div>
+  );
+}
+
+function ChatRow({
+  name,
+  channel,
+  preview,
+  active = false,
+  unread = false,
+}: {
+  name: string;
+  channel: Channel;
+  preview: string;
+  active?: boolean;
+  unread?: boolean;
+}) {
+  return (
+    <li
+      className={`rounded-2xl border p-2.5 transition-colors duration-300 ${
+        active ? "border-brand/40 bg-white shadow-sm" : "border-neutral-200 bg-white/60"
+      }`}
+    >
+      <div className="flex items-center gap-2">
+        <ChannelIcon channel={channel} size="sm" />
+        <span className="truncate text-xs font-semibold text-neutral-950">{name}</span>
+        {unread && (
+          <span className="ml-auto rounded-full bg-brand px-1.5 text-[10px] font-bold text-white">1</span>
+        )}
+      </div>
+      <p className="mt-1 truncate text-[11px] text-neutral-500">{preview}</p>
+      <p className="mt-0.5 text-[10px] font-medium text-neutral-400">{channelLabel[channel]}</p>
+    </li>
   );
 }
 

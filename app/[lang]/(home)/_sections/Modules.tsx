@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
 import Backdrop from "@/components/backdrop";
+import ChannelIcon, { type Channel } from "@/components/channel-icon";
 import ProductArt, { type ProductLook } from "@/components/product-art";
 
 // Staggers the .rise entrance animation inside each mock.
@@ -376,20 +377,21 @@ function OrdersMock() {
 }
 
 function InboxMock() {
-  const chats = [
-    ["Nusrat J.", "WhatsApp", "bg-green-500", "Is this available in black?"],
-    ["Tanvir A.", "Messenger", "bg-blue-500", "Delivery charge to Sylhet?"],
-    ["Mim's Closet", "Instagram", "bg-pink-500", "Can I get 3 pieces?"],
+  const chats: [string, Channel, string][] = [
+    ["Nusrat J.", "WhatsApp", "Is this available in black?"],
+    ["Tanvir A.", "Messenger", "Delivery charge to Sylhet?"],
+    ["Mim's Closet", "Instagram", "Can I get 3 pieces?"],
+    ["Sadia I.", "Website", "How soon is delivery?"],
   ];
   return (
     <div className="grid gap-3 sm:grid-cols-[0.9fr_1.1fr]">
       <div className="space-y-2">
-        {chats.map(([name, ch, dot, msg], i) => (
+        {chats.map(([name, ch, msg], i) => (
           <Card key={name} className={`rise py-3 ${i === 0 ? "border-brand/40" : ""}`} style={delay(i * 100)}>
             <div className="flex items-center gap-2">
-              <span className={`h-2 w-2 rounded-full ${dot}`} />
+              <ChannelIcon channel={ch} size="sm" />
               <span className="text-xs font-semibold text-neutral-950">{name}</span>
-              <span className="ml-auto text-[10px] text-neutral-400">{ch}</span>
+              <span className="ml-auto text-[10px] text-neutral-400">{ch === "Website" ? "Live chat" : ch}</span>
             </div>
             <p className="mt-1 truncate text-xs text-neutral-500">{msg}</p>
           </Card>

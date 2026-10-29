@@ -30,7 +30,7 @@ function WithCompany({ template }: { template: string }) {
   return (
     <>
       {before}
-      <span className="font-semibold text-neutral-950">{company.parent}</span>
+      <span className="font-semibold text-white">{company.parent}</span>
       {after}
     </>
   );
@@ -76,15 +76,22 @@ export default function Footer({
   const c = t.contact;
 
   return (
-    <footer className="border-t border-neutral-200 bg-white">
+    <footer className="relative isolate overflow-hidden bg-gradient-to-b from-[#071a0e] via-[#06140b] to-[#030a06] text-neutral-300">
+      {/* Neon top edge, brand grid and glows */}
+      <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-lime to-transparent opacity-70" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_right,#ccff000a_1px,transparent_1px),linear-gradient(to_bottom,#ccff000a_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(70%_60%_at_50%_0%,black,transparent)]" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="drift absolute -left-32 -top-24 h-96 w-96 rounded-full bg-brand/25 blur-3xl" />
+        <div className="drift-reverse absolute -right-24 top-1/3 h-[28rem] w-[28rem] rounded-full bg-lime/10 blur-3xl" />
+      </div>
       <div className="mx-auto grid max-w-[1440px] gap-12 px-4 pb-10 pt-14 sm:px-6 lg:grid-cols-[1.2fr_2fr] lg:px-8 lg:pb-12 lg:pt-20 xl:px-12 min-[90rem]:px-20">
         <div>
           <Link href={home} aria-label="Brikvent home" className="inline-block">
-            <Logo className="h-10 w-auto" />
+            <Logo tone="dark" className="h-10 w-auto" />
           </Link>
-          <p className="mt-5 max-w-sm text-sm leading-relaxed text-neutral-600">{t.description}</p>
-          <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1.5 text-xs text-neutral-600">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+          <p className="mt-5 max-w-sm text-sm leading-relaxed text-neutral-400">{t.description}</p>
+          <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-neutral-300">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime" />
             <span>
               <WithCompany template={t.productOf} />
             </span>
@@ -98,7 +105,7 @@ export default function Footer({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.name}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-600 transition-colors hover:border-brand hover:bg-brand hover:text-white"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-neutral-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-lime hover:bg-lime hover:text-neutral-950 hover:shadow-[0_0_24px_-4px_rgba(204,255,0,0.7)]"
                 >
                   <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden>
                     <path d={socialIcons[s.name]} fillRule="evenodd" />
@@ -112,13 +119,13 @@ export default function Footer({
         <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-3">
           {columns.map((col) => (
             <div key={col.title}>
-              <p className="text-sm font-semibold text-neutral-950">{col.title}</p>
+              <p className="text-sm font-semibold text-white">{col.title}</p>
               <ul className="mt-4 space-y-3">
                 {col.links.map((l) => (
                   <li key={l.href}>
                     <Link
                       href={l.href}
-                      className="text-sm text-neutral-600 transition-colors hover:text-neutral-950"
+                      className="text-sm text-neutral-400 transition-colors hover:text-lime"
                     >
                       {l.name}
                     </Link>
@@ -132,15 +139,15 @@ export default function Footer({
 
       {/* Business details required for payment gateway verification */}
       <div className="mx-auto max-w-[1440px] px-4 pb-12 sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
-        <address className="grid gap-3 rounded-3xl border border-neutral-200 bg-neutral-50 p-4 not-italic sm:grid-cols-2 sm:p-5 lg:grid-cols-[1.6fr_1fr_1fr_1.2fr]">
+        <address className="grid gap-3 rounded-3xl border border-white/10 bg-white/[0.03] p-4 not-italic backdrop-blur sm:grid-cols-2 sm:p-5 lg:grid-cols-[1.6fr_1fr_1fr_1.2fr]">
           {[
             { icon: MapPin, label: c.address, value: company.address[lang] },
             { icon: Phone, label: c.phone, value: company.phone, href: company.phoneHref },
             { icon: Mail, label: c.email, value: company.email, href: `mailto:${company.email}` },
             { icon: FileBadge, label: c.license, value: company.tradeLicense },
           ].map(({ icon: Icon, label, value, href }) => (
-            <div key={label} className="flex items-start gap-3 rounded-2xl bg-white p-3.5 ring-1 ring-neutral-200/70">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-lime/30 text-brand-dark">
+            <div key={label} className="flex items-start gap-3 rounded-2xl bg-white/[0.04] p-3.5 ring-1 ring-white/10 transition-colors hover:ring-lime/40">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-lime/15 text-lime">
                 <Icon size={17} strokeWidth={2} aria-hidden />
               </span>
               <span className="min-w-0">
@@ -148,11 +155,11 @@ export default function Footer({
                   {label}
                 </span>
                 {href ? (
-                  <a href={href} className="mt-0.5 block break-words text-sm font-medium text-neutral-900 hover:text-brand-dark">
+                  <a href={href} className="mt-0.5 block break-words text-sm font-medium text-white hover:text-lime">
                     {value}
                   </a>
                 ) : (
-                  <span className="mt-0.5 block break-words text-sm font-medium text-neutral-900">{value}</span>
+                  <span className="mt-0.5 block break-words text-sm font-medium text-white">{value}</span>
                 )}
               </span>
             </div>
@@ -160,21 +167,21 @@ export default function Footer({
         </address>
       </div>
 
-      <div className="border-t border-neutral-200">
+      <div className="relative border-t border-white/10">
         <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-4 py-6 text-xs text-neutral-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
           <p>
             {copyBefore}
-            <span className="font-medium text-neutral-700">{company.parent}</span>
+            <span className="font-medium text-neutral-200">{company.parent}</span>
             {copyAfter}
           </p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <Link href={`${home}/terms`} className="hover:text-neutral-900">
+            <Link href={`${home}/terms`} className="transition-colors hover:text-lime">
               {t.legalLinks.terms}
             </Link>
-            <Link href={`${home}/privacy-policy`} className="hover:text-neutral-900">
+            <Link href={`${home}/privacy-policy`} className="transition-colors hover:text-lime">
               {t.privacy}
             </Link>
-            <Link href={`${home}/refund-policy`} className="hover:text-neutral-900">
+            <Link href={`${home}/refund-policy`} className="transition-colors hover:text-lime">
               {t.legalLinks.refund}
             </Link>
           </div>

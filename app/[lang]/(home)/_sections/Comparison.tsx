@@ -55,7 +55,7 @@ export default function Comparison({
             </p>
           </div>
 
-          <div className="relative overflow-hidden rounded-3xl bg-neutral-950 p-6 text-white sm:p-8">
+          <div className="neon-card relative overflow-hidden rounded-3xl p-6 text-white sm:p-8">
             <div
               aria-hidden
               className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-lime/20 blur-3xl"
