@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import type { Dictionary } from "@/dictionaries/en";
+import Backdrop from "@/components/backdrop";
 import ProductArt from "@/components/product-art";
 import InboxChat from "./InboxChat";
 import {
@@ -63,10 +64,17 @@ export default function OrderJourney({ t }: { t: Dictionary["journey"] }) {
   return (
     <section
       id="how-it-works"
-      className="relative bg-white py-20 sm:py-24 lg:py-28"
+      className="relative isolate bg-white py-20 sm:py-24 lg:py-28"
     >
+      <Backdrop
+        pattern="grid"
+        glows={[
+          { color: "lime", className: "right-[8%] top-[30%] h-[30rem] w-[30rem]" },
+          { color: "mint", className: "-left-24 bottom-[15%] h-80 w-80", reverse: true },
+        ]}
+      />
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
-        <div className="reveal mx-auto max-w-2xl text-center">
+        <div className="reveal-group mx-auto max-w-2xl text-center">
           <p className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600">
             <span className="h-1.5 w-1.5 rounded-full bg-brand" />
             {t.eyebrow}

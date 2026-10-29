@@ -2,6 +2,7 @@ import { Check, Sparkles, X } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
 import { fill, localizeDigits } from "@/lib/i18n";
 import { costComparison } from "@/lib/pricing";
+import Backdrop from "@/components/backdrop";
 import CostBars from "./CostBars";
 
 const cheapest = costComparison.find((r) => r.ours)!;
@@ -17,9 +18,15 @@ export default function Comparison({
   numberLocale: string;
 }) {
   return (
-    <section className="bg-white py-20 sm:py-24 lg:py-28">
+    <section className="relative isolate bg-white py-20 sm:py-24 lg:py-28">
+      <Backdrop
+        glows={[
+          { color: "mint", className: "-left-32 top-1/3 h-96 w-96" },
+          { color: "lime", className: "-right-24 bottom-32 h-[28rem] w-[28rem]", reverse: true },
+        ]}
+      />
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
-        <div className="reveal mx-auto max-w-2xl text-center">
+        <div className="reveal-group mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-semibold leading-[1.1] tracking-[-0.02em] text-neutral-950 sm:text-5xl">
             {t.title}
           </h2>
@@ -28,7 +35,7 @@ export default function Comparison({
           </p>
         </div>
 
-        <div className="reveal mx-auto mt-12 grid max-w-5xl gap-4 lg:mt-16 lg:grid-cols-2">
+        <div className="reveal-group mx-auto mt-12 grid max-w-5xl gap-4 lg:mt-16 lg:grid-cols-2">
           <div className="rounded-3xl border border-neutral-200 bg-neutral-50 p-6 sm:p-8">
             <p className="text-sm font-semibold uppercase tracking-wider text-neutral-500">
               {t.beforeLabel}
@@ -83,7 +90,7 @@ export default function Comparison({
             </p>
           </div>
 
-          <div className="mt-10 grid gap-4 md:grid-cols-[1.15fr_1fr]">
+          <div className="reveal-group mt-10 grid gap-4 md:grid-cols-[1.15fr_1fr]">
             <div className="relative overflow-hidden rounded-3xl border-2 border-brand bg-gradient-to-br from-lime/25 via-white to-white p-6 sm:p-8">
               <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-brand-dark">
                 <Sparkles size={15} strokeWidth={2.25} aria-hidden />

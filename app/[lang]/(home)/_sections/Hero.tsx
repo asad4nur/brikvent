@@ -16,10 +16,17 @@ const integrations = [
   "Rocket",
   "SSLCommerz",
   "PayStation",
+  "ShurjoPay",
+  "UddoktaPay",
+  "EPS",
   "Stripe",
   "PayPal",
   "Steadfast",
   "Pathao",
+  "RedX",
+  "Carrybee",
+  "Paperfly",
+  "eCourier",
   "DHL Express",
   "FedEx",
   "UPS",
@@ -47,6 +54,11 @@ export default function Hero({ t, numberLocale }: { t: Dictionary["hero"]; numbe
         aria-hidden
         className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#0a0a0a0a_1px,transparent_1px),linear-gradient(to_bottom,#0a0a0a0a_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(70%_60%_at_50%_30%,black,transparent)]"
       />
+      {/* Slowly drifting brand glows */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="drift absolute right-[6%] top-[12%] h-[26rem] w-[26rem] rounded-full bg-lime/35 blur-3xl" />
+        <div className="drift-reverse absolute -left-24 top-1/2 h-80 w-80 rounded-full bg-brand/15 blur-3xl" />
+      </div>
 
       <div className="mx-auto grid max-w-[1440px] items-center gap-12 px-4 pb-16 pt-12 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:px-8 lg:pb-24 lg:pt-20 xl:px-12 min-[90rem]:px-20">
         <div>
@@ -101,7 +113,7 @@ export default function Hero({ t, numberLocale }: { t: Dictionary["hero"]; numbe
           >
             <Link
               href="#signup"
-              className="group inline-flex items-center justify-center gap-2 rounded-full bg-neutral-950 py-3 pl-6 pr-3 text-[15px] font-semibold text-white transition-colors hover:bg-neutral-800"
+              className="shine group inline-flex items-center justify-center gap-2 rounded-full bg-neutral-950 py-3 pl-6 pr-3 text-[15px] font-semibold text-white transition-colors hover:bg-neutral-800"
             >
               {t.trial}
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-lime text-neutral-950 transition-transform group-hover:translate-x-0.5">

@@ -10,37 +10,39 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
+import Backdrop from "@/components/backdrop";
+import Integrations from "./Integrations";
 
-// Icons per feature; titles and descriptions come from the dictionary.
-const featureIcons: LucideIcon[] = [
-  PhoneCall,
-  ShieldCheck,
-  Banknote,
-  ShoppingCart,
-  Building2,
-  Printer,
-  Globe,
-  UsersRound,
+// Icon and accent color per feature; titles and descriptions come from the dictionary.
+const featureStyles: { icon: LucideIcon; tile: string; blob: string; hover: string }[] = [
+  { icon: PhoneCall, tile: "from-emerald-400 to-emerald-600", blob: "bg-emerald-200", hover: "hover:border-emerald-300" },
+  { icon: ShieldCheck, tile: "from-rose-400 to-rose-600", blob: "bg-rose-200", hover: "hover:border-rose-300" },
+  { icon: Banknote, tile: "from-pink-500 to-fuchsia-600", blob: "bg-pink-200", hover: "hover:border-pink-300" },
+  { icon: ShoppingCart, tile: "from-amber-400 to-orange-500", blob: "bg-amber-200", hover: "hover:border-amber-300" },
+  { icon: Building2, tile: "from-sky-400 to-blue-600", blob: "bg-sky-200", hover: "hover:border-sky-300" },
+  { icon: Printer, tile: "from-violet-400 to-purple-600", blob: "bg-violet-200", hover: "hover:border-violet-300" },
+  { icon: Globe, tile: "from-teal-400 to-cyan-600", blob: "bg-teal-200", hover: "hover:border-teal-300" },
+  { icon: UsersRound, tile: "from-lime-400 to-green-600", blob: "bg-lime-200", hover: "hover:border-lime-300" },
 ];
 
-// Brand names, grouped in the same order as `integrationGroups` in the dictionary.
-const integrations: string[][] = [
-  ["bKash", "Nagad", "Rocket", "Upay", "SSLCommerz", "PayStation", "Stripe", "PayPal", "Visa & Mastercard"],
-  ["Steadfast", "Pathao"],
-  ["DHL Express", "FedEx", "UPS", "Aramex"],
-  ["Facebook", "Instagram", "Messenger", "WhatsApp"],
-  ["Meta Pixel & CAPI", "Meta Ads", "Google Ads", "Google Analytics", "Google Tag Manager", "TikTok Pixel"],
-  ["SMS gateway", "Email (SMTP)", "Voice call (IVR)"],
-];
-
-export default function LocalFeatures({ t }: { t: Dictionary["local"] }) {
+export default function LocalFeatures({
+  t,
+  numberLocale,
+}: {
+  t: Dictionary["local"];
+  numberLocale: string;
+}) {
   return (
     <section
       id="solutions"
-      className="bg-white py-20 sm:py-24 lg:py-28"
+      className="relative isolate bg-white py-20 sm:py-24 lg:py-28"
     >
+      <Backdrop
+        pattern="dots"
+        glows={[{ color: "lime", className: "-right-24 -top-10 h-96 w-96" }]}
+      />
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
-        <div className="reveal grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-end">
+        <div className="reveal-group grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-end">
           <div>
             <p className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600">
               <span className="h-1.5 w-1.5 rounded-full bg-brand" />
@@ -55,54 +57,34 @@ export default function LocalFeatures({ t }: { t: Dictionary["local"] }) {
           </p>
         </div>
 
-        <ul className="reveal mt-12 grid gap-px overflow-hidden rounded-3xl border border-neutral-200 bg-neutral-200 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
+        <ul className="reveal-group mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
           {t.features.map((f, i) => {
-            const Icon = featureIcons[i];
+            const { icon: Icon, tile, blob, hover } = featureStyles[i];
             return (
-            <li key={f.title} className="group bg-white p-6 transition-colors hover:bg-neutral-50 sm:p-7">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-100 text-neutral-700 transition-colors group-hover:bg-gradient-to-br group-hover:from-lime group-hover:to-brand group-hover:text-neutral-950">
-                <Icon size={19} strokeWidth={1.9} aria-hidden />
-              </span>
-              <h3 className="mt-5 text-base font-semibold tracking-tight text-neutral-950">
-                {f.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-600">{f.body}</p>
-            </li>
+              <li
+                key={f.title}
+                className={`group relative overflow-hidden rounded-3xl border border-neutral-200 bg-white p-6 transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_28px_60px_-34px_rgba(10,10,10,0.45)] sm:p-7 ${hover}`}
+              >
+                {/* Soft colored blob that grows on hover */}
+                <span
+                  aria-hidden
+                  className={`absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-50 blur-2xl transition-transform duration-700 group-hover:scale-[1.8] ${blob}`}
+                />
+                <span
+                  className={`relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-lg transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110 ${tile}`}
+                >
+                  <Icon size={21} strokeWidth={2} aria-hidden />
+                </span>
+                <h3 className="relative mt-5 text-base font-semibold tracking-tight text-neutral-950">
+                  {f.title}
+                </h3>
+                <p className="relative mt-2 text-sm leading-relaxed text-neutral-600">{f.body}</p>
+              </li>
             );
           })}
         </ul>
 
-        {/* Integrations */}
-        <div
-          id="integrations"
-          className="reveal mt-16 rounded-3xl border border-neutral-200 bg-neutral-50 p-6 sm:p-8 lg:mt-20 lg:p-10"
-        >
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <h3 className="text-xl font-semibold tracking-tight text-neutral-950 sm:text-2xl">
-              {t.integrationsTitle}
-            </h3>
-            <p className="text-sm text-neutral-500">{t.integrationsNote}</p>
-          </div>
-          <dl className="mt-8 grid gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
-            {integrations.map((items, i) => (
-              <div key={t.integrationGroups[i]}>
-                <dt className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                  {t.integrationGroups[i]}
-                </dt>
-                <dd className="mt-3 flex flex-wrap gap-2">
-                  {items.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-[13px] font-medium text-neutral-800"
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+        <Integrations t={t} numberLocale={numberLocale} />
       </div>
     </section>
   );

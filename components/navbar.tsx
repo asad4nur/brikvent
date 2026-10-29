@@ -261,7 +261,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
           </Link>
           <Link
             href={`${home}#signup`}
-            className="group inline-flex items-center gap-2 rounded-full bg-neutral-950 py-2 pl-5 pr-2 text-sm font-semibold text-white transition-colors hover:bg-neutral-800"
+            className="shine group inline-flex items-center gap-2 rounded-full bg-neutral-950 py-2 pl-5 pr-2 text-sm font-semibold text-white transition-colors hover:bg-neutral-800"
           >
             {t.trial}
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#CCFF00] text-neutral-950 transition-transform group-hover:translate-x-0.5">

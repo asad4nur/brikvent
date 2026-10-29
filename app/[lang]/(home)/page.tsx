@@ -21,7 +21,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       <PainPoints t={t.painPoints} />
       <OrderJourney t={t.journey} />
       <Modules t={t.modules} />
-      <LocalFeatures t={t.local} />
+      <LocalFeatures t={t.local} numberLocale={t.formats.number} />
       <Pricing t={{ ...t.pricing, numberLocale: t.formats.number }} />
       <Comparison t={t.comparison} numberLocale={t.formats.number} />
       <Faq t={t.faq} />

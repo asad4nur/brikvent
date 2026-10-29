@@ -14,6 +14,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
+import Backdrop from "@/components/backdrop";
 import ProductArt, { type ProductLook } from "@/components/product-art";
 
 // Staggers the .rise entrance animation inside each mock.
@@ -73,20 +74,27 @@ export default function Modules({ t }: { t: Dictionary["modules"] }) {
   return (
     <section
       id="platform"
-      className="bg-neutral-50 py-20 sm:py-24 lg:py-28"
+      className="relative isolate bg-gradient-to-b from-[#f1fae6] via-[#f7fcf2] to-white py-20 sm:py-24 lg:py-28"
     >
+      <Backdrop
+        pattern="dots"
+        glows={[
+          { color: "green", className: "-left-24 top-0 h-96 w-96" },
+          { color: "lime", className: "-right-32 top-1/3 h-[32rem] w-[32rem]", reverse: true },
+        ]}
+      />
       {/* Scroll targets for each module's #anchor. */}
       {moduleMeta.map((mod) => (
         <span key={mod.id} id={mod.id} aria-hidden className="block" />
       ))}
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
-        <div className="reveal mx-auto max-w-2xl text-center">
+        <div className="reveal-group mx-auto max-w-2xl text-center">
           <p className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600">
             <span className="h-1.5 w-1.5 rounded-full bg-brand" />
             {t.eyebrow}
           </p>
           <h2 className="mt-5 text-3xl font-semibold leading-[1.1] tracking-[-0.02em] text-neutral-950 sm:text-5xl">
-            {t.title} <span className="text-neutral-400">{t.titleMuted}</span>
+            {t.title} <span className="text-brand-gradient">{t.titleMuted}</span>
           </h2>
           <p className="mt-5 text-base leading-relaxed text-neutral-600 sm:text-lg">
             {t.body}

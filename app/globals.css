@@ -105,6 +105,97 @@ html[lang="bn"] h1 {
   animation: ping-soft 1.2s ease-out infinite;
 }
 
+/* ---------- Brand surface effects ---------- */
+
+/* Green-to-leaf gradient for highlighted words in headings. */
+.text-brand-gradient {
+  background-image: linear-gradient(100deg, #00a63e 10%, #4cbb17 55%, #8acb00 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Faint brand dot pattern for section backdrops. */
+.bg-dots {
+  background-image: radial-gradient(rgba(0, 166, 62, 0.16) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+}
+
+/* Slow floating motion for the blurred glows behind sections. */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(30px, -24px, 0) scale(1.08);
+  }
+}
+
+.drift {
+  animation: drift 14s ease-in-out infinite;
+}
+
+.drift-reverse {
+  animation: drift 18s ease-in-out infinite reverse;
+}
+
+/* Rotating lime-to-green border, used on the most popular plan. */
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes border-spin {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+.glow-border {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    conic-gradient(from var(--border-angle), #ccff00, #00a63e, #0a0a0a, #00a63e, #ccff00) border-box;
+  animation: border-spin 6s linear infinite;
+}
+
+/* Light sweep across a button on hover. */
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%) skewX(-20deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+
+.shine:hover::after {
+  transform: translateX(120%) skewX(-20deg);
+}
+
+/* Integrations orbit: rings turn slowly, bubbles counter-turn to stay upright. */
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.orbit {
+  animation: orbit 60s linear infinite;
+}
+
+.orbit-reverse {
+  animation: orbit 60s linear infinite reverse;
+}
+
 /* Endless integrations strip: the track holds the list twice and slides
    by half its width, then repeats. Hover pauses it. */
 @keyframes marquee {
@@ -125,6 +216,11 @@ html[lang="bn"] h1 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .orbit,
+  .orbit-reverse,
+  .drift,
+  .drift-reverse,
+  .glow-border,
   .marquee,
   .rise,
   .flow-line,

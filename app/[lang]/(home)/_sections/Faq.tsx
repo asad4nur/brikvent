@@ -1,14 +1,16 @@
 import { Plus } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
+import Backdrop from "@/components/backdrop";
 
 export default function Faq({ t }: { t: Dictionary["faq"] }) {
   return (
     <section
       id="faq"
-      className="bg-neutral-50 py-20 sm:py-24 lg:py-28"
+      className="relative isolate bg-gradient-to-b from-white to-[#f3fbe8] py-20 sm:py-24 lg:py-28"
     >
+      <Backdrop pattern="dots" glows={[{ color: "green", className: "-right-24 top-10 h-80 w-80" }]} />
       <div className="mx-auto grid max-w-[1440px] gap-10 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:px-8 xl:px-12 min-[90rem]:px-20">
-        <div className="reveal">
+        <div className="reveal-group">
           <p className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600">
             <span className="h-1.5 w-1.5 rounded-full bg-brand" />
             {t.eyebrow}
@@ -21,7 +23,7 @@ export default function Faq({ t }: { t: Dictionary["faq"] }) {
           </p>
         </div>
 
-        <div className="reveal divide-y divide-neutral-200 rounded-3xl border border-neutral-200 bg-white">
+        <div className="reveal-group divide-y divide-neutral-200 rounded-3xl border border-neutral-200 bg-white">
           {t.items.map((f, i) => (
             <details key={f.q} className="group px-5 sm:px-7" open={i === 0}>
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left text-base font-semibold text-neutral-950 [&::-webkit-details-marker]:hidden">

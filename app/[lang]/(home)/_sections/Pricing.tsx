@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, ChevronDown, Minus } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
+import Backdrop from "@/components/backdrop";
 import { fill } from "@/lib/i18n";
 import {
   featureTable,
@@ -45,15 +46,24 @@ export default function Pricing({ t }: { t: T }) {
   const { number, taka } = formatters(t.numberLocale);
 
   return (
-    <section id="pricing" className="bg-neutral-50 py-20 sm:py-24 lg:py-28">
+    <section
+      id="pricing"
+      className="relative isolate bg-gradient-to-b from-white via-[#f2fbe7] to-white py-20 sm:py-24 lg:py-28"
+    >
+      <Backdrop
+        glows={[
+          { color: "lime", className: "left-1/2 top-40 h-[34rem] w-[46rem] -translate-x-1/2" },
+          { color: "green", className: "-left-24 bottom-24 h-80 w-80", reverse: true },
+        ]}
+      />
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
-        <div className="reveal mx-auto max-w-2xl text-center">
+        <div className="reveal-group mx-auto max-w-2xl text-center">
           <p className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600">
             <span className="h-1.5 w-1.5 rounded-full bg-brand" />
             {t.eyebrow}
           </p>
           <h2 className="mt-5 text-3xl font-semibold leading-[1.1] tracking-[-0.02em] text-neutral-950 sm:text-5xl">
-            {t.title} <span className="text-neutral-400">{t.titleMuted}</span>
+            {t.title} <span className="text-brand-gradient">{t.titleMuted}</span>
           </h2>
           <p className="mt-5 text-base leading-relaxed text-neutral-600 sm:text-lg">{t.body}</p>
 
@@ -95,7 +105,7 @@ export default function Pricing({ t }: { t: T }) {
         </div>
 
         {/* Plan cards */}
-        <div className="reveal mt-12 grid gap-4 md:grid-cols-2 lg:mt-14 xl:grid-cols-4">
+        <div className="reveal-group mt-12 grid gap-4 md:grid-cols-2 lg:mt-14 xl:grid-cols-4">
           {plans.map((plan) => (
             <PlanCard key={plan.id} plan={plan} yearly={yearly} t={t} />
           ))}
@@ -436,10 +446,10 @@ function PlanCard({ plan, yearly, t }: { plan: Plan; yearly: boolean; t: T }) {
 
   return (
     <div
-      className={`relative flex flex-col rounded-3xl border bg-white p-6 sm:p-7 ${
+      className={`relative flex flex-col rounded-3xl p-6 transition-[transform,box-shadow] duration-500 hover:-translate-y-1.5 sm:p-7 ${
         plan.popular
-          ? "border-neutral-950 shadow-[0_30px_70px_-30px_rgba(10,10,10,0.45)] ring-1 ring-neutral-950"
-          : "border-neutral-200"
+          ? "glow-border shadow-[0_30px_70px_-30px_rgba(0,166,62,0.55)]"
+          : "border border-neutral-200 bg-white hover:shadow-[0_24px_60px_-30px_rgba(10,10,10,0.3)]"
       }`}
     >
       {plan.popular && (

@@ -14,6 +14,8 @@ export default function FinalCta({ t, numberLocale }: { t: Dictionary["cta"]; nu
           aria-hidden
           className="absolute inset-0 bg-[linear-gradient(to_right,#0a0a0a10_1px,transparent_1px),linear-gradient(to_bottom,#0a0a0a10_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(60%_70%_at_50%_50%,black,transparent)]"
         />
+        <div aria-hidden className="drift absolute -left-16 -top-20 h-72 w-72 rounded-full bg-white/40 blur-3xl" />
+        <div aria-hidden className="drift-reverse absolute -bottom-24 -right-10 h-80 w-80 rounded-full bg-[#00702a]/40 blur-3xl" />
         <div className="relative mx-auto max-w-2xl">
           <h2 className="text-3xl font-semibold leading-[1.05] tracking-[-0.03em] text-neutral-950 sm:text-6xl">
             {t.title}
@@ -24,7 +26,7 @@ export default function FinalCta({ t, numberLocale }: { t: Dictionary["cta"]; nu
           <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
               href="#signup"
-              className="group inline-flex items-center justify-center gap-2 rounded-full bg-neutral-950 py-3.5 pl-7 pr-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-neutral-800"
+              className="shine group inline-flex items-center justify-center gap-2 rounded-full bg-neutral-950 py-3.5 pl-7 pr-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-neutral-800"
             >
               {t.trial}
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-lime text-neutral-950 transition-transform group-hover:translate-x-0.5">
