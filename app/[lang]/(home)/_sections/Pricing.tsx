@@ -429,6 +429,7 @@ function FeatureGroup({ group, t }: { group: (typeof featureTable)[number]; t: T
 }
 
 function PlanCard({ plan, yearly, t }: { plan: Plan; yearly: boolean; t: T }) {
+  const lang = t.numberLocale.startsWith("bn") ? "bn" : "en";
   const l = plan.limits;
   const k = t.card;
   const { number, taka } = formatters(t.numberLocale);
@@ -479,7 +480,7 @@ function PlanCard({ plan, yearly, t }: { plan: Plan; yearly: boolean; t: T }) {
       </div>
 
       <Link
-        href={plan.trial === "demo-call" ? "#demo" : "#signup"}
+        href={plan.trial === "demo-call" ? "#demo" : `/${lang}/signup`}
         className={`group mt-6 inline-flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-colors ${
           plan.popular
             ? "bg-neutral-950 text-white hover:bg-neutral-800"

@@ -43,6 +43,7 @@ const integrations = [
 ];
 
 export default function Hero({ t, numberLocale }: { t: Dictionary["hero"]; numberLocale: string }) {
+  const lang = numberLocale.startsWith("bn") ? "bn" : "en";
   return (
     <section className="relative isolate overflow-hidden">
       {/* Soft brand glow + grid backdrop */}
@@ -112,7 +113,7 @@ export default function Hero({ t, numberLocale }: { t: Dictionary["hero"]; numbe
             style={delay(280)}
           >
             <Link
-              href="#signup"
+              href={`/${lang}/signup`}
               className="shine group inline-flex items-center justify-center gap-2 rounded-full bg-neutral-950 py-3 pl-6 pr-3 text-[15px] font-semibold text-white transition-colors hover:bg-neutral-800"
             >
               {t.trial}

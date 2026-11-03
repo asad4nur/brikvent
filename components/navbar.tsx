@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
 import type { Locale } from "@/lib/i18n";
+import { getMerchantAdminUrl } from "@/lib/config";
 import Logo from "./logo";
 
 type Product = {
@@ -252,12 +253,12 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
             <Languages size={15} strokeWidth={2} aria-hidden className="text-brand" />
             {t.switchLanguage}
           </Link>
-          <Link
-            href={`${home}#login`}
+          <a
+            href={getMerchantAdminUrl()}
             className="rounded-full px-4 py-2 text-sm font-medium min-[90rem]:text-[15px] text-neutral-700 transition-colors hover:text-neutral-950"
           >
             {t.login}
-          </Link>
+          </a>
           <Link
             href={`${home}#demo`}
             className="hidden rounded-full border border-neutral-200 bg-white/70 px-4 py-2 text-sm font-medium text-neutral-900 transition-colors hover:border-brand/40 hover:bg-white xl:inline-flex"
@@ -265,7 +266,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
             {t.demo}
           </Link>
           <Link
-            href={`${home}#signup`}
+            href={`${home}/signup`}
             className="shine group inline-flex items-center gap-2 rounded-full bg-neutral-950 py-2 pl-5 pr-2 text-sm font-semibold text-white transition-colors hover:bg-neutral-800"
           >
             {t.trial}
@@ -352,7 +353,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
 
           <div className="grid gap-2 pt-4">
             <Link
-              href={`${home}#signup`}
+              href={`${home}/signup`}
               onClick={closeAll}
               className="rounded-full bg-neutral-950 py-3 text-center text-sm font-semibold text-white"
             >
@@ -366,13 +367,13 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
               >
                 {t.demo}
               </Link>
-              <Link
-                href={`${home}#login`}
+              <a
+                href={getMerchantAdminUrl()}
                 onClick={closeAll}
                 className="rounded-full border border-neutral-200 py-3 text-center text-sm font-medium text-neutral-900"
               >
                 {t.login}
-              </Link>
+              </a>
             </div>
           </div>
         </div>

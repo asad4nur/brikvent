@@ -5,6 +5,7 @@ import { fill } from "@/lib/i18n";
 import { lowestMonthlyPrice } from "@/lib/pricing";
 
 export default function FinalCta({ t, numberLocale }: { t: Dictionary["cta"]; numberLocale: string }) {
+  const lang = numberLocale.startsWith("bn") ? "bn" : "en";
   return (
     <section id="signup" className="bg-white px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-28 xl:px-12 min-[90rem]:px-20">
       {/* #demo lands here too, until a booking page exists. */}
@@ -25,7 +26,7 @@ export default function FinalCta({ t, numberLocale }: { t: Dictionary["cta"]; nu
           </p>
           <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
-              href="#signup"
+              href={`/${lang}/signup`}
               className="shine group inline-flex items-center justify-center gap-2 rounded-full bg-neutral-950 py-3.5 pl-7 pr-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-neutral-800"
             >
               {t.trial}
