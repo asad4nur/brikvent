@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import type { Dictionary } from "@/dictionaries/en";
-import Backdrop from "@/components/backdrop";
 import ProductArt from "@/components/product-art";
 import InboxChat from "./InboxChat";
 import {
@@ -64,22 +63,15 @@ export default function OrderJourney({ t }: { t: Dictionary["journey"] }) {
   return (
     <section
       id="how-it-works"
-      className="relative isolate bg-white py-20 sm:py-24 lg:py-28"
+      className="relative border-t border-neutral-200 bg-white py-20 sm:py-24 lg:py-28"
     >
-      <Backdrop
-        pattern="grid"
-        glows={[
-          { color: "lime", className: "right-[8%] top-[30%] h-[30rem] w-[30rem]" },
-          { color: "mint", className: "-left-24 bottom-[15%] h-80 w-80", reverse: true },
-        ]}
-      />
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
         <div className="reveal-group mx-auto max-w-2xl text-center">
-          <p className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+          <p className="inline-flex items-center gap-2 rounded-full border border-mint-line bg-mint-wash px-3 py-1 text-[13px] font-semibold text-mint-ink">
+            <span className="h-2 w-2 rounded-full bg-mint" />
             {t.eyebrow}
           </p>
-          <h2 className="mt-5 text-3xl font-semibold leading-[1.1] tracking-[-0.02em] text-neutral-950 sm:text-5xl">
+          <h2 className="mt-5 text-3xl font-bold leading-[1.15] tracking-[-0.02em] text-deep sm:text-[44px]">
             {t.title}
           </h2>
           <p className="mt-5 text-base leading-relaxed text-neutral-600 sm:text-lg">
@@ -97,7 +89,7 @@ export default function OrderJourney({ t }: { t: Dictionary["journey"] }) {
             />
             <span
               aria-hidden
-              className="absolute left-[19px] top-6 w-px bg-brand transition-[height] duration-500 ease-out"
+              className="absolute left-[19px] top-6 w-px bg-mint transition-[height] duration-500 ease-out"
               style={{ height: `calc((100% - 48px) * ${active / (steps.length - 1)})` }}
             />
 
@@ -116,9 +108,9 @@ export default function OrderJourney({ t }: { t: Dictionary["journey"] }) {
                   <span
                     className={`absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-500 lg:top-1/2 lg:-translate-y-1/2 ${
                       isActive
-                        ? "border-brand bg-brand text-white shadow-[0_0_0_6px_rgba(0,166,62,0.12)]"
+                        ? "border-deep bg-deep text-mint shadow-[0_0_0_6px_rgba(49,214,170,0.25)]"
                         : isDone
-                          ? "border-brand/40 bg-lime/30 text-brand-dark"
+                          ? "border-mint-line bg-mint-wash text-mint-ink"
                           : "border-neutral-200 bg-white text-neutral-400"
                     }`}
                   >
@@ -133,12 +125,12 @@ export default function OrderJourney({ t }: { t: Dictionary["journey"] }) {
                     <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
                       <span className="text-neutral-500">{step.time}</span>
                       <span className="h-1 w-1 rounded-full bg-neutral-300" />
-                      <span className="inline-flex items-center gap-1 rounded-full bg-lime/30 px-2 py-0.5 font-semibold text-brand-dark">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-mint-wash px-2 py-0.5 font-semibold text-mint-ink">
                         <step.icon size={12} strokeWidth={2.25} aria-hidden />
                         {step.module}
                       </span>
                     </div>
-                    <h3 className="mt-3 text-xl font-semibold tracking-tight text-neutral-950 sm:text-2xl">
+                    <h3 className="mt-3 text-xl font-semibold tracking-tight text-deep sm:text-2xl">
                       {step.title}
                     </h3>
                     <p className="mt-2 max-w-md text-[15px] leading-relaxed text-neutral-600 sm:text-base">
@@ -181,7 +173,7 @@ export default function OrderJourney({ t }: { t: Dictionary["journey"] }) {
                   <span
                     key={s.title}
                     className={`h-1.5 rounded-full transition-all duration-500 ${
-                      i === active ? "w-6 bg-brand" : "w-1.5 bg-neutral-300"
+                      i === active ? "w-6 bg-deep" : "w-1.5 bg-neutral-300"
                     }`}
                   />
                 ))}
@@ -204,7 +196,7 @@ function Device({ step, children }: { step: Step; children: ReactNode }) {
           <span className="h-2.5 w-2.5 rounded-full bg-neutral-200" />
         </span>
         <span className="flex min-w-0 items-center gap-1.5 text-[13px] font-semibold text-neutral-900">
-          <step.icon size={14} strokeWidth={2.25} className="shrink-0 text-brand" aria-hidden />
+          <step.icon size={14} strokeWidth={2.25} className="shrink-0 text-mint-ink" aria-hidden />
           <span className="truncate">{step.module}</span>
         </span>
         <span className="ml-auto hidden text-xs text-neutral-400 sm:block">
@@ -231,10 +223,10 @@ function OrderScreen() {
   ];
   return (
     <div className="space-y-3">
-      <Panel className="rise border-brand/30 shadow-[0_12px_40px_-20px_rgba(0,166,62,0.5)]">
+      <Panel className="rise border-deep/20 shadow-[0_12px_40px_-20px_rgba(16,42,39,0.45)]">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold text-neutral-950">Order #4188</p>
-          <span className="rounded-full bg-lime/40 px-2 py-0.5 text-[11px] font-semibold text-brand-dark">
+          <p className="text-sm font-semibold text-deep">Order #4188</p>
+          <span className="rounded-full bg-mint-wash px-2 py-0.5 text-[11px] font-semibold text-mint-ink">
             New
           </span>
         </div>
@@ -260,7 +252,7 @@ function OrderScreen() {
           <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-600">
             Facebook
           </span>
-          <span className="text-base font-semibold text-neutral-950">৳1,850</span>
+          <span className="text-base font-semibold text-deep">৳1,850</span>
         </div>
       </Panel>
       <p className="rise px-1 pt-1 text-[11px] font-semibold uppercase tracking-wider text-neutral-500" style={delay(300)}>
@@ -277,7 +269,7 @@ function OrderScreen() {
             {r.channel}
           </span>
           <span className="ml-auto font-medium text-neutral-900">{r.amount}</span>
-          <span className="text-brand">{r.status}</span>
+          <span className="text-mint-ink">{r.status}</span>
         </div>
       ))}
     </div>
@@ -291,12 +283,12 @@ function StockScreen() {
       <Panel className="rise flex items-center gap-4">
         <ProductArt look="bluePanjabi" className="h-16 w-14 shrink-0 rounded-xl ring-1 ring-neutral-200" />
         <div>
-          <p className="text-sm font-semibold text-neutral-950">Blue Panjabi · L</p>
+          <p className="text-sm font-semibold text-deep">Blue Panjabi · L</p>
           <p className="text-xs text-neutral-500">SKU BP-L · one shared stock</p>
         </div>
         <div className="ml-auto flex items-baseline gap-2">
           <span className="text-xl font-semibold tabular-nums text-neutral-300 line-through">5</span>
-          <span className="rise text-4xl font-semibold tabular-nums text-neutral-950" style={delay(450)}>
+          <span className="rise text-4xl font-semibold tabular-nums text-deep" style={delay(450)}>
             4
           </span>
         </div>
@@ -307,7 +299,7 @@ function StockScreen() {
           className="rise flex items-center gap-3 rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm"
           style={delay(600 + i * 150)}
         >
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand text-white">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-deep text-mint">
             <Check size={12} strokeWidth={3} aria-hidden />
           </span>
           <span className="font-medium text-neutral-800">{p}</span>
@@ -323,12 +315,12 @@ function CallScreen() {
     <div className="space-y-3">
       <Panel className="rise">
         <div className="flex items-center gap-3">
-          <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-brand text-white">
-            <span aria-hidden className="ping-soft absolute inset-0 rounded-full bg-brand" />
+          <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-deep text-mint">
+            <span aria-hidden className="ping-soft absolute inset-0 rounded-full bg-mint" />
             <Phone size={17} strokeWidth={2.25} aria-hidden className="relative" />
           </span>
           <div>
-            <p className="text-sm font-semibold text-neutral-950">Calling 017•• ••• 421</p>
+            <p className="text-sm font-semibold text-deep">Calling 017•• ••• 421</p>
             <p className="text-xs text-neutral-500">Order #4188 · ৳1,850 COD</p>
           </div>
         </div>
@@ -339,7 +331,7 @@ function CallScreen() {
           “Press 1 to confirm your order, or 2 to cancel.”
         </p>
         <div
-          className="rise mt-3 flex items-center gap-2 rounded-xl bg-lime/30 px-3.5 py-2.5 text-sm font-semibold text-brand-dark"
+          className="rise mt-3 flex items-center gap-2 rounded-xl bg-mint-wash px-3.5 py-2.5 text-sm font-semibold text-mint-ink"
           style={delay(1200)}
         >
           <Check size={16} strokeWidth={2.75} aria-hidden />
@@ -347,8 +339,8 @@ function CallScreen() {
         </div>
       </Panel>
       <Panel className="rise">
-        <div className="flex items-center gap-2 text-sm font-semibold text-neutral-950">
-          <ShieldCheck size={16} strokeWidth={2.25} className="text-brand" aria-hidden />
+        <div className="flex items-center gap-2 text-sm font-semibold text-deep">
+          <ShieldCheck size={16} strokeWidth={2.25} className="text-mint-ink" aria-hidden />
           Fraud check
         </div>
         <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs">
@@ -358,12 +350,12 @@ function CallScreen() {
             ["1", "Returned"],
           ].map(([n, label]) => (
             <div key={label} className="rounded-xl bg-neutral-50 py-2">
-              <p className="text-base font-semibold text-neutral-950">{n}</p>
+              <p className="text-base font-semibold text-deep">{n}</p>
               <p className="text-neutral-500">{label}</p>
             </div>
           ))}
         </div>
-        <p className="mt-3 text-xs font-semibold text-brand">Low risk · safe to ship</p>
+        <p className="mt-3 text-xs font-semibold text-mint-ink">Low risk · safe to ship</p>
       </Panel>
     </div>
   );
@@ -374,8 +366,8 @@ function CourierScreen() {
   return (
     <div className="space-y-3">
       <div className="rise grid grid-cols-2 gap-3">
-        <div className="rounded-2xl border-2 border-brand bg-white p-3">
-          <p className="text-sm font-semibold text-neutral-950">Steadfast</p>
+        <div className="rounded-2xl border-2 border-deep bg-white p-3">
+          <p className="text-sm font-semibold text-deep">Steadfast</p>
           <p className="text-xs text-neutral-500">Selected</p>
         </div>
         <div className="rounded-2xl border border-neutral-200 bg-white p-3">
@@ -386,7 +378,7 @@ function CourierScreen() {
       <Panel className="rise">
         <div className="flex items-center justify-between text-xs">
           <span className="text-neutral-500">Consignment</span>
-          <span className="font-semibold text-neutral-950">SF-58210394</span>
+          <span className="font-semibold text-deep">SF-58210394</span>
         </div>
         <div className="mt-1 flex items-center justify-between text-xs">
           <span className="text-neutral-500">Deliver to</span>
@@ -405,7 +397,7 @@ function CourierScreen() {
               <li key={t} className="rise flex items-center gap-3 text-sm" style={delay(400 + i * 350)}>
                 <span
                   className={`flex h-5 w-5 items-center justify-center rounded-full ${
-                    done ? "bg-brand text-white" : "border border-neutral-300 bg-white"
+                    done ? "bg-deep text-mint" : "border border-neutral-300 bg-white"
                   }`}
                 >
                   {done && <Check size={12} strokeWidth={3} aria-hidden />}
@@ -434,14 +426,14 @@ function AccountsScreen() {
   return (
     <div className="space-y-3">
       <Panel className="rise flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-lime to-brand">
+        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-mint text-deep">
           <Wallet size={18} strokeWidth={2} aria-hidden />
         </span>
         <div>
-          <p className="text-sm font-semibold text-neutral-950">COD collected</p>
+          <p className="text-sm font-semibold text-deep">COD collected</p>
           <p className="text-xs text-neutral-500">Posted to Cash on Delivery account</p>
         </div>
-        <span className="ml-auto text-lg font-semibold text-brand">+৳1,850</span>
+        <span className="ml-auto text-lg font-semibold text-mint-ink">+৳1,850</span>
       </Panel>
       <Panel className="rise">
         <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
@@ -458,8 +450,8 @@ function AccountsScreen() {
             className="rise flex justify-between border-t border-neutral-100 pt-2"
             style={delay(800)}
           >
-            <dt className="font-semibold text-neutral-950">Net profit</dt>
-            <dd className="font-semibold tabular-nums text-brand">৳730</dd>
+            <dt className="font-semibold text-deep">Net profit</dt>
+            <dd className="font-semibold tabular-nums text-mint-ink">৳730</dd>
           </div>
         </dl>
       </Panel>
@@ -467,7 +459,7 @@ function AccountsScreen() {
         className="rise flex items-center gap-2 px-1 text-xs text-neutral-500"
         style={delay(1000)}
       >
-        <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+        <span className="h-1.5 w-1.5 rounded-full bg-mint" />
         Dashboard, P&amp;L and sales report updated
       </p>
     </div>

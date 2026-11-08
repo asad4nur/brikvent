@@ -155,7 +155,7 @@ export default function InboxChat({ summary }: { summary: string }) {
             {t.initials}
           </span>
           <div className="min-w-0">
-            <p className="truncate text-[13px] font-semibold text-neutral-950">{t.name}</p>
+            <p className="truncate text-[13px] font-semibold text-deep">{t.name}</p>
             <p className="truncate text-[11px] text-neutral-500">{t.context}</p>
           </div>
           <span className={`ml-auto flex shrink-0 items-center gap-1.5 rounded-full py-0.5 pl-0.5 pr-2 text-[10px] font-semibold ${s.chip}`}>
@@ -193,7 +193,7 @@ export default function InboxChat({ summary }: { summary: string }) {
           <span className="flex-1 rounded-full bg-neutral-100 px-3 py-1.5 text-[11px] text-neutral-400">
             উত্তর লিখুন…
           </span>
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand text-white">
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-deep text-mint">
             <SendHorizontal size={13} strokeWidth={2.25} />
           </span>
         </div>
@@ -218,14 +218,14 @@ function ChatRow({
   return (
     <li
       className={`rounded-2xl border p-2.5 transition-colors duration-300 ${
-        active ? "border-brand/40 bg-white shadow-sm" : "border-neutral-200 bg-white/60"
+        active ? "border-deep/30 bg-white shadow-sm" : "border-neutral-200 bg-white/60"
       }`}
     >
       <div className="flex items-center gap-2">
         <ChannelIcon channel={channel} size="sm" />
-        <span className="truncate text-xs font-semibold text-neutral-950">{name}</span>
+        <span className="truncate text-xs font-semibold text-deep">{name}</span>
         {unread && (
-          <span className="ml-auto rounded-full bg-brand px-1.5 text-[10px] font-bold text-white">1</span>
+          <span className="ml-auto rounded-full bg-mint px-1.5 text-[10px] font-bold text-deep">1</span>
         )}
       </div>
       <p className="mt-1 truncate text-[11px] text-neutral-500">{preview}</p>
@@ -241,7 +241,7 @@ function Bubble({ m, st }: { m: Message; st: (typeof styles)["Messenger"] }) {
       <div className="pop flex justify-center">
         <span
           className={`flex max-w-[95%] items-start gap-1.5 rounded-xl px-2.5 py-1.5 text-[11px] font-medium leading-snug shadow-sm ${
-            order ? "bg-brand text-white" : "bg-lime/60 text-neutral-900"
+            order ? "bg-deep text-mint" : "bg-mint-wash text-deep ring-1 ring-mint-line"
           }`}
         >
           {order ? (
