@@ -118,27 +118,23 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
         scrolled || mobileOpen
-          ? "bg-gradient-to-r from-white/90 via-[#f4fce4]/90 to-white/90 shadow-[0_10px_30px_-18px_rgba(0,166,62,0.35)] backdrop-blur-xl"
-          : "bg-gradient-to-r from-white via-[#f6fdea] to-white"
+          ? "bg-white/95 shadow-[0_8px_24px_-16px_rgba(16,42,39,0.25)] backdrop-blur"
+          : "bg-white"
       }`}
     >
-      {/* Brand glow line along the bottom edge */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-brand/50 to-transparent"
-      />
+      <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-neutral-200" />
       {/* Announcement bar */}
-      <div className="announce relative overflow-hidden bg-gradient-to-r from-[#04120a] via-[#0b2a16] to-[#04120a] text-white">
+      <div className="relative bg-deep text-white">
         <div className="mx-auto flex h-9 max-w-[1440px] items-center justify-center gap-2 px-4 text-xs sm:text-sm min-[90rem]:h-10">
-          <span className="rounded-full bg-[#CCFF00] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-neutral-950">
+          <span className="rounded-full bg-mint px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-deep">
             {t.announcementBadge}
           </span>
-          <span className="truncate text-neutral-200">
+          <span className="truncate text-white/85">
             {t.announcement}
           </span>
           <Link
             href={`${home}#orders`}
-            className="hidden font-medium text-[#CCFF00] hover:underline sm:inline"
+            className="hidden font-semibold text-mint hover:underline sm:inline"
           >
             {t.learnMore}
           </Link>
@@ -147,10 +143,10 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
 
       <nav
         aria-label="Main"
-        className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-6 px-4 sm:px-6 lg:h-[72px] lg:px-8 xl:px-12 min-[90rem]:h-20 min-[90rem]:px-20"
+        className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-4 xl:gap-6 px-4 sm:px-6 lg:h-[72px] lg:px-8 xl:px-12 min-[90rem]:h-20 min-[90rem]:px-20"
       >
         <Link href={`/${lang}`} onClick={closeAll} className="shrink-0" aria-label="Brikvent home">
-          <Logo className="h-9 w-auto lg:h-10 min-[90rem]:h-11" />
+          <Logo tone="teal" className="h-9 w-auto lg:h-10 min-[90rem]:h-11" />
         </Link>
 
         {/* Desktop links */}
@@ -168,10 +164,10 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
               // Hover already opens the menu, so a toggle here would close it
               // on the same click. Outside click and Escape handle closing.
               onClick={() => setProductsOpen(true)}
-              className={`flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium min-[90rem]:text-[15px] transition-colors ${
+              className={`flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium xl:px-4 min-[90rem]:text-[15px] transition-colors ${
                 productsOpen
-                  ? "bg-lime/30 text-neutral-950"
-                  : "text-neutral-600 hover:bg-lime/25 hover:text-neutral-950"
+                  ? "bg-mint-wash text-deep"
+                  : "text-neutral-600 hover:bg-mint-wash hover:text-deep"
               }`}
             >
               {t.products}
@@ -193,9 +189,9 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
                       key={p.name}
                       href={p.href}
                       onClick={closeAll}
-                      className="group flex gap-3 rounded-xl p-3 transition-colors hover:bg-lime/10"
+                      className="group flex gap-3 rounded-xl p-3 transition-colors hover:bg-mint-wash"
                     >
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-700 transition-colors group-hover:border-[#00A63E]/30 group-hover:bg-[#CCFF00]/25 group-hover:text-[#00A63E]">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-700 transition-colors group-hover:border-mint-line group-hover:bg-white group-hover:text-mint-ink">
                         <p.icon size={20} strokeWidth={1.75} aria-hidden />
                       </span>
                       <span>
@@ -209,7 +205,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
                     </Link>
                   ))}
                 </div>
-                <div className="flex items-center justify-between border-t border-neutral-100 bg-gradient-to-r from-lime/15 via-[#f4fce4] to-white px-6 py-4">
+                <div className="flex items-center justify-between border-t border-mint-line bg-mint-wash px-6 py-4">
                   <div>
                     <p className="text-sm font-semibold text-neutral-950">
                       {t.megaTitle}
@@ -221,7 +217,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
                   <Link
                     href={`${home}#platform`}
                     onClick={closeAll}
-                    className="shrink-0 text-sm font-semibold text-[#00A63E] hover:underline"
+                    className="shrink-0 text-sm font-semibold text-mint-ink hover:underline"
                   >
                     {t.megaLink}
                   </Link>
@@ -234,7 +230,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
             <Link
               key={l.href}
               href={l.href}
-              className="rounded-full px-4 py-2 text-sm font-medium min-[90rem]:text-[15px] text-neutral-600 transition-colors hover:bg-lime/25 hover:text-neutral-950"
+              className="rounded-full px-3 py-2 text-sm font-medium xl:px-4 min-[90rem]:text-[15px] text-neutral-600 transition-colors hover:bg-mint-wash hover:text-deep"
             >
               {l.name}
             </Link>
@@ -248,29 +244,29 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
             hrefLang={otherLang}
             lang={otherLang}
             aria-label={t.switchLanguageLabel}
-            className="inline-flex items-center gap-1.5 rounded-full border border-brand/25 bg-lime/15 px-3 py-1.5 text-sm font-semibold text-neutral-800 transition-colors hover:border-brand/50 hover:bg-lime/35"
+            className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 px-3 py-1.5 text-sm font-semibold text-neutral-700 transition-colors hover:border-mint-line hover:bg-mint-wash hover:text-deep"
           >
-            <Languages size={15} strokeWidth={2} aria-hidden className="text-brand" />
+            <Languages size={15} strokeWidth={2} aria-hidden className="text-mint-ink" />
             {t.switchLanguage}
           </Link>
           <a
             href={getMerchantAdminUrl()}
-            className="rounded-full px-4 py-2 text-sm font-medium min-[90rem]:text-[15px] text-neutral-700 transition-colors hover:text-neutral-950"
+            className="rounded-full px-3 py-2 text-sm font-medium xl:px-4 min-[90rem]:text-[15px] text-neutral-700 transition-colors hover:text-deep"
           >
             {t.login}
           </a>
           <Link
             href={`${home}#demo`}
-            className="hidden rounded-full border border-neutral-200 bg-white/70 px-4 py-2 text-sm font-medium text-neutral-900 transition-colors hover:border-brand/40 hover:bg-white xl:inline-flex"
+            className="hidden rounded-full border border-neutral-200 px-4 py-2 text-sm font-semibold text-deep transition-colors hover:border-deep xl:inline-flex"
           >
             {t.demo}
           </Link>
           <Link
             href={`${home}/signup`}
-            className="shine group inline-flex items-center gap-2 rounded-full bg-neutral-950 py-2 pl-5 pr-2 text-sm font-semibold text-white transition-colors hover:bg-neutral-800"
+            className="group inline-flex items-center gap-2 rounded-full bg-deep py-2 pl-5 pr-2 text-sm font-semibold text-white transition-colors hover:bg-deep-soft"
           >
             {t.trial}
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#CCFF00] text-neutral-950 transition-transform group-hover:translate-x-0.5">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-mint text-deep transition-transform group-hover:translate-x-0.5">
               <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
             </span>
           </Link>
@@ -283,9 +279,9 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
           hrefLang={otherLang}
           lang={otherLang}
           aria-label={t.switchLanguageLabel}
-          className="flex h-10 items-center gap-1.5 rounded-full border border-brand/25 bg-lime/15 px-3 text-sm font-semibold text-neutral-800"
+          className="flex h-10 items-center gap-1.5 rounded-full border border-neutral-200 px-3 text-sm font-semibold text-neutral-700"
         >
-          <Languages size={15} strokeWidth={2} aria-hidden className="text-brand" />
+          <Languages size={15} strokeWidth={2} aria-hidden className="text-mint-ink" />
           {t.switchLanguage}
         </Link>
         <button
@@ -355,7 +351,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
             <Link
               href={`${home}/signup`}
               onClick={closeAll}
-              className="rounded-full bg-neutral-950 py-3 text-center text-sm font-semibold text-white"
+              className="rounded-full bg-deep py-3 text-center text-sm font-semibold text-white"
             >
               {t.trial}
             </Link>

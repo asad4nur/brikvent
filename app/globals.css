@@ -9,6 +9,13 @@
   --color-brand: #00a63e;
   --color-brand-dark: #008a33;
   --color-lime: #ccff00;
+  /* New brand palette: Deep Teal + Mint Green (navbar and hero). */
+  --color-deep: #102a27;
+  --color-deep-soft: #1d3f3b;
+  --color-mint: #31d6aa;
+  --color-mint-ink: #0b7f65; /* mint dark enough for text on white */
+  --color-mint-wash: #edfaf5; /* flat tint for chips and panels */
+  --color-mint-line: #cdeee3;
   --font-sans: var(--font-geist-sans), var(--font-bangla);
   --font-mono: var(--font-geist-mono);
 }

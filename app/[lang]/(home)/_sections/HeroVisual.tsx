@@ -93,7 +93,7 @@ export default function HeroVisual() {
             y1={c.y}
             x2={50}
             y2={50}
-            stroke="#d4d4d4"
+            stroke="#b9d9cf"
             strokeWidth={1.25}
             strokeDasharray="3 4"
             vectorEffect="non-scaling-stroke"
@@ -107,7 +107,7 @@ export default function HeroVisual() {
             x2={50}
             y2={50}
             pathLength={100}
-            stroke="#00a63e"
+            stroke="#0b7f65"
             strokeWidth={3}
             strokeLinecap="round"
             vectorEffect="non-scaling-stroke"
@@ -128,17 +128,17 @@ export default function HeroVisual() {
             <div
               className={`relative flex items-center gap-2 rounded-2xl border bg-white px-2 py-1.5 shadow-sm sm:py-2 transition-all duration-300 sm:px-3 ${
                 active
-                  ? "border-brand/40 shadow-[0_10px_30px_-10px_rgba(0,166,62,0.45)]"
+                  ? "border-deep shadow-[0_10px_24px_-12px_rgba(16,42,39,0.45)]"
                   : "border-neutral-200"
               }`}
             >
               <span
                 className={`relative flex h-7 w-7 shrink-0 sm:h-8 sm:w-8 items-center justify-center rounded-xl transition-colors duration-300 ${
-                  active ? "bg-brand text-white" : "bg-neutral-100 text-neutral-600"
+                  active ? "bg-deep text-mint" : "bg-neutral-100 text-neutral-600"
                 }`}
               >
                 {active && phase === 0 && (
-                  <span aria-hidden className="ping-soft absolute inset-0 rounded-xl bg-brand" />
+                  <span aria-hidden className="ping-soft absolute inset-0 rounded-xl bg-mint" />
                 )}
                 <c.icon size={16} strokeWidth={2} aria-hidden className="relative" />
               </span>
@@ -151,13 +151,13 @@ export default function HeroVisual() {
       })}
 
       {/* Inventory hub */}
-      <div className="absolute left-1/2 top-1/2 w-[88%] max-w-[340px] sm:w-[78%] -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-neutral-200 bg-white p-4 shadow-[0_30px_80px_-20px_rgba(10,10,10,0.25)] sm:p-5">
+      <div className="absolute left-1/2 top-1/2 w-[88%] max-w-[340px] sm:w-[78%] -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-neutral-200 bg-white p-4 shadow-[0_24px_60px_-24px_rgba(16,42,39,0.35)] sm:p-5">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
             Shared inventory
           </span>
-          <span className="flex items-center gap-1.5 text-[11px] font-medium text-brand">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+          <span className="flex items-center gap-1.5 text-[11px] font-semibold text-mint-ink">
+            <span className="h-1.5 w-1.5 rounded-full bg-mint" />
             Live sync
           </span>
         </div>
@@ -165,7 +165,7 @@ export default function HeroVisual() {
         <div className="mt-3 flex items-center gap-3">
           <ProductArt look="tealThreePiece" className="h-14 w-12 shrink-0 rounded-xl ring-1 ring-neutral-200" />
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-neutral-950">
+            <p className="truncate text-sm font-semibold text-deep">
               Teal Three-Piece
             </p>
             <p className="truncate text-xs text-neutral-500">SKU INAY-213 · 3 outlets</p>
@@ -173,7 +173,7 @@ export default function HeroVisual() {
           <div className="ml-auto text-right">
             <p
               key={stock}
-              className="pop text-3xl font-semibold tabular-nums tracking-tight text-neutral-950"
+              className="pop text-3xl font-semibold tabular-nums tracking-tight text-deep"
             >
               {stock}
             </p>
@@ -194,12 +194,12 @@ export default function HeroVisual() {
               <li
                 key={step + i}
                 className={`flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-[13px] transition-colors duration-300 ${
-                  done ? "bg-lime/25 text-neutral-950" : "bg-neutral-50 text-neutral-400"
+                  done ? "bg-mint-wash text-deep" : "bg-neutral-50 text-neutral-400"
                 }`}
               >
                 <span
                   className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-colors duration-300 ${
-                    done ? "bg-brand text-white" : "border border-neutral-300 bg-white"
+                    done ? "bg-mint text-deep" : "border border-neutral-300 bg-white"
                   }`}
                 >
                   {done && <Check size={12} strokeWidth={3} aria-hidden />}

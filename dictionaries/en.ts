@@ -14,8 +14,8 @@ const en = {
 
   nav: {
     announcementBadge: "New",
-    announcement: "AI Calling Agent now confirms COD orders for you",
-    learnMore: "Learn more →",
+    announcement: "AI calls now confirm your COD orders, so your team doesn't have to",
+    learnMore: "See how it works →",
     products: "Features",
     productsList: [
       { name: "Online Store", description: "Themes, flash sales, combos and your own domain, synced to stock." },
@@ -27,8 +27,8 @@ const en = {
       { name: "Accounting", description: "Cash, bKash and bank balances, expenses, dues and P&L." },
       { name: "Reports", description: "Sales, stock valuation, supplier and customer reports." },
     ],
-    megaTitle: "One platform. Every channel.",
-    megaBody: "Online store, POS and social inbox, all sharing one inventory.",
+    megaTitle: "Everything you need to sell, in one place.",
+    megaBody: "Store, POS, inbox, couriers and accounts all share one inventory.",
     megaLink: "See the platform →",
     links: { solutions: "Solutions", pricing: "Pricing", integrations: "Integrations", faq: "FAQ" },
     login: "Log in",
@@ -41,16 +41,57 @@ const en = {
   },
 
   hero: {
-    eyebrow: "Commerce OS for Bangladesh",
-    title1: "Sell everywhere.",
-    title2: "Count stock once.",
-    body: "Your online store, POS counter, Facebook and WhatsApp orders, courier booking and accounts all run on one shared inventory. Sell a piece anywhere and every channel knows instantly.",
-    channelsLabel: "Sales channels",
-    channels: ["Online store", "POS", "Facebook", "Instagram", "WhatsApp"],
-    trial: "Start free trial",
-    demo: "Watch 2-min demo",
-    finePrint: "Plans from {price}/month · No % commission · 14-day free trial",
-    integrationsLabel: "Built in, no plugins",
+    eyebrow: "Made for Bangladeshi businesses",
+    title1: "Shop, online or both.",
+    title2: "Run it all from one place.",
+    segmentsLabel: "What kind of business do you run?",
+    benefitsLabel: "What you get",
+    // Order matters: shop, both, online. The ids are also used in ?type=.
+    segments: [
+      {
+        id: "shop",
+        tab: "Shop only",
+        tabShort: "Shop",
+        line: "Put away the notebook and calculator. Sales, stock and accounts keep themselves up to date.",
+        benefits: [
+          "Fast barcode checkout with printed receipts",
+          "Cash, bKash and customer dues tracked for you",
+          "Low-stock alerts before a product runs out",
+          "Today's sales and profit at a glance",
+        ],
+        note: "Today a shop, tomorrow online. Switch on your own online store anytime, using the same stock.",
+      },
+      {
+        id: "both",
+        tab: "Shop + online",
+        tabShort: "Both",
+        line: "Sell a piece in the shop and it's gone online too. No more matching two sets of stock at night.",
+        benefits: [
+          "One stock count shared by shop and online",
+          "Run several outlets and warehouses",
+          "Separate reports for shop and online sales",
+          "Your own website, synced to the shop",
+        ],
+        note: "",
+      },
+      {
+        id: "online",
+        tab: "Online only",
+        tabShort: "Online",
+        line: "Facebook, WhatsApp and website orders land in one list. Confirmation to courier runs on its own.",
+        benefits: [
+          "Every order from every channel in one list",
+          "COD orders confirmed by automatic AI call",
+          "Steadfast, Pathao and RedX booked in one click",
+          "Fraud check from the customer's courier history",
+        ],
+        note: "",
+      },
+    ],
+    trial: "Start your 14-day free trial",
+    demo: "Book a free demo",
+    finePrint: "No credit card needed · Plans from {price}/month · 0% commission on your sales",
+    integrationsLabel: "Works with the tools you already use",
   },
 
   painPoints: {
