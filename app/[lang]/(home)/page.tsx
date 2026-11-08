@@ -18,7 +18,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   return (
     <main>
       <Hero t={t.hero} numberLocale={t.formats.number} />
-      <PainPoints t={t.painPoints} />
+      <PainPoints t={t.painPoints} lang={lang} />
       <OrderJourney t={t.journey} />
       <Modules t={t.modules} />
       <LocalFeatures t={t.local} numberLocale={t.formats.number} />

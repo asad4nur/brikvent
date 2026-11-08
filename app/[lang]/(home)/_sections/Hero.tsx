@@ -1,6 +1,4 @@
 import type { Dictionary } from "@/dictionaries/en";
-import { fill } from "@/lib/i18n";
-import { lowestMonthlyPrice } from "@/lib/pricing";
 import HeroSegments from "./HeroSegments";
 
 // Payments, couriers, channels and marketing tools, shown as a scrolling strip.
@@ -40,11 +38,7 @@ export default function Hero({ t, numberLocale }: { t: Dictionary["hero"]; numbe
   const lang = numberLocale.startsWith("bn") ? "bn" : "en";
   return (
     <section className="relative bg-white">
-      <HeroSegments
-        t={t}
-        lang={lang}
-        finePrint={fill(t.finePrint, { price: `৳${lowestMonthlyPrice.toLocaleString(numberLocale)}` })}
-      />
+      <HeroSegments t={t} lang={lang} />
 
       {/* Integrations strip */}
       <div className="border-y border-neutral-200 bg-white">

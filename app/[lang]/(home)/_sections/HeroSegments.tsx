@@ -3,21 +3,40 @@
 import type { CSSProperties, KeyboardEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CalendarCheck, Check, Globe, Rocket, Store, type LucideIcon } from "lucide-react";
+import {
+  ArrowRight,
+  BellRing,
+  Boxes,
+  CalendarCheck,
+  CircleCheck,
+  Globe,
+  ListChecks,
+  PhoneCall,
+  RefreshCw,
+  ScanBarcode,
+  Store,
+  Truck,
+  Wallet,
+  type LucideIcon,
+} from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
-import HeroVisual from "./HeroVisual";
-import ShopVisual from "./ShopVisual";
-import OnlineVisual from "./OnlineVisual";
+import SyncVisual, { type SyncMode } from "./SyncVisual";
 
-type Segment = Dictionary["hero"]["segments"][number];
-type SegmentId = "shop" | "both" | "online";
+type Segment = Dictionary["hero"]["segments"][number] & { id: SyncMode };
 
 // Staggers the .rise entrance animation.
 const delay = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
-const DEFAULT: SegmentId = "both";
+const DEFAULT: SyncMode = "both";
 
-function TabIcon({ id }: { id: SegmentId }) {
+// Icons for each segment's three benefits, in dictionary order.
+const benefitIcons: Record<SyncMode, LucideIcon[]> = {
+  shop: [ScanBarcode, Wallet, BellRing],
+  both: [Boxes, RefreshCw, Store],
+  online: [ListChecks, PhoneCall, Truck],
+};
+
+function TabIcon({ id }: { id: SyncMode }) {
   const icons: LucideIcon[] = id === "shop" ? [Store] : id === "online" ? [Globe] : [Store, Globe];
   return (
     <span aria-hidden className="flex items-center gap-0.5">
@@ -28,17 +47,9 @@ function TabIcon({ id }: { id: SegmentId }) {
   );
 }
 
-export default function HeroSegments({
-  t,
-  lang,
-  finePrint,
-}: {
-  t: Dictionary["hero"];
-  lang: string;
-  finePrint: string;
-}) {
-  const segments = t.segments as (Segment & { id: SegmentId })[];
-  const [active, setActive] = useState<SegmentId>(DEFAULT);
+export default function HeroSegments({ t, lang }: { t: Dictionary["hero"]; lang: string }) {
+  const segments = t.segments as Segment[];
+  const [active, setActive] = useState<SyncMode>(DEFAULT);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Ads can deep-link a segment, e.g. /bn?type=shop. Read after hydration
@@ -46,7 +57,7 @@ export default function HeroSegments({
   useEffect(() => {
     const type = new URLSearchParams(window.location.search).get("type");
     if (!type || !segments.some((s) => s.id === type)) return;
-    const id = requestAnimationFrame(() => setActive(type as SegmentId));
+    const id = requestAnimationFrame(() => setActive(type as SyncMode));
     return () => cancelAnimationFrame(id);
   }, [segments]);
 
@@ -64,7 +75,7 @@ export default function HeroSegments({
   };
 
   return (
-    <div className="mx-auto grid max-w-[1440px] items-center gap-12 px-4 pb-16 pt-10 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:px-8 lg:pb-24 lg:pt-14 xl:px-12 min-[90rem]:px-20">
+    <div className="mx-auto grid max-w-[1440px] items-center gap-12 px-4 pb-16 pt-10 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-12 lg:px-8 lg:pb-20 lg:pt-14 xl:px-12 min-[90rem]:px-20">
       <div>
         <p
           className="rise inline-flex items-center gap-2 rounded-full border border-mint-line bg-mint-wash px-3 py-1 text-[13px] font-semibold text-mint-ink"
@@ -75,7 +86,7 @@ export default function HeroSegments({
         </p>
 
         <h1
-          className="rise mt-5 text-[38px] font-bold leading-[1.08] tracking-[-0.03em] text-deep sm:text-[52px] lg:text-[46px] xl:text-[54px] min-[90rem]:text-[62px]"
+          className="rise mt-5 text-[36px] font-bold leading-[1.08] tracking-[-0.03em] text-deep sm:text-[50px] lg:text-[40px] xl:text-[50px] min-[90rem]:text-[58px]"
           style={delay(80)}
         >
           {t.title1}
@@ -86,8 +97,15 @@ export default function HeroSegments({
           </span>
         </h1>
 
+        <p
+          className="rise mt-5 max-w-xl text-base leading-relaxed text-neutral-600 sm:text-lg"
+          style={delay(140)}
+        >
+          {t.body}
+        </p>
+
         {/* Segment switcher */}
-        <div className="rise mt-8" style={delay(160)}>
+        <div className="rise mt-8" style={delay(200)}>
           <p id="segments-label" className="text-sm font-semibold text-neutral-700">
             {t.segmentsLabel}
           </p>
@@ -114,9 +132,7 @@ export default function HeroSegments({
                   onClick={() => setActive(s.id)}
                   onKeyDown={onKeyDown}
                   className={`flex items-center justify-center gap-2 whitespace-nowrap rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors sm:px-4 ${
-                    selected
-                      ? "bg-deep text-white shadow-sm"
-                      : "text-neutral-600 hover:bg-white hover:text-deep"
+                    selected ? "bg-deep text-white shadow-sm" : "text-neutral-600 hover:bg-white hover:text-deep"
                   }`}
                 >
                   <span className={selected ? "text-mint" : "text-neutral-400"}>
@@ -130,34 +146,35 @@ export default function HeroSegments({
           </div>
         </div>
 
-        {/* Segment copy; keyed so it fades in again on every switch. */}
-        <div
+        {/* Three benefit tiles for the chosen business; keyed so they fade in on switch. */}
+        <ul
           key={current.id}
           id="segment-panel"
           role="tabpanel"
           aria-labelledby={`segment-tab-${current.id}`}
-          className="pop mt-6 min-h-[15rem] sm:min-h-[12.5rem]"
+          className="mt-4 grid gap-2.5 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3"
         >
-          <p className="max-w-xl text-base leading-relaxed text-neutral-600 sm:text-lg">{current.line}</p>
-          <ul className="mt-5 grid max-w-xl gap-x-6 gap-y-3 sm:grid-cols-2" aria-label={t.benefitsLabel}>
-            {current.benefits.map((b) => (
-              <li key={b} className="flex items-start gap-2.5 text-[15px] font-medium leading-snug text-neutral-800">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-mint text-deep">
-                  <Check size={12} strokeWidth={3} aria-hidden />
+          {current.benefits.map((b, i) => {
+            const Icon = benefitIcons[current.id][i];
+            return (
+              <li
+                key={b.title}
+                className="pop flex items-center gap-3 rounded-2xl border border-neutral-200 bg-white p-3 sm:block sm:p-3.5 lg:flex xl:block"
+                style={{ animationDelay: `${i * 60}ms` }}
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-mint-wash text-mint-ink">
+                  <Icon size={18} strokeWidth={2} aria-hidden />
                 </span>
-                {b}
+                <span className="block sm:mt-2.5 lg:mt-0 xl:mt-2.5">
+                  <span className="block text-[15px] font-bold leading-snug text-deep">{b.title}</span>
+                  <span className="mt-0.5 block text-[13px] leading-snug text-neutral-500">{b.sub}</span>
+                </span>
               </li>
-            ))}
-          </ul>
-          {current.note && (
-            <p className="mt-5 flex max-w-xl items-start gap-2.5 rounded-xl border border-mint-line bg-mint-wash px-3.5 py-2.5 text-sm font-medium text-deep">
-              <Rocket size={16} strokeWidth={2.25} aria-hidden className="mt-0.5 shrink-0 text-mint-ink" />
-              {current.note}
-            </p>
-          )}
-        </div>
+            );
+          })}
+        </ul>
 
-        <div className="rise mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center" style={delay(240)}>
+        <div className="rise mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center" style={delay(260)}>
           <Link
             href={`/${lang}/signup`}
             className="group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-deep py-3.5 pl-6 pr-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-deep-soft"
@@ -176,16 +193,19 @@ export default function HeroSegments({
           </Link>
         </div>
 
-        <p className="rise mt-4 text-[13px] text-neutral-500" style={delay(300)}>
-          {finePrint}
-        </p>
+        <ul className="rise mt-5 flex flex-wrap gap-x-5 gap-y-2" style={delay(320)}>
+          {t.trust.map((item) => (
+            <li key={item} className="flex items-center gap-1.5 text-[13px] font-medium text-neutral-600">
+              <CircleCheck size={15} strokeWidth={2.25} aria-hidden className="text-mint-ink" />
+              {item}
+            </li>
+          ))}
+        </ul>
       </div>
 
-      {/* Product visual for the selected segment, on a flat mint panel */}
-      <div className="rise rounded-[2rem] border border-mint-line bg-mint-wash px-2 py-4 sm:p-6" style={delay(200)}>
-        <div key={current.id} className="pop">
-          {current.id === "shop" ? <ShopVisual /> : current.id === "online" ? <OnlineVisual /> : <HeroVisual />}
-        </div>
+      {/* Shop + online visual; the tab decides which side is live. */}
+      <div className="rise rounded-[2rem] border border-mint-line bg-mint-wash px-3 py-5 sm:p-8" style={delay(200)}>
+        <SyncVisual mode={active} addShop={t.addShop} addOnline={t.addOnline} onAdd={() => setActive("both")} />
       </div>
     </div>
   );
