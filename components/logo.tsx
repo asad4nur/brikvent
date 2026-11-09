@@ -1,22 +1,21 @@
 import type { SVGProps } from "react";
 
-// Light-mode variant of /logo.svg: the original wordmark is white and the
-// tagline is lime, both of which disappear on a white background.
+// Brikvent logo in the Deep Teal + Mint palette: flat mint icon with deep
+// teal marks. The tone only changes the wordmark and tagline colours.
 export default function Logo({
   tone = "light",
   ...props
 }: SVGProps<SVGSVGElement> & {
-  // "dark" = for dark backgrounds: white wordmark, lime tagline.
-  // "teal" = Deep Teal + Mint on white: solid mint icon, teal wordmark.
+  // "dark" = for dark backgrounds: white wordmark, mint tagline.
+  // "light" and "teal" = on white: deep teal wordmark, mint-ink tagline.
   tone?: "light" | "dark" | "teal";
 }) {
-  const teal = tone === "teal";
-  const word = tone === "dark" ? "#FFFFFF" : teal ? "#102A27" : "#0A0A0A";
-  const tagline = tone === "dark" ? "#CCFF00" : teal ? "#0B7F65" : "#00A63E";
-  const icon = teal ? "#102A27" : "black";
-  // Flat fill for the teal tone; the original logo keeps its gradient.
-  const from = teal ? "#31D6AA" : "#CCFF00";
-  const to = teal ? "#31D6AA" : "#00A63E";
+  const word = tone === "dark" ? "#FFFFFF" : "#102A27";
+  const tagline = tone === "dark" ? "#31D6AA" : "#0B7F65";
+  const icon = "#102A27";
+  // Flat fill: both stops are the same mint.
+  const from = "#31D6AA";
+  const to = "#31D6AA";
   // Unique id per tone, so two logos on one page don't share a gradient.
   const gradientId = `brikvent_logo_gradient_${tone}`;
   return (

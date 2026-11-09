@@ -9,7 +9,7 @@ const tiles: Record<Channel, string> = {
   Messenger: "bg-gradient-to-br from-[#00b2ff] via-[#5b5bff] to-[#a334fa]",
   WhatsApp: "bg-[#25d366]",
   Instagram: "bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#4f5bd5]",
-  Website: "bg-gradient-to-br from-lime to-brand",
+  Website: "bg-mint",
 };
 
 const marks: Partial<Record<Channel, SimpleIcon>> = {
@@ -38,7 +38,7 @@ export default function ChannelIcon({
           <path d={mark.path} />
         </svg>
       ) : (
-        <Globe size={glyph - 1} strokeWidth={2.4} className="text-neutral-950" />
+        <Globe size={glyph - 1} strokeWidth={2.4} className="text-deep" />
       )}
     </span>
   );

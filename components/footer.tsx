@@ -76,14 +76,7 @@ export default function Footer({
   const c = t.contact;
 
   return (
-    <footer className="relative isolate overflow-hidden bg-gradient-to-b from-[#071a0e] via-[#06140b] to-[#030a06] text-neutral-300">
-      {/* Neon top edge, brand grid and glows */}
-      <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-lime to-transparent opacity-70" />
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_right,#ccff000a_1px,transparent_1px),linear-gradient(to_bottom,#ccff000a_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(70%_60%_at_50%_0%,black,transparent)]" />
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="drift absolute -left-32 -top-24 h-96 w-96 rounded-full bg-brand/25 blur-3xl" />
-        <div className="drift-reverse absolute -right-24 top-1/3 h-[28rem] w-[28rem] rounded-full bg-lime/10 blur-3xl" />
-      </div>
+    <footer className="relative isolate overflow-hidden bg-deep text-neutral-300">
       <div className="mx-auto grid max-w-[1440px] gap-12 px-4 pb-10 pt-14 sm:px-6 lg:grid-cols-[1.2fr_2fr] lg:px-8 lg:pb-12 lg:pt-20 xl:px-12 min-[90rem]:px-20">
         <div>
           <Link href={home} aria-label="Brikvent home" className="inline-block">
@@ -91,7 +84,7 @@ export default function Footer({
           </Link>
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-neutral-400">{t.description}</p>
           <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-neutral-300">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime" />
+            <span className="h-1.5 w-1.5 rounded-full bg-lime" />
             <span>
               <WithCompany template={t.productOf} />
             </span>
@@ -105,7 +98,7 @@ export default function Footer({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.name}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-neutral-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-lime hover:bg-lime hover:text-neutral-950 hover:shadow-[0_0_24px_-4px_rgba(204,255,0,0.7)]"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-neutral-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-lime hover:bg-lime hover:text-deep "
                 >
                   <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden>
                     <path d={socialIcons[s.name]} fillRule="evenodd" />
@@ -139,7 +132,7 @@ export default function Footer({
 
       {/* Business details required for payment gateway verification */}
       <div className="mx-auto max-w-[1440px] px-4 pb-12 sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
-        <address className="grid gap-3 rounded-3xl border border-white/10 bg-white/[0.03] p-4 not-italic backdrop-blur sm:grid-cols-2 sm:p-5 lg:grid-cols-[1.6fr_1fr_1fr_1.2fr]">
+        <address className="grid gap-3 rounded-3xl border border-white/10 bg-white/[0.03] p-4 not-italic sm:grid-cols-2 sm:p-5 lg:grid-cols-[1.6fr_1fr_1fr_1.2fr]">
           {[
             { icon: MapPin, label: c.address, value: company.address[lang] },
             { icon: Phone, label: c.phone, value: company.phone, href: company.phoneHref },

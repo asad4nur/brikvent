@@ -48,7 +48,7 @@ export default function Pricing({ t }: { t: T }) {
   return (
     <section
       id="pricing"
-      className="relative isolate bg-gradient-to-b from-white via-[#f2fbe7] to-white py-20 sm:py-24 lg:py-28"
+      className="relative isolate border-t border-neutral-200 bg-neutral-50 py-20 sm:py-24 lg:py-28"
     >
       <Backdrop
         glows={[
@@ -58,11 +58,11 @@ export default function Pricing({ t }: { t: T }) {
       />
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
         <div className="reveal-group mx-auto max-w-2xl text-center">
-          <p className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+          <p className="inline-flex items-center gap-2 rounded-full border border-mint-line bg-mint-wash px-3 py-1 text-[13px] font-semibold text-mint-ink">
+            <span className="h-2 w-2 rounded-full bg-mint" />
             {t.eyebrow}
           </p>
-          <h2 className="mt-5 text-3xl font-semibold leading-[1.1] tracking-[-0.02em] text-neutral-950 sm:text-5xl">
+          <h2 className="mt-5 text-3xl font-bold leading-[1.15] tracking-[-0.02em] text-deep sm:text-5xl">
             {t.title} <span className="text-brand-gradient">{t.titleMuted}</span>
           </h2>
           <p className="mt-5 text-base leading-relaxed text-neutral-600 sm:text-lg">{t.body}</p>
@@ -74,7 +74,7 @@ export default function Pricing({ t }: { t: T }) {
           >
             <span
               aria-hidden
-              className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-neutral-950 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-deep transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 yearly ? "translate-x-full" : ""
               }`}
             />
@@ -93,7 +93,7 @@ export default function Pricing({ t }: { t: T }) {
                 {y && (
                   <span
                     className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase ${
-                      yearly ? "bg-lime text-neutral-950" : "bg-lime/40 text-brand-dark"
+                      yearly ? "bg-lime text-deep" : "bg-lime/40 text-brand-dark"
                     }`}
                   >
                     {t.twoMonthsFree}
@@ -125,13 +125,13 @@ export default function Pricing({ t }: { t: T }) {
         {/* Order calculator */}
         <div className="reveal mt-16 grid gap-8 rounded-[32px] border border-neutral-200 bg-white p-6 shadow-sm sm:p-8 lg:mt-20 lg:grid-cols-[1fr_1.2fr] lg:items-center lg:gap-14 lg:p-12">
           <div>
-            <h3 className="text-2xl font-semibold tracking-tight text-neutral-950 sm:text-3xl">
+            <h3 className="text-2xl font-semibold tracking-tight text-deep sm:text-3xl">
               {c.title}
             </h3>
             <p className="mt-3 text-base leading-relaxed text-neutral-600">{c.body}</p>
             <label htmlFor="monthly-orders" className="mt-8 flex items-baseline justify-between">
               <span className="text-sm font-medium text-neutral-600">{c.ordersLabel}</span>
-              <span className="text-3xl font-semibold tabular-nums tracking-tight text-neutral-950">
+              <span className="text-3xl font-semibold tabular-nums tracking-tight text-deep">
                 {number(orders)}
               </span>
             </label>
@@ -143,7 +143,7 @@ export default function Pricing({ t }: { t: T }) {
               step={100}
               value={orders}
               onChange={(e) => setOrders(Number(e.target.value))}
-              className="mt-4 w-full accent-[#00a63e]"
+              className="mt-4 w-full accent-[#0b7f65]"
             />
             <div className="mt-1 flex justify-between text-xs text-neutral-400">
               <span>{number(100)}</span>
@@ -163,7 +163,7 @@ export default function Pricing({ t }: { t: T }) {
                   }`}
                 >
                   <div className="min-w-0">
-                    <p className="flex items-center gap-2 text-sm font-semibold text-neutral-950">
+                    <p className="flex items-center gap-2 text-sm font-semibold text-deep">
                       {plan.name}
                       {isBest && (
                         <span className="rounded-full bg-brand px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
@@ -179,7 +179,7 @@ export default function Pricing({ t }: { t: T }) {
                           : fill(c.within, { n: number(plan.limits.freeOrdersPerMonth) })}
                     </p>
                   </div>
-                  <p className="ml-auto whitespace-nowrap text-lg font-semibold tabular-nums text-neutral-950">
+                  <p className="ml-auto whitespace-nowrap text-lg font-semibold tabular-nums text-deep">
                     {taka(cost)}
                     <span className="text-xs font-medium text-neutral-500">{t.perMonthShort}</span>
                   </p>
@@ -286,9 +286,9 @@ function FeatureTable({ t }: { t: T }) {
                       scope="col"
                       className={`px-4 py-5 text-center ${p.popular ? "bg-lime/15" : ""}`}
                     >
-                      <span className="block text-base font-semibold text-neutral-950">{p.name}</span>
+                      <span className="block text-base font-semibold text-deep">{p.name}</span>
                       {p.popular && (
-                        <span className="mt-1 inline-block rounded-full bg-lime px-2 py-0.5 text-[10px] font-bold uppercase text-neutral-950">
+                        <span className="mt-1 inline-block rounded-full bg-lime px-2 py-0.5 text-[10px] font-bold uppercase text-deep">
                           {t.mostPopular}
                         </span>
                       )}
@@ -306,7 +306,7 @@ function FeatureTable({ t }: { t: T }) {
                     {plans.map((p) => (
                       <td
                         key={p.id}
-                        className={`px-4 py-3 text-center font-medium tabular-nums text-neutral-950 ${p.popular ? "bg-lime/15" : ""}`}
+                        className={`px-4 py-3 text-center font-medium tabular-nums text-deep ${p.popular ? "bg-lime/15" : ""}`}
                       >
                         {r.value(p)}
                       </td>
@@ -346,7 +346,7 @@ function MobileFeatureList({ t, rows }: { t: T; rows: ReturnType<typeof limitRow
             aria-checked={p.id === planId}
             onClick={() => setPlanId(p.id)}
             className={`rounded-full py-2 text-xs font-semibold transition-colors ${
-              p.id === planId ? "bg-neutral-950 text-white" : "text-neutral-600"
+              p.id === planId ? "bg-deep text-white" : "text-neutral-600"
             }`}
           >
             {p.name}
@@ -360,7 +360,7 @@ function MobileFeatureList({ t, rows }: { t: T; rows: ReturnType<typeof limitRow
           {rows.map((r) => (
             <div key={r.name} className="flex justify-between gap-4 border-b border-neutral-100 px-4 py-3 text-sm">
               <dt className="text-neutral-600">{r.name}</dt>
-              <dd className="text-right font-semibold tabular-nums text-neutral-950">{r.value(plan)}</dd>
+              <dd className="text-right font-semibold tabular-nums text-deep">{r.value(plan)}</dd>
             </div>
           ))}
         </dl>
@@ -449,22 +449,22 @@ function PlanCard({ plan, yearly, t }: { plan: Plan; yearly: boolean; t: T }) {
     <div
       className={`relative flex flex-col rounded-3xl p-6 transition-[transform,box-shadow] duration-500 hover:-translate-y-1.5 sm:p-7 ${
         plan.popular
-          ? "glow-border shadow-[0_30px_70px_-30px_rgba(0,166,62,0.55)]"
+          ? "glow-border shadow-[0_30px_70px_-30px_rgba(11,127,101,0.55)]"
           : "border border-neutral-200 bg-white hover:shadow-[0_24px_60px_-30px_rgba(10,10,10,0.3)]"
       }`}
     >
       {plan.popular && (
-        <span className="absolute -top-3 left-6 rounded-full bg-lime px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-neutral-950">
+        <span className="absolute -top-3 left-6 rounded-full bg-lime px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-deep">
           {t.mostPopular}
         </span>
       )}
-      <h3 className="text-lg font-semibold text-neutral-950">{plan.name}</h3>
+      <h3 className="text-lg font-semibold text-deep">{plan.name}</h3>
       <p className="mt-1 min-h-10 text-sm text-neutral-500">{t.taglines[plan.id]}</p>
 
       <div className="mt-6 min-h-[72px]">
         <p className="flex items-baseline gap-1">
           {plan.startingFrom && <span className="text-sm text-neutral-500">{t.from}</span>}
-          <span key={String(showYearly)} className="pop text-4xl font-semibold tracking-tight text-neutral-950">
+          <span key={String(showYearly)} className="pop text-4xl font-semibold tracking-tight text-deep">
             {taka(showYearly ? plan.yearly! : plan.monthly)}
             {plan.startingFrom && "+"}
           </span>
@@ -483,7 +483,7 @@ function PlanCard({ plan, yearly, t }: { plan: Plan; yearly: boolean; t: T }) {
         href={plan.trial === "demo-call" ? "#demo" : `/${lang}/signup`}
         className={`group mt-6 inline-flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-colors ${
           plan.popular
-            ? "bg-neutral-950 text-white hover:bg-neutral-800"
+            ? "bg-deep text-white hover:bg-deep-soft"
             : "border border-neutral-200 text-neutral-900 hover:border-neutral-300 hover:bg-neutral-50"
         }`}
       >

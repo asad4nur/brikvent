@@ -106,9 +106,9 @@ const groups: { icon: LucideIcon; tools: Tool[] }[] = [
   {
     icon: MessageSquareText,
     tools: [
-      tool("SMS gateway", "SMS", "#00a63e"),
+      tool("SMS gateway", "SMS", "#0b7f65"),
       tool("Email (SMTP)", "@", "#525252"),
-      tool("Voice call (IVR)", "IVR", "#008a33"),
+      tool("Voice call (IVR)", "IVR", "#0b7f65"),
     ],
   },
 ];
@@ -194,15 +194,15 @@ export default function Integrations({
   return (
     <div
       id="integrations"
-      className="reveal relative mt-16 overflow-hidden rounded-[32px] border border-neutral-200 bg-gradient-to-br from-white via-[#f6fcef] to-[#ecf9df] p-6 sm:p-8 lg:mt-20 lg:p-12"
+      className="reveal relative mt-16 overflow-hidden rounded-[32px] border border-neutral-200 bg-mint-wash p-6 sm:p-8 lg:mt-20 lg:p-12"
     >
       <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto] lg:gap-16">
         <div>
-          <p className="inline-flex items-center gap-2 rounded-full bg-neutral-950 px-3 py-1 text-xs font-semibold text-lime">
+          <p className="inline-flex items-center gap-2 rounded-full bg-deep px-3 py-1 text-xs font-semibold text-lime">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime" />
             {localizeDigits(fill(t.integrationsCount, { n: all.length }), numberLocale)}
           </p>
-          <h3 className="mt-5 text-2xl font-semibold tracking-tight text-neutral-950 sm:text-4xl">
+          <h3 className="mt-5 text-2xl font-semibold tracking-tight text-deep sm:text-4xl">
             {t.integrationsTitle}
           </h3>
           <p className="mt-3 max-w-md text-base text-neutral-600">{t.integrationsNote}</p>
@@ -219,7 +219,7 @@ export default function Integrations({
           <Ring tools={innerRing} radius="var(--r-in)" reverse />
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <span className="ping-soft absolute inset-0 rounded-3xl bg-lime/60" />
-            <span className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-white shadow-[0_18px_40px_-14px_rgba(0,166,62,0.6)] ring-1 ring-brand/30">
+            <span className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-white shadow-[0_18px_40px_-14px_rgba(11,127,101,0.6)] ring-1 ring-brand/30">
               <Logo viewBox="0 0 40 40" className="h-12 w-12" />
             </span>
           </div>
@@ -230,13 +230,13 @@ export default function Integrations({
         {groups.map((g, i) => (
           <div
             key={t.integrationGroups[i]}
-            className="group rounded-3xl border border-neutral-200/80 bg-white/80 p-5 backdrop-blur transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 hover:border-brand/40 hover:shadow-[0_24px_50px_-28px_rgba(0,166,62,0.55)]"
+            className="group rounded-3xl border border-neutral-200/80 bg-white/80 p-5 backdrop-blur transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 hover:border-brand/40 hover:shadow-[0_24px_50px_-28px_rgba(11,127,101,0.55)]"
           >
             <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-lime to-brand text-neutral-950 transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110">
+              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-mint text-deep transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110">
                 <g.icon size={18} strokeWidth={2} aria-hidden />
               </span>
-              <p className="text-sm font-semibold text-neutral-950">{t.integrationGroups[i]}</p>
+              <p className="text-sm font-semibold text-deep">{t.integrationGroups[i]}</p>
               <span className="ml-auto rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-semibold tabular-nums text-neutral-600">
                 {localizeDigits(String(g.tools.length), numberLocale)}
               </span>

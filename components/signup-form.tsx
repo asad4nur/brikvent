@@ -278,15 +278,15 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
     return (
       <div className="mx-auto w-full max-w-2xl overflow-hidden rounded-3xl border border-neutral-200/80 bg-white p-8 shadow-2xl sm:p-12">
         <div className="text-center">
-          <div className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-[#CCFF00]/30 text-brand shadow-inner ring-8 ring-[#CCFF00]/10">
+          <div className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-mint-wash text-brand ring-8 ring-mint/15">
             <CheckCircle2 size={36} strokeWidth={2.2} className="text-brand" />
           </div>
 
-          <span className="mt-5 inline-block rounded-full bg-lime/20 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-neutral-900">
+          <span className="mt-5 inline-block rounded-full bg-mint-wash px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-neutral-900">
             {t.success.badge}
           </span>
 
-          <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl">
+          <h2 className="mt-3 text-2xl font-bold tracking-tight text-deep sm:text-3xl">
             {t.success.title}
           </h2>
           <p className="mt-2 text-sm text-neutral-600 sm:text-base">
@@ -328,7 +328,7 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
               <dt className="text-xs font-medium uppercase tracking-wide text-neutral-500">
                 {t.success.trialDurationLabel}
               </dt>
-              <dd className="mt-1 inline-flex items-center gap-1.5 font-semibold text-emerald-700">
+              <dd className="mt-1 inline-flex items-center gap-1.5 font-semibold text-brand">
                 <Clock size={14} />
                 {t.success.trialDurationValue}
               </dd>
@@ -340,10 +340,10 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
         <div className="mt-8 text-center">
           <a
             href={merchantAdminUrl}
-            className="shine group inline-flex w-full items-center justify-center gap-2 rounded-full bg-neutral-950 py-3.5 px-6 text-base font-semibold text-white shadow-lg transition-all hover:bg-neutral-800"
+            className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-deep py-3.5 px-6 text-base font-semibold text-white shadow-lg transition-all hover:bg-deep-soft"
           >
             <span>{t.success.ctaButton}</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#CCFF00] text-neutral-950 transition-transform group-hover:translate-x-1">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-mint text-deep transition-transform group-hover:translate-x-1">
               <ArrowRight size={15} strokeWidth={2.5} />
             </span>
           </a>
@@ -367,7 +367,7 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
     <div className="mx-auto w-full max-w-xl">
       <div className="overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-6 shadow-xl sm:p-8 md:p-10">
         <div className="mb-6">
-          <h2 className="text-xl font-bold tracking-tight text-neutral-950 sm:text-2xl">
+          <h2 className="text-xl font-bold tracking-tight text-deep sm:text-2xl">
             {t.form.title}
           </h2>
           <p className="mt-1 text-sm text-neutral-500">
@@ -443,7 +443,7 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
                   fieldErrors.storeSlug || subdomainState === "taken" || subdomainState === "invalid"
                     ? "border-red-300 focus:border-red-500 focus:ring-red-200"
                     : subdomainState === "available"
-                      ? "border-emerald-400 focus:border-emerald-500 focus:ring-emerald-200"
+                      ? "border-mint focus:border-brand focus:ring-mint/30"
                       : "border-neutral-200 focus:border-brand focus:ring-brand/20"
                 }`}
               />
@@ -461,8 +461,8 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
                 </span>
               )}
               {subdomainState === "available" && (
-                <span className="inline-flex items-center gap-1 font-medium text-emerald-600">
-                  <CheckCircle2 size={13} className="text-emerald-500" />
+                <span className="inline-flex items-center gap-1 font-medium text-brand">
+                  <CheckCircle2 size={13} className="text-brand" />
                   &quot;{storeSlug}.brikvent.com&quot; {subdomainMessage}
                 </span>
               )}
@@ -492,7 +492,7 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
                 onClick={() => setBusinessType("both")}
                 className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all ${
                   businessType === "both"
-                    ? "border-brand bg-brand/5 text-neutral-950 font-semibold shadow-sm ring-1 ring-brand/30"
+                    ? "border-brand bg-brand/5 text-deep font-semibold shadow-sm ring-1 ring-brand/30"
                     : "border-neutral-200 bg-neutral-50/50 text-neutral-600 hover:bg-neutral-100/60"
                 }`}
               >
@@ -507,7 +507,7 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
                 onClick={() => setBusinessType("online")}
                 className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all ${
                   businessType === "online"
-                    ? "border-brand bg-brand/5 text-neutral-950 font-semibold shadow-sm ring-1 ring-brand/30"
+                    ? "border-brand bg-brand/5 text-deep font-semibold shadow-sm ring-1 ring-brand/30"
                     : "border-neutral-200 bg-neutral-50/50 text-neutral-600 hover:bg-neutral-100/60"
                 }`}
               >
@@ -522,7 +522,7 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
                 onClick={() => setBusinessType("retail")}
                 className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all ${
                   businessType === "retail"
-                    ? "border-brand bg-brand/5 text-neutral-950 font-semibold shadow-sm ring-1 ring-brand/30"
+                    ? "border-brand bg-brand/5 text-deep font-semibold shadow-sm ring-1 ring-brand/30"
                     : "border-neutral-200 bg-neutral-50/50 text-neutral-600 hover:bg-neutral-100/60"
                 }`}
               >
@@ -624,7 +624,7 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="shine group relative flex w-full items-center justify-center gap-2 rounded-full bg-neutral-950 py-3.5 px-6 text-sm font-semibold text-white shadow-lg transition-all hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
+              className="group relative flex w-full items-center justify-center gap-2 rounded-full bg-deep py-3.5 px-6 text-sm font-semibold text-white shadow-lg transition-all hover:bg-deep-soft disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
             >
               {isSubmitting ? (
                 <>
@@ -634,7 +634,7 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
               ) : (
                 <>
                   <span>{t.form.submitButton}</span>
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#CCFF00] text-neutral-950 transition-transform group-hover:translate-x-1">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-mint text-deep transition-transform group-hover:translate-x-1">
                     <ArrowRight size={14} strokeWidth={2.5} />
                   </span>
                 </>

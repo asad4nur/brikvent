@@ -75,7 +75,7 @@ export default function Modules({ t }: { t: Dictionary["modules"] }) {
   return (
     <section
       id="platform"
-      className="relative isolate bg-gradient-to-b from-[#f1fae6] via-[#f7fcf2] to-white py-20 sm:py-24 lg:py-28"
+      className="relative isolate border-t border-neutral-200 bg-neutral-50 py-20 sm:py-24 lg:py-28"
     >
       <Backdrop
         pattern="dots"
@@ -90,11 +90,11 @@ export default function Modules({ t }: { t: Dictionary["modules"] }) {
       ))}
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
         <div className="reveal-group mx-auto max-w-2xl text-center">
-          <p className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+          <p className="inline-flex items-center gap-2 rounded-full border border-mint-line bg-mint-wash px-3 py-1 text-[13px] font-semibold text-mint-ink">
+            <span className="h-2 w-2 rounded-full bg-mint" />
             {t.eyebrow}
           </p>
-          <h2 className="mt-5 text-3xl font-semibold leading-[1.1] tracking-[-0.02em] text-neutral-950 sm:text-5xl">
+          <h2 className="mt-5 text-3xl font-bold leading-[1.15] tracking-[-0.02em] text-deep sm:text-5xl">
             {t.title} <span className="text-brand-gradient">{t.titleMuted}</span>
           </h2>
           <p className="mt-5 text-base leading-relaxed text-neutral-600 sm:text-lg">
@@ -120,8 +120,8 @@ export default function Modules({ t }: { t: Dictionary["modules"] }) {
                 onClick={() => setActive(i)}
                 className={`flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                   i === active
-                    ? "bg-neutral-950 text-white"
-                    : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950"
+                    ? "bg-deep text-white"
+                    : "text-neutral-600 hover:bg-neutral-100 hover:text-deep"
                 }`}
               >
                 <mod.icon
@@ -144,10 +144,10 @@ export default function Modules({ t }: { t: Dictionary["modules"] }) {
           className="mt-8 grid items-center gap-10 rounded-[32px] border border-neutral-200 bg-white p-5 shadow-sm sm:p-8 lg:mt-10 lg:grid-cols-[1fr_1.15fr] lg:gap-14 lg:p-12"
         >
           <div className="rise">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-lime to-brand text-neutral-950">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-deep">
               <m.icon size={22} strokeWidth={1.9} aria-hidden />
             </span>
-            <h3 className="mt-6 text-2xl font-semibold tracking-tight text-neutral-950 sm:text-3xl">
+            <h3 className="mt-6 text-2xl font-semibold tracking-tight text-deep sm:text-3xl">
               {m.headline}
             </h3>
             <p className="mt-3 text-base leading-relaxed text-neutral-600">{m.body}</p>
@@ -167,7 +167,7 @@ export default function Modules({ t }: { t: Dictionary["modules"] }) {
             </ul>
             {m.soon && (
               <p className="rise mt-5 inline-flex items-center gap-2 rounded-full border border-dashed border-brand/40 bg-lime/10 px-3 py-1.5 text-[13px] text-neutral-700">
-                <span className="rounded-full bg-neutral-950 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-lime">
+                <span className="rounded-full bg-deep px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-lime">
                   {t.comingSoon}
                 </span>
                 {m.soon}
@@ -217,7 +217,7 @@ function StoreMock() {
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white">
       <div className="flex items-center justify-between border-b border-neutral-100 px-4 py-3 text-xs">
-        <span className="font-semibold text-neutral-950">yourshop.com</span>
+        <span className="font-semibold text-deep">yourshop.com</span>
         <span className="hidden gap-4 text-neutral-500 sm:flex">
           <span>Home</span>
           <span>Women</span>
@@ -225,7 +225,7 @@ function StoreMock() {
           <span>Offers</span>
         </span>
       </div>
-      <div className="rise m-3 flex items-center justify-between rounded-xl bg-gradient-to-r from-neutral-950 to-neutral-800 px-4 py-5 text-white">
+      <div className="rise m-3 flex items-center justify-between rounded-xl bg-deep px-4 py-5 text-white">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-wider text-lime">Flash sale</p>
           <p className="mt-1 text-lg font-semibold">Up to 25% off</p>
@@ -248,7 +248,7 @@ function StoreMock() {
             </div>
             <p className="mt-2 truncate text-[11px] font-medium text-neutral-800 sm:text-xs">{name}</p>
             <p className="text-[11px] sm:text-xs">
-              <span className="font-semibold text-neutral-950">{price}</span>{" "}
+              <span className="font-semibold text-deep">{price}</span>{" "}
               <span className="text-neutral-400 line-through">{was}</span>
             </p>
           </div>
@@ -274,7 +274,7 @@ function PosMock() {
           ].map(([n, p], i) => (
             <div key={n} className="rise flex items-center justify-between rounded-lg bg-neutral-50 px-3 py-2 text-xs" style={delay(200 + i * 150)}>
               <span className="font-medium text-neutral-800">{n}</span>
-              <span className="font-semibold text-neutral-950">{p}</span>
+              <span className="font-semibold text-deep">{p}</span>
             </div>
           ))}
         </div>
@@ -288,7 +288,7 @@ function PosMock() {
           <span>Discount</span>
           <span>−৳100</span>
         </div>
-        <div className="mt-2 flex justify-between border-t border-neutral-100 pt-2 text-sm font-semibold text-neutral-950">
+        <div className="mt-2 flex justify-between border-t border-neutral-100 pt-2 text-sm font-semibold text-deep">
           <span>Total</span>
           <span>৳2,400</span>
         </div>
@@ -297,7 +297,7 @@ function PosMock() {
           <span className="rounded-lg bg-neutral-100 py-1.5 text-neutral-600">Card</span>
           <span className="rounded-lg bg-pink-50 py-1.5 text-pink-600 ring-1 ring-pink-300">bKash</span>
         </div>
-        <div className="mt-3 rounded-xl bg-gradient-to-r from-lime to-brand py-2.5 text-center text-xs font-semibold text-neutral-950">
+        <div className="mt-3 rounded-xl bg-mint py-2.5 text-center text-xs font-semibold text-deep">
           Submit &amp; print receipt
         </div>
       </Card>
@@ -315,7 +315,7 @@ function InventoryMock() {
   return (
     <Card className="overflow-x-auto p-0">
       <div className="flex items-center justify-between px-4 py-3">
-        <p className="text-sm font-semibold text-neutral-950">Variant matrix · 4 variants</p>
+        <p className="text-sm font-semibold text-deep">Variant matrix · 4 variants</p>
         <Chip tone="green">Auto-generated</Chip>
       </div>
       <table className="w-full min-w-[320px] text-left text-xs">
@@ -341,7 +341,7 @@ function InventoryMock() {
                 <td className="px-2 py-2.5 text-neutral-800">{price}</td>
                 <td className="px-2 py-2.5 text-neutral-500">{cost}</td>
                 <td className="px-4 py-2.5 text-right">
-                  {low ? <Chip tone="amber">{stock} · Low</Chip> : <span className="font-semibold text-neutral-950">{stock}</span>}
+                  {low ? <Chip tone="amber">{stock} · Low</Chip> : <span className="font-semibold text-deep">{stock}</span>}
                 </td>
               </tr>
             );
@@ -363,9 +363,9 @@ function OrdersMock() {
     <div className="space-y-2">
       {rows.map(([id, channel, amount, call, courier], i) => (
         <Card key={id} className="rise flex flex-wrap items-center gap-x-3 gap-y-2 py-3" style={delay(i * 110)}>
-          <span className="text-sm font-semibold text-neutral-950">{id}</span>
+          <span className="text-sm font-semibold text-deep">{id}</span>
           <Chip>{channel}</Chip>
-          <span className="ml-auto text-sm font-semibold text-neutral-950">{amount}</span>
+          <span className="ml-auto text-sm font-semibold text-deep">{amount}</span>
           <span className="flex w-full gap-1.5 sm:w-auto">
             {call}
             {courier}
@@ -390,7 +390,7 @@ function InboxMock() {
           <Card key={name} className={`rise py-3 ${i === 0 ? "border-brand/40" : ""}`} style={delay(i * 100)}>
             <div className="flex items-center gap-2">
               <ChannelIcon channel={ch} size="sm" />
-              <span className="text-xs font-semibold text-neutral-950">{name}</span>
+              <span className="text-xs font-semibold text-deep">{name}</span>
               <span className="ml-auto text-[10px] text-neutral-400">{ch === "Website" ? "Live chat" : ch}</span>
             </div>
             <p className="mt-1 truncate text-xs text-neutral-500">{msg}</p>
@@ -401,12 +401,12 @@ function InboxMock() {
         <p className="w-fit max-w-[90%] rounded-2xl rounded-bl-md bg-neutral-100 px-3 py-2 text-xs text-neutral-800">
           Is this available in black?
         </p>
-        <p className="ml-auto w-fit max-w-[90%] rounded-2xl rounded-br-md bg-neutral-950 px-3 py-2 text-xs text-white">
+        <p className="ml-auto w-fit max-w-[90%] rounded-2xl rounded-br-md bg-deep px-3 py-2 text-xs text-white">
           Yes, 6 left in black. Want me to book one?
         </p>
         <div className="mt-auto flex items-center gap-2 rounded-xl bg-lime/20 px-3 py-2 text-[11px] text-neutral-700">
           <Boxes size={13} aria-hidden className="text-brand" />
-          Black · M — <span className="font-semibold text-neutral-950">6 in stock</span>
+          Black · M — <span className="font-semibold text-deep">6 in stock</span>
         </div>
       </Card>
     </div>
@@ -418,7 +418,7 @@ function MarketingMock() {
     <div className="space-y-3">
       <Card className="rise">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold text-neutral-950">Eid comeback offer</p>
+          <p className="text-sm font-semibold text-deep">Eid comeback offer</p>
           <Chip tone="green">SMS</Chip>
         </div>
         <p className="mt-1 text-xs text-neutral-500">Audience: VIP buyers · 312 customers</p>
@@ -434,7 +434,7 @@ function MarketingMock() {
           ["৳6.80", "CPC"],
         ].map(([v, l], i) => (
           <Card key={l} className="rise py-3 text-center" style={delay(150 + i * 100)}>
-            <p className="text-base font-semibold text-neutral-950">{v}</p>
+            <p className="text-base font-semibold text-deep">{v}</p>
             <p className="text-[11px] text-neutral-500">{l}</p>
           </Card>
         ))}
@@ -454,7 +454,7 @@ function AccountingMock() {
   return (
     <Card className="p-0">
       <div className="flex items-center justify-between px-4 py-3">
-        <p className="text-sm font-semibold text-neutral-950">Accounts</p>
+        <p className="text-sm font-semibold text-deep">Accounts</p>
         <p className="text-sm font-semibold text-brand">৳2,59,800</p>
       </div>
       <ul className="border-t border-neutral-100">
@@ -462,7 +462,7 @@ function AccountingMock() {
           <li key={name} className="rise flex items-center gap-3 border-b border-neutral-100 px-4 py-2.5 text-xs last:border-0" style={delay(i * 90)}>
             <span className={`h-2 w-2 rounded-full ${dot}`} />
             <span className="font-medium text-neutral-800">{name}</span>
-            <span className="ml-auto font-semibold tabular-nums text-neutral-950">{amount}</span>
+            <span className="ml-auto font-semibold tabular-nums text-deep">{amount}</span>
           </li>
         ))}
       </ul>
@@ -482,13 +482,13 @@ function ReportsMock() {
         ].map(([v, l], i) => (
           <Card key={l} className="rise py-3" style={delay(i * 90)}>
             <p className="text-[11px] text-neutral-500">{l}</p>
-            <p className="text-base font-semibold text-neutral-950 sm:text-lg">{v}</p>
+            <p className="text-base font-semibold text-deep sm:text-lg">{v}</p>
           </Card>
         ))}
       </div>
       <Card className="rise" style={delay(200)}>
         <div className="flex items-center justify-between text-xs">
-          <span className="font-semibold text-neutral-950">Last 7 days</span>
+          <span className="font-semibold text-deep">Last 7 days</span>
           <span className="flex gap-3 text-neutral-500">
             <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-brand" />Online</span>
             <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-lime" />POS</span>

@@ -62,12 +62,12 @@ async function LegalContent({ params }: { params: PageProps<"/[lang]/[slug]">["p
         <div className="mx-auto max-w-3xl px-4 pb-12 pt-12 sm:px-6 lg:pb-16 lg:pt-16">
           <Link
             href={`/${lang}`}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-950"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-neutral-500 transition-colors hover:text-deep"
           >
             <ArrowLeft size={15} strokeWidth={2.25} aria-hidden />
             {t.legalPage.back}
           </Link>
-          <h1 className="mt-6 text-4xl font-semibold tracking-[-0.02em] text-neutral-950 sm:text-5xl">
+          <h1 className="mt-6 text-4xl font-semibold tracking-[-0.02em] text-deep sm:text-5xl">
             {doc.title}
           </h1>
           <p className="mt-4 text-sm text-neutral-500">
@@ -81,7 +81,7 @@ async function LegalContent({ params }: { params: PageProps<"/[lang]/[slug]">["p
 
         {doc.sections.map((section) => (
           <section key={section.heading} className="mt-10">
-            <h2 className="text-xl font-semibold tracking-tight text-neutral-950 sm:text-2xl">
+            <h2 className="text-xl font-semibold tracking-tight text-deep sm:text-2xl">
               {section.heading}
             </h2>
             {section.paragraphs?.map((p) => (

@@ -44,7 +44,7 @@ export default function CostBars({
         return (
           <li key={row.id} className="grid gap-1.5 sm:grid-cols-[minmax(0,15rem)_1fr] sm:items-center sm:gap-5">
             <div className="min-w-0">
-              <p className="flex items-center gap-2 text-sm font-semibold text-neutral-950">
+              <p className="flex items-center gap-2 text-sm font-semibold text-deep">
                 <span className="truncate">{label.name}</span>
                 {row.ours && (
                   <span className="shrink-0 rounded-full bg-brand px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
@@ -58,14 +58,14 @@ export default function CostBars({
               <div className="h-9 flex-1 overflow-hidden rounded-full bg-neutral-100">
                 <div
                   className={`h-full rounded-full transition-[width] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                    row.ours ? "bg-gradient-to-r from-lime to-brand" : "bg-neutral-300"
+                    row.ours ? "bg-mint" : "bg-neutral-300"
                   }`}
                   style={{ width: shown ? `${pct}%` : "0%", transitionDelay: `${i * 90}ms` }}
                 />
               </div>
               <p
                 className={`min-w-24 shrink-0 whitespace-nowrap text-right text-base font-semibold tabular-nums sm:min-w-32 sm:text-lg ${
-                  row.ours ? "text-brand-dark" : "text-neutral-950"
+                  row.ours ? "text-brand-dark" : "text-deep"
                 }`}
               >
                 {localizeDigits(row.cost, numberLocale)}

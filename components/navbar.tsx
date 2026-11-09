@@ -195,7 +195,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
                         <p.icon size={20} strokeWidth={1.75} aria-hidden />
                       </span>
                       <span>
-                        <span className="block text-sm font-semibold text-neutral-950">
+                        <span className="block text-sm font-semibold text-deep">
                           {p.name}
                         </span>
                         <span className="mt-0.5 block text-[13px] leading-snug text-neutral-500">
@@ -207,7 +207,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
                 </div>
                 <div className="flex items-center justify-between border-t border-mint-line bg-mint-wash px-6 py-4">
                   <div>
-                    <p className="text-sm font-semibold text-neutral-950">
+                    <p className="text-sm font-semibold text-deep">
                       {t.megaTitle}
                     </p>
                     <p className="text-[13px] text-neutral-500">
