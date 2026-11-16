@@ -12,6 +12,7 @@ import {
   EyeOff,
   Headphones,
   Loader2,
+  Mail,
   ShieldCheck,
   ShoppingBag,
   Sparkles,
@@ -38,6 +39,14 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  // Email verification (a code is emailed; a verified email gets a single-use token)
+  const [step, setStep] = useState<"form" | "verify">("form");
+  const [code, setCode] = useState("");
+  const [verificationToken, setVerificationToken] = useState<string | null>(null);
+  const [verifiedEmail, setVerifiedEmail] = useState("");
+  const [isSendingCode, setIsSendingCode] = useState(false);
+  const [resendIn, setResendIn] = useState(0);
 
   // Subdomain validation
   const [subdomainState, setSubdomainState] = useState<SubdomainState>("idle");
@@ -168,6 +177,19 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
     };
   }, [successResult, merchantAdminUrl]);
 
+  // Resend cooldown ticks down once a second
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const id = setTimeout(() => setResendIn((n) => n - 1), 1000);
+    return () => clearTimeout(id);
+  }, [resendIn]);
+
+  const readError = (data: { message?: unknown } | null, fallback: string) => {
+    const m = data?.message;
+    if (Array.isArray(m)) return m.join(", ");
+    return (typeof m === "string" && m) || fallback;
+  };
+
   // Clean up timers on unmount
   useEffect(() => {
     return () => {
@@ -218,13 +240,75 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
     return Object.keys(errs).length === 0;
   };
 
+  const cleanEmail = () => email.trim().toLowerCase();
+
+  // Step 1: ask the server to email a code to this address
+  const sendCode = async (): Promise<boolean> => {
+    setIsSendingCode(true);
+    setFormError(null);
+    try {
+      const res = await fetch(`${apiUrl}/tenants/public/send-email-code`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ email: cleanEmail() }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (res.status === 429 && typeof data?.retryAfter === "number") setResendIn(data.retryAfter);
+        throw new Error(readError(data, t.verify.sendFailed));
+      }
+      setResendIn(Number(data.resendAfterSeconds) || 60);
+      return true;
+    } catch (err) {
+      setFormError((err instanceof Error && err.message) || t.verify.sendFailed);
+      return false;
+    } finally {
+      setIsSendingCode(false);
+    }
+  };
+
+  // Final step: create the store. Only works with a verified-email token.
+  const createStore = async (token: string) => {
+    setIsSubmitting(true);
+    setFormError(null);
+    try {
+      const payload = {
+        fullName: fullName.trim(),
+        businessName: businessName.trim(),
+        storeSlug: storeSlug.trim().toLowerCase(),
+        email: cleanEmail(),
+        phone: phone.trim(),
+        password: password,
+        businessType: businessType,
+        verificationToken: token,
+      };
+
+      const res = await fetch(`${apiUrl}/tenants/public/start-trial`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        // A problem with the details (e.g. store URL taken): go back and fix it.
+        // The token is kept, so the email does not need verifying again.
+        setStep("form");
+        throw new Error(readError(data, t.errors.genericError));
+      }
+      setVerificationToken(null);
+      setSuccessResult(data);
+    } catch (err) {
+      setFormError((err instanceof Error && err.message) || t.errors.genericError);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     if (subdomainState === "taken" || subdomainState === "invalid") {
       setFieldErrors((prev) => ({
@@ -234,42 +318,49 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
       return;
     }
 
+    // Already verified this exact email: no need to send another code
+    if (verificationToken && verifiedEmail === cleanEmail()) {
+      await createStore(verificationToken);
+      return;
+    }
+
+    setCode("");
+    if (await sendCode()) setStep("verify");
+  };
+
+  // Step 2: exchange the emailed code for a token, then create the store
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError(null);
+    if (!/^\d{6}$/.test(code)) {
+      setFormError(t.verify.codeRequired);
+      return;
+    }
     setIsSubmitting(true);
-
     try {
-      const payload = {
-        fullName: fullName.trim(),
-        businessName: businessName.trim(),
-        storeSlug: storeSlug.trim().toLowerCase(),
-        email: email.trim().toLowerCase(),
-        phone: phone.trim(),
-        password: password,
-        businessType: businessType,
-      };
-
-      const res = await fetch(`${apiUrl}/tenants/public/start-trial`, {
+      const res = await fetch(`${apiUrl}/tenants/public/verify-email-code`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ email: cleanEmail(), code }),
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        const errorMsg =
-          data.message || (Array.isArray(data.messages) ? data.messages.join(", ") : null);
-        throw new Error(errorMsg || t.errors.genericError);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.verificationToken) {
+        throw new Error(readError(data, t.verify.verifyFailed));
       }
-
-      setSuccessResult(data);
-    } catch (err: any) {
-      setFormError(err.message || t.errors.genericError);
-    } finally {
+      setVerificationToken(data.verificationToken);
+      setVerifiedEmail(cleanEmail());
+      setIsSubmitting(false);
+      await createStore(data.verificationToken);
+    } catch (err) {
+      setFormError((err instanceof Error && err.message) || t.verify.verifyFailed);
       setIsSubmitting(false);
     }
+  };
+
+  const handleResend = async () => {
+    if (resendIn > 0 || isSendingCode) return;
+    setCode("");
+    await sendCode();
   };
 
   // SUCCESS STATE
@@ -357,6 +448,99 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
           <p className="mt-6 text-xs text-neutral-400">
             {t.success.contactSupport}
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  // EMAIL VERIFICATION STATE
+  if (step === "verify") {
+    return (
+      <div className="mx-auto w-full max-w-xl">
+        <div className="overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-6 shadow-xl sm:p-8 md:p-10">
+          <div className="text-center">
+            <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-mint-wash text-brand ring-8 ring-mint/15">
+              <Mail size={26} strokeWidth={2.2} />
+            </div>
+            <h2 className="mt-4 text-xl font-bold tracking-tight text-deep sm:text-2xl">{t.verify.title}</h2>
+            <p className="mt-1 text-sm text-neutral-500">{fill(t.verify.subtitle, { email: cleanEmail() })}</p>
+          </div>
+
+          {formError && (
+            <div className="mt-6 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+              <AlertCircle size={18} className="mt-0.5 shrink-0 text-red-600" />
+              <div className="leading-snug">{formError}</div>
+            </div>
+          )}
+
+          <form onSubmit={handleVerify} className="mt-6 space-y-4" noValidate>
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
+                {t.verify.codeLabel}
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                autoFocus
+                value={code}
+                onChange={(e) => {
+                  setCode(e.target.value.replace(/\D/g, "").slice(0, 6));
+                  if (formError) setFormError(null);
+                }}
+                placeholder={t.verify.codePlaceholder}
+                className="mt-1.5 w-full rounded-xl border border-neutral-200 bg-neutral-50/50 px-4 py-3 text-center text-2xl font-semibold tracking-[0.5em] text-neutral-900 transition-colors placeholder:text-neutral-300 focus:border-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/20"
+              />
+              <p className="mt-2 text-xs text-neutral-400">{t.verify.codeSentNote}</p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting || code.length !== 6}
+              className="group relative flex w-full items-center justify-center gap-2 rounded-full bg-deep py-3.5 px-6 text-sm font-semibold text-white shadow-lg transition-all hover:bg-deep-soft disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 size={18} className="animate-spin text-lime" />
+                  <span>{t.verify.verifyingButton}</span>
+                </>
+              ) : (
+                <>
+                  <span>{t.verify.verifyButton}</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-mint text-deep transition-transform group-hover:translate-x-1">
+                    <ArrowRight size={14} strokeWidth={2.5} />
+                  </span>
+                </>
+              )}
+            </button>
+
+            <div className="flex flex-col items-center gap-2 pt-1 text-xs sm:flex-row sm:justify-between">
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={resendIn > 0 || isSendingCode}
+                className="font-semibold text-brand hover:underline disabled:cursor-not-allowed disabled:text-neutral-400 disabled:no-underline"
+              >
+                {isSendingCode
+                  ? t.verify.sendingButton
+                  : resendIn > 0
+                    ? fill(t.verify.resendIn, { n: localizeDigits(String(resendIn), lang === "bn" ? "bn-BD" : "en-US") })
+                    : t.verify.resend}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setStep("form");
+                  setFormError(null);
+                  setCode("");
+                }}
+                className="text-neutral-500 hover:text-neutral-800 hover:underline"
+              >
+                {t.verify.changeEmail}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     );
@@ -545,6 +729,9 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
+                  if (verificationToken && e.target.value.trim().toLowerCase() !== verifiedEmail) {
+                    setVerificationToken(null);
+                  }
                   if (fieldErrors.email) setFieldErrors((p) => ({ ...p, email: "" }));
                 }}
                 placeholder={t.form.emailPlaceholder}
@@ -623,17 +810,17 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
           <div className="pt-2">
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isSendingCode}
               className="group relative flex w-full items-center justify-center gap-2 rounded-full bg-deep py-3.5 px-6 text-sm font-semibold text-white shadow-lg transition-all hover:bg-deep-soft disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
             >
-              {isSubmitting ? (
+              {isSubmitting || isSendingCode ? (
                 <>
                   <Loader2 size={18} className="animate-spin text-lime" />
-                  <span>{t.form.submittingButton}</span>
+                  <span>{isSendingCode ? t.verify.sendingButton : t.form.submittingButton}</span>
                 </>
               ) : (
                 <>
-                  <span>{t.form.submitButton}</span>
+                  <span>{verificationToken && verifiedEmail === cleanEmail() ? t.form.submitButton : t.verify.continueButton}</span>
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-mint text-deep transition-transform group-hover:translate-x-1">
                     <ArrowRight size={14} strokeWidth={2.5} />
                   </span>
