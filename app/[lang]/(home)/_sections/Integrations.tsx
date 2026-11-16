@@ -106,9 +106,9 @@ const groups: { icon: LucideIcon; tools: Tool[] }[] = [
   {
     icon: MessageSquareText,
     tools: [
-      tool("SMS gateway", "SMS", "#0b7f65"),
+      tool("SMS gateway", "SMS", "#00a63e"),
       tool("Email (SMTP)", "@", "#525252"),
-      tool("Voice call (IVR)", "IVR", "#0b7f65"),
+      tool("Voice call (IVR)", "IVR", "#00a63e"),
     ],
   },
 ];
@@ -219,7 +219,7 @@ export default function Integrations({
           <Ring tools={innerRing} radius="var(--r-in)" reverse />
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <span className="ping-soft absolute inset-0 rounded-3xl bg-lime/60" />
-            <span className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-white shadow-[0_18px_40px_-14px_rgba(11,127,101,0.6)] ring-1 ring-brand/30">
+            <span className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-white shadow-[0_18px_40px_-14px_rgba(0,166,62,0.6)] ring-1 ring-brand/30">
               <Logo viewBox="0 0 40 40" className="h-12 w-12" />
             </span>
           </div>
@@ -230,7 +230,7 @@ export default function Integrations({
         {groups.map((g, i) => (
           <div
             key={t.integrationGroups[i]}
-            className="group rounded-3xl border border-neutral-200/80 bg-white/80 p-5 backdrop-blur transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 hover:border-brand/40 hover:shadow-[0_24px_50px_-28px_rgba(11,127,101,0.55)]"
+            className="group rounded-3xl border border-neutral-200/80 bg-white/80 p-5 backdrop-blur transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 hover:border-brand/40 hover:shadow-[0_24px_50px_-28px_rgba(0,166,62,0.55)]"
           >
             <div className="flex items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-mint text-deep transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110">

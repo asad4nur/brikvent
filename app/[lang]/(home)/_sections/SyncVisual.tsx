@@ -76,7 +76,7 @@ export default function SyncVisual({
   return (
     <div className="relative mx-auto w-full max-w-[560px]">
       {/* Shared stock hub */}
-      <div className="relative z-10 mx-auto w-full max-w-[420px] rounded-3xl border border-neutral-200 bg-white p-4 shadow-[0_24px_60px_-28px_rgba(16,42,39,0.4)] sm:p-5">
+      <div className="relative z-10 mx-auto w-full max-w-[420px] rounded-3xl border border-neutral-200 bg-white p-4 shadow-[0_24px_60px_-28px_rgba(10,10,10,0.4)] sm:p-5">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-deep text-mint">
@@ -175,7 +175,7 @@ export default function SyncVisual({
             d={paths[source]}
             pathLength={100}
             fill="none"
-            stroke="#0b7f65"
+            stroke="#00a63e"
             strokeWidth={3}
             strokeLinecap="round"
             vectorEffect="non-scaling-stroke"
@@ -249,7 +249,7 @@ function Side({
         !enabled
           ? "border-dashed border-neutral-300 bg-white/60"
           : active
-            ? "border-deep shadow-[0_14px_30px_-16px_rgba(16,42,39,0.55)]"
+            ? "border-deep shadow-[0_14px_30px_-16px_rgba(10,10,10,0.55)]"
             : "border-neutral-200"
       }`}
     >

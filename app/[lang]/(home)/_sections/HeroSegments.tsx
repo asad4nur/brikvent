@@ -92,7 +92,7 @@ export default function HeroSegments({ t, lang }: { t: Dictionary["hero"]; lang:
           {t.title1}
           <br />
           {/* Flat mint highlighter band; clones onto each line if it wraps. */}
-          <span className="box-decoration-clone bg-[linear-gradient(transparent_62%,rgba(49,214,170,0.45)_62%,rgba(49,214,170,0.45)_92%,transparent_92%)]">
+          <span className="box-decoration-clone bg-[linear-gradient(transparent_62%,rgba(204,255,0,0.45)_62%,rgba(204,255,0,0.45)_92%,transparent_92%)]">
             {t.title2}
           </span>
         </h1>
