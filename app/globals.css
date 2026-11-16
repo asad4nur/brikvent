@@ -6,18 +6,18 @@
 }
 
 @theme inline {
-  /* Legacy names, remapped to the Deep Teal + Mint palette so every
-     section follows the hero. brand = mint ink, lime = mint. */
-  --color-brand: #0b7f65;
-  --color-brand-dark: #102a27;
-  --color-lime: #31d6aa;
-  /* New brand palette: Deep Teal + Mint Green (navbar and hero). */
-  --color-deep: #102a27;
-  --color-deep-soft: #1d3f3b;
-  --color-mint: #31d6aa;
-  --color-mint-ink: #0b7f65; /* mint dark enough for text on white */
-  --color-mint-wash: #edfaf5; /* flat tint for chips and panels */
-  --color-mint-line: #cdeee3;
+  /* Brikvent green palette (restored). The teal-era token names stay so
+     the layout code is unchanged: deep = near-black surface, mint = lime
+     accent, mint-ink = brand green for text and fills on white. */
+  --color-brand: #00a63e;
+  --color-brand-dark: #008a33;
+  --color-lime: #ccff00;
+  --color-deep: #0a0a0a;
+  --color-deep-soft: #171717;
+  --color-mint: #ccff00;
+  --color-mint-ink: #00a63e;
+  --color-mint-wash: #f4fce4; /* flat lime tint for chips and panels */
+  --color-mint-line: #e2f3c6;
   --font-sans: var(--font-geist-sans), var(--font-bangla);
   --font-mono: var(--font-geist-mono);
 }
@@ -118,8 +118,8 @@ html[lang="bn"] h1 {
 
 /* Green-to-leaf gradient for highlighted words in headings. */
 .text-brand-gradient {
-  /* Flat now: highlighted words use the mint ink colour. */
-  color: #0b7f65;
+  /* Flat: highlighted words use the brand green. */
+  color: #00a63e;
 }
 
 /* Faint brand dot pattern for section backdrops. */
@@ -162,9 +162,9 @@ html[lang="bn"] h1 {
 
 .glow-border {
   /* Flat highlight for the most popular plan. */
-  border: 2px solid #102a27;
+  border: 2px solid #0a0a0a;
   background: #fff;
-  box-shadow: 0 0 0 4px rgba(49, 214, 170, 0.25);
+  box-shadow: 0 0 0 4px rgba(204, 255, 0, 0.25);
 }
 
 /* Dark card with a brand neon edge: a bright arc runs around the border
@@ -184,9 +184,9 @@ html[lang="bn"] h1 {
 }
 
 .neon-card {
-  /* Flat dark card: deep teal with a mint edge. */
-  border: 1.5px solid rgba(49, 214, 170, 0.4);
-  background: #102a27;
+  /* Flat dark card: near-black with a lime edge. */
+  border: 1.5px solid rgba(204, 255, 0, 0.4);
+  background: #0a0a0a;
 }
 
 /* Lime light that sweeps across the announcement bar now and then. */
@@ -204,7 +204,7 @@ html[lang="bn"] h1 {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(49, 214, 170, 0.18), transparent);
+  background: linear-gradient(90deg, transparent, rgba(204, 255, 0, 0.18), transparent);
   animation: announce-sweep 6s ease-in-out infinite;
   pointer-events: none;
 }

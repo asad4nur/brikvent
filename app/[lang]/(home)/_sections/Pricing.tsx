@@ -143,7 +143,7 @@ export default function Pricing({ t }: { t: T }) {
               step={100}
               value={orders}
               onChange={(e) => setOrders(Number(e.target.value))}
-              className="mt-4 w-full accent-[#0b7f65]"
+              className="mt-4 w-full accent-[#00a63e]"
             />
             <div className="mt-1 flex justify-between text-xs text-neutral-400">
               <span>{number(100)}</span>
@@ -449,7 +449,7 @@ function PlanCard({ plan, yearly, t }: { plan: Plan; yearly: boolean; t: T }) {
     <div
       className={`relative flex flex-col rounded-3xl p-6 transition-[transform,box-shadow] duration-500 hover:-translate-y-1.5 sm:p-7 ${
         plan.popular
-          ? "glow-border shadow-[0_30px_70px_-30px_rgba(11,127,101,0.55)]"
+          ? "glow-border shadow-[0_30px_70px_-30px_rgba(0,166,62,0.55)]"
           : "border border-neutral-200 bg-white hover:shadow-[0_24px_60px_-30px_rgba(10,10,10,0.3)]"
       }`}
     >

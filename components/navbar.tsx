@@ -118,7 +118,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
         scrolled || mobileOpen
-          ? "bg-white/95 shadow-[0_8px_24px_-16px_rgba(16,42,39,0.25)] backdrop-blur"
+          ? "bg-white/95 shadow-[0_8px_24px_-16px_rgba(10,10,10,0.25)] backdrop-blur"
           : "bg-white"
       }`}
     >
