@@ -55,7 +55,7 @@ export default function LocalFeatures({
             return (
               <li
                 key={f.title}
-                className={`group relative overflow-hidden rounded-3xl border border-neutral-200 bg-white p-6 transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1.5 hover:border-deep/30 hover:shadow-[0_28px_60px_-34px_rgba(16,42,39,0.45)] sm:p-7`}
+                className={`group relative overflow-hidden rounded-3xl border border-neutral-200 bg-white p-6 transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1.5 hover:border-deep/30 hover:shadow-[0_28px_60px_-34px_rgba(10,10,10,0.45)] sm:p-7`}
               >
                 <span
                   className={`relative flex h-12 w-12 items-center justify-center rounded-2xl bg-deep text-mint transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110`}

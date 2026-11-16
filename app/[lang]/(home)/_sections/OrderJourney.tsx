@@ -108,7 +108,7 @@ export default function OrderJourney({ t }: { t: Dictionary["journey"] }) {
                   <span
                     className={`absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-500 lg:top-1/2 lg:-translate-y-1/2 ${
                       isActive
-                        ? "border-deep bg-deep text-mint shadow-[0_0_0_6px_rgba(49,214,170,0.25)]"
+                        ? "border-deep bg-deep text-mint shadow-[0_0_0_6px_rgba(204,255,0,0.25)]"
                         : isDone
                           ? "border-mint-line bg-mint-wash text-mint-ink"
                           : "border-neutral-200 bg-white text-neutral-400"
@@ -223,7 +223,7 @@ function OrderScreen() {
   ];
   return (
     <div className="space-y-3">
-      <Panel className="rise border-deep/20 shadow-[0_12px_40px_-20px_rgba(16,42,39,0.45)]">
+      <Panel className="rise border-deep/20 shadow-[0_12px_40px_-20px_rgba(10,10,10,0.45)]">
         <div className="flex items-center justify-between">
           <p className="text-sm font-semibold text-deep">Order #4188</p>
           <span className="rounded-full bg-mint-wash px-2 py-0.5 text-[11px] font-semibold text-mint-ink">

@@ -70,7 +70,7 @@ export default function PainPoints({ t, lang }: { t: Dictionary["painPoints"]; l
           </p>
           <h2 className="mt-5 text-3xl font-bold leading-[1.15] tracking-[-0.02em] text-deep sm:text-[44px]">
             {t.title}{" "}
-            <span className="box-decoration-clone bg-[linear-gradient(transparent_62%,rgba(49,214,170,0.45)_62%,rgba(49,214,170,0.45)_92%,transparent_92%)]">
+            <span className="box-decoration-clone bg-[linear-gradient(transparent_62%,rgba(204,255,0,0.45)_62%,rgba(204,255,0,0.45)_92%,transparent_92%)]">
               {t.titleAccent}
             </span>
           </h2>
@@ -121,7 +121,7 @@ export default function PainPoints({ t, lang }: { t: Dictionary["painPoints"]; l
             return (
               <li
                 key={`${filter}-${item.module}`}
-                className="pop flex flex-col rounded-3xl border border-neutral-200 bg-white p-5 transition-shadow hover:shadow-[0_18px_40px_-24px_rgba(16,42,39,0.35)] sm:p-6"
+                className="pop flex flex-col rounded-3xl border border-neutral-200 bg-white p-5 transition-shadow hover:shadow-[0_18px_40px_-24px_rgba(10,10,10,0.35)] sm:p-6"
                 style={{ animationDelay: `${i * 50}ms` }}
               >
                 <div className="flex items-center justify-between gap-3">
