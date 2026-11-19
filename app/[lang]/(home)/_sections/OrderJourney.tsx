@@ -281,7 +281,7 @@ function StockScreen() {
   return (
     <div className="space-y-3">
       <Panel className="rise flex items-center gap-4">
-        <ProductArt look="bluePanjabi" className="h-16 w-14 shrink-0 rounded-xl ring-1 ring-neutral-200" />
+        <ProductArt look="bluePanjabi" className="h-[72px] w-12 shrink-0 rounded-xl ring-1 ring-neutral-200" />
         <div>
           <p className="text-sm font-semibold text-deep">Blue Panjabi · L</p>
           <p className="text-xs text-neutral-500">SKU BP-L · one shared stock</p>

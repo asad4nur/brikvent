@@ -99,9 +99,9 @@ export default function SyncVisual({
         </div>
 
         <div className="mt-4 flex items-center gap-3">
-          <ProductArt look="tealThreePiece" className="h-14 w-12 shrink-0 rounded-xl ring-1 ring-neutral-200" />
+          <ProductArt look="tealThreePiece" className="h-16 w-11 shrink-0 rounded-xl ring-1 ring-neutral-200" />
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-deep">Teal Three-Piece</p>
+            <p className="truncate text-sm font-semibold text-deep">Green Three-Piece</p>
             <p className="truncate text-xs text-neutral-500">SKU INAY-213 · {taka(PRICE)}</p>
           </div>
           <div className="ml-auto text-right">
@@ -198,7 +198,7 @@ export default function SyncVisual({
             <ScanBarcode size={16} strokeWidth={2} aria-hidden className="shrink-0 text-mint-ink" />
             <Barcode />
           </div>
-          <p className="mt-2.5 truncate text-[12px] font-semibold text-deep">Teal Three-Piece</p>
+          <p className="mt-2.5 truncate text-[12px] font-semibold text-deep">Green Three-Piece</p>
           <p className="text-[11px] text-neutral-500">{taka(PRICE)} · bKash</p>
           <Step done={source !== "shop" || phase >= 1} label="Paid" />
           <Step done={source !== "shop" || phase >= 2} label="Receipt printed" />
@@ -216,7 +216,7 @@ export default function SyncVisual({
             <channel.icon size={16} strokeWidth={2} aria-hidden className="shrink-0 text-mint-ink" />
             <span key={channel.name} className="pop truncate text-[11px] font-semibold text-neutral-600">{channel.name} order</span>
           </div>
-          <p className="mt-2.5 truncate text-[12px] font-semibold text-deep">Teal Three-Piece</p>
+          <p className="mt-2.5 truncate text-[12px] font-semibold text-deep">Green Three-Piece</p>
           <p className="text-[11px] text-neutral-500">{taka(PRICE)} · COD</p>
           <Step done={source !== "online" || phase >= 2} label="AI call confirmed" />
           <Step done={source !== "online" || phase >= 3} label="Pathao booked" />
