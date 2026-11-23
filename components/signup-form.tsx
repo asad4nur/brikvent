@@ -29,6 +29,31 @@ interface SignupFormProps {
 
 type SubdomainState = "idle" | "checking" | "available" | "taken" | "invalid";
 
+const TRIAL_SIGNUP_TRACKED_KEY = "bv_trial_signup_tracked";
+
+// Tells GTM (GTM-N676Z6KP, wired to `trial_signup_complete`) that a signup went
+// through. Once per browser session: a sessionStorage flag stops repeats on
+// retries, re-renders, back/forward or reload. No personal data goes in the push.
+function trackTrialSignupComplete() {
+  try {
+    if (window.sessionStorage.getItem(TRIAL_SIGNUP_TRACKED_KEY)) return;
+  } catch {
+    // Storage blocked: still push, the redirect follows anyway.
+  }
+  const w = window as Window & { dataLayer?: Record<string, unknown>[] };
+  w.dataLayer = w.dataLayer || [];
+  w.dataLayer.push({
+    event: "trial_signup_complete",
+    signup_method: "email_otp",
+    plan: "14_day_free_trial",
+  });
+  try {
+    window.sessionStorage.setItem(TRIAL_SIGNUP_TRACKED_KEY, "1");
+  } catch {
+    // Storage blocked: nothing more to do.
+  }
+}
+
 export default function SignupForm({ t, lang }: SignupFormProps) {
   const [fullName, setFullName] = useState("");
   const [businessName, setBusinessName] = useState("");
@@ -295,6 +320,9 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
         setStep("form");
         throw new Error(readError(data, t.errors.genericError));
       }
+      // The email code was verified (start-trial only accepts a verified token)
+      // and the store exists: record it before the success screen starts the redirect.
+      trackTrialSignupComplete();
       setVerificationToken(null);
       setSuccessResult(data);
     } catch (err) {
