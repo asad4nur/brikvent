@@ -112,7 +112,7 @@ export default function Comparison({
               <p className="text-sm font-semibold uppercase tracking-wider text-neutral-500">
                 {t.othersLabel}
               </p>
-              <p className="mt-3 text-3xl font-semibold tracking-tight text-neutral-400 sm:text-4xl">
+              <p className="mt-3 text-3xl font-semibold tracking-tight text-neutral-500 sm:text-4xl">
                 {fill(t.othersPrice, {
                   min: localizeDigits(`৳${othersMin.toLocaleString("en-IN")}`, numberLocale),
                   max: localizeDigits(`৳${othersMax.toLocaleString("en-IN")}`, numberLocale),
@@ -140,7 +140,7 @@ export default function Comparison({
               <CostBars t={t} numberLocale={numberLocale} />
             </div>
           </div>
-          <p className="mt-4 text-center text-xs text-neutral-400">{t.footnote}</p>
+          <p className="mt-4 text-center text-xs text-neutral-500">{t.footnote}</p>
         </div>
       </div>
     </section>

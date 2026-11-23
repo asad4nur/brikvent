@@ -7,9 +7,10 @@ const en = {
   formats: { number: "en-IN" },
 
   meta: {
-    title: "Brikvent | Flow Your Inventory",
+    // Search result title (~60 chars) and snippet (~155 chars).
+    title: "Brikvent: POS, Online Store & Inventory App for Bangladesh",
     description:
-      "Brikvent is the all-in-one commerce platform for Bangladesh: online store, POS, Facebook and WhatsApp orders, courier booking and accounts on one shared inventory.",
+      "All-in-one commerce app for Bangladesh: online store, POS, Facebook & WhatsApp orders, courier booking and accounts on one shared stock. 14 days free.",
   },
 
   nav: {

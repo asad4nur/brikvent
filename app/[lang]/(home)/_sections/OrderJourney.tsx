@@ -199,7 +199,7 @@ function Device({ step, children }: { step: Step; children: ReactNode }) {
           <step.icon size={14} strokeWidth={2.25} className="shrink-0 text-mint-ink" aria-hidden />
           <span className="truncate">{step.module}</span>
         </span>
-        <span className="ml-auto hidden text-xs text-neutral-400 sm:block">
+        <span className="ml-auto hidden text-xs text-neutral-500 sm:block">
           merchant.brikvent.com
         </span>
       </div>
@@ -281,7 +281,7 @@ function StockScreen() {
   return (
     <div className="space-y-3">
       <Panel className="rise flex items-center gap-4">
-        <ProductArt look="bluePanjabi" className="h-16 w-14 shrink-0 rounded-xl ring-1 ring-neutral-200" />
+        <ProductArt look="bluePanjabi" className="h-[72px] w-12 shrink-0 rounded-xl ring-1 ring-neutral-200" />
         <div>
           <p className="text-sm font-semibold text-deep">Blue Panjabi · L</p>
           <p className="text-xs text-neutral-500">SKU BP-L · one shared stock</p>
@@ -371,8 +371,8 @@ function CourierScreen() {
           <p className="text-xs text-neutral-500">Selected</p>
         </div>
         <div className="rounded-2xl border border-neutral-200 bg-white p-3">
-          <p className="text-sm font-semibold text-neutral-400">Pathao</p>
-          <p className="text-xs text-neutral-400">Available</p>
+          <p className="text-sm font-semibold text-neutral-500">Pathao</p>
+          <p className="text-xs text-neutral-500">Available</p>
         </div>
       </div>
       <Panel className="rise">
@@ -402,7 +402,7 @@ function CourierScreen() {
                 >
                   {done && <Check size={12} strokeWidth={3} aria-hidden />}
                 </span>
-                <span className={done ? "font-medium text-neutral-900" : "text-neutral-400"}>
+                <span className={done ? "font-medium text-neutral-900" : "text-neutral-500"}>
                   {t}
                 </span>
                 {i === 2 && (

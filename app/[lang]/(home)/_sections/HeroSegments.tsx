@@ -124,7 +124,6 @@ export default function HeroSegments({ t, lang }: { t: Dictionary["hero"]; lang:
                   type="button"
                   role="tab"
                   id={`segment-tab-${s.id}`}
-                  aria-label={s.tab}
                   aria-selected={selected}
                   aria-controls="segment-panel"
                   tabIndex={selected ? 0 : -1}
@@ -145,14 +144,10 @@ export default function HeroSegments({ t, lang }: { t: Dictionary["hero"]; lang:
           </div>
         </div>
 
-        {/* Three benefit tiles for the chosen business; keyed so they fade in on switch. */}
-        <ul
-          key={current.id}
-          id="segment-panel"
-          role="tabpanel"
-          aria-labelledby={`segment-tab-${current.id}`}
-          className="mt-4 grid gap-2.5 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3"
-        >
+        {/* Three benefit tiles for the chosen business; keyed so they fade in on switch.
+            The tabpanel role sits on a wrapper so the <ul> stays a real list. */}
+        <div key={current.id} id="segment-panel" role="tabpanel" aria-labelledby={`segment-tab-${current.id}`}>
+        <ul className="mt-4 grid gap-2.5 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
           {current.benefits.map((b, i) => {
             const Icon = benefitIcons[current.id][i];
             return (
@@ -172,6 +167,7 @@ export default function HeroSegments({ t, lang }: { t: Dictionary["hero"]; lang:
             );
           })}
         </ul>
+        </div>
 
         <div className="rise mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center" style={delay(260)}>
           <Link

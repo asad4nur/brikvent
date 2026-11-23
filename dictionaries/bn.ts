@@ -8,7 +8,7 @@ const bn: Dictionary = {
   formats: { number: "bn-BD" },
 
   meta: {
-    title: "Brikvent | Flow Your Inventory",
+    title: "Brikvent: বাংলাদেশের POS, অনলাইন স্টোর ও ইনভেন্টরি অ্যাপ",
     description:
       "Brikvent বাংলাদেশের অল-ইন-ওয়ান কমার্স প্ল্যাটফর্ম: অনলাইন স্টোর, POS, ফেসবুক ও হোয়াটসঅ্যাপ অর্ডার, কুরিয়ার বুকিং আর হিসাব, সবকিছু একটাই ইনভেন্টরিতে।",
   },

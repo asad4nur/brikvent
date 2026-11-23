@@ -10,9 +10,14 @@ import {
   Sparkles,
   Zap,
 } from "lucide-react";
+<<<<<<< HEAD
 import { hasLocale, locales } from "@/lib/i18n";
 import { getSiteDictionary } from "@/lib/site-dictionary";
 import { getPricing } from "@/lib/pricing-api";
+=======
+import { getDictionary, hasLocale, locales } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/seo";
+>>>>>>> 4b5da3fe67fb33131325bc41c0d1b80f43ac6ad6
 import SignupForm from "@/components/signup-form";
 
 export async function generateStaticParams() {
@@ -28,11 +33,7 @@ export async function generateMetadata({
 
   return {
     title: t.signup.title,
-    description: t.signup.subtitle,
-    alternates: {
-      canonical: `/${lang}/signup`,
-      languages: { en: "/en/signup", bn: "/bn/signup" },
-    },
+    ...pageMetadata({ lang, path: "/signup", title: t.signup.title, description: t.signup.subtitle }),
   };
 }
 

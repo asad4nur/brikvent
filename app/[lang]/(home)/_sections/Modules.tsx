@@ -9,6 +9,7 @@ import {
   MessagesSquare,
   ScanBarcode,
   ShoppingBag,
+  ShoppingCart,
   Truck,
   Wallet,
   type LucideIcon,
@@ -210,7 +211,7 @@ function Chip({ tone = "neutral", children }: { tone?: "neutral" | "green" | "am
 
 function StoreMock() {
   const products: [string, string, string, ProductLook][] = [
-    ["Linen Kurti", "৳1,250", "৳1,600", "linenKurti"],
+    ["Floral Kurti", "৳1,250", "৳1,600", "linenKurti"],
     ["Silk Three-Piece", "৳2,450", "৳3,100", "silkThreePiece"],
     ["Cotton Panjabi", "৳1,850", "৳2,300", "cottonPanjabi"],
   ];
@@ -240,17 +241,28 @@ function StoreMock() {
             <div className="relative overflow-hidden rounded-lg">
               <ProductArt
                 look={look}
-                className="block aspect-[4/5] w-full transition-transform duration-500 group-hover:scale-105"
+                className="block aspect-[4/5] h-auto w-full transition-transform duration-500 group-hover:scale-105"
               />
-              <span className="absolute left-1.5 top-1.5 rounded-full bg-red-500 px-1.5 py-0.5 text-[9px] font-bold text-white">
+              <span className="absolute left-1.5 top-1.5 rounded-full bg-red-600 px-1.5 py-0.5 text-[9px] font-bold text-white">
                 −{Math.round((1 - parseInt(price.replace(/\D/g, "")) / parseInt(was.replace(/\D/g, ""))) * 100)}%
               </span>
             </div>
-            <p className="mt-2 truncate text-[11px] font-medium text-neutral-800 sm:text-xs">{name}</p>
-            <p className="text-[11px] sm:text-xs">
-              <span className="font-semibold text-deep">{price}</span>{" "}
-              <span className="text-neutral-400 line-through">{was}</span>
-            </p>
+            <div className="mt-2 flex items-end justify-between gap-1.5">
+              <div className="min-w-0">
+                <p className="truncate text-[11px] font-medium text-neutral-800 sm:text-xs">{name}</p>
+                <p className="truncate text-[11px] sm:text-xs">
+                  <span className="font-semibold text-deep">{price}</span>{" "}
+                  <span className="text-neutral-500 line-through">{was}</span>
+                </p>
+              </div>
+              {/* Add-to-cart button, as on a real shop card (decorative in the mock). */}
+              <span
+                aria-hidden
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-deep text-lime transition-colors group-hover:bg-brand group-hover:text-white"
+              >
+                <ShoppingCart size={13} strokeWidth={2.25} />
+              </span>
+            </div>
           </div>
         ))}
       </div>
@@ -391,7 +403,7 @@ function InboxMock() {
             <div className="flex items-center gap-2">
               <ChannelIcon channel={ch} size="sm" />
               <span className="text-xs font-semibold text-deep">{name}</span>
-              <span className="ml-auto text-[10px] text-neutral-400">{ch === "Website" ? "Live chat" : ch}</span>
+              <span className="ml-auto text-[10px] text-neutral-500">{ch === "Website" ? "Live chat" : ch}</span>
             </div>
             <p className="mt-1 truncate text-xs text-neutral-500">{msg}</p>
           </Card>
