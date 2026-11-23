@@ -71,7 +71,23 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
       lang={lang}
       className={`${geistSans.variable} ${geistMono.variable} ${hindSiliguri.variable} h-full antialiased`}
     >
+      {trackPage && (
+        <head>
+          {/* Google tag (Google Tag Manager container), first thing in <head>. */}
+          <script async src={`https://www.googletagmanager.com/gtm.js?id=${gtmId}`} />
+          <script
+            dangerouslySetInnerHTML={{
+              __html:
+                "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());",
+            }}
+          />
+        </head>
+      )}
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }
+
+const gtmId = "GTM-N676Z6KP";
+// Only the live site sends analytics; local and Vercel preview builds don't.
+const trackPage = process.env.VERCEL_ENV === "production";
