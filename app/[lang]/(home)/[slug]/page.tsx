@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { getLegalDoc, isLegalSlug, legalSlugs } from "@/dictionaries/legal";
 import { company } from "@/lib/company";
 import { fill, getDictionary, hasLocale, locales, type Locale } from "@/lib/i18n";
+import { jsonLd, pageMetadata, siteUrl } from "@/lib/seo";
 
 // About and policy pages: /en/about, /bn/refund-policy, ...
 export async function generateStaticParams() {
@@ -22,11 +23,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/[slug]">):
   const { lang, slug, doc } = await resolve(params);
   return {
     title: doc.title,
-    description: doc.description,
-    alternates: {
-      canonical: `/${lang}/${slug}`,
-      languages: { en: `/en/${slug}`, bn: `/bn/${slug}` },
-    },
+    ...pageMetadata({ lang, path: `/${slug}`, title: doc.title, description: doc.description }),
   };
 }
 
@@ -50,14 +47,24 @@ export default function LegalPage({ params }: PageProps<"/[lang]/[slug]">) {
 }
 
 async function LegalContent({ params }: { params: PageProps<"/[lang]/[slug]">["params"] }) {
-  const { lang, doc } = await resolve(params);
+  const { lang, slug, doc } = await resolve(params);
   const t = getDictionary(lang);
   const updated = new Intl.DateTimeFormat(t.formats.number, { dateStyle: "long" }).format(
     new Date(`${company.policiesUpdated}T00:00:00Z`),
   );
+  // Breadcrumb trail (Brikvent › page) for search results.
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Brikvent", item: `${siteUrl}/${lang}` },
+      { "@type": "ListItem", position: 2, name: doc.title, item: `${siteUrl}/${lang}/${slug}` },
+    ],
+  };
 
   return (
     <main className="bg-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumb) }} />
       <div className="border-b border-neutral-200 bg-neutral-50">
         <div className="mx-auto max-w-3xl px-4 pb-12 pt-12 sm:px-6 lg:pb-16 lg:pt-16">
           <Link

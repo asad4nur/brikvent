@@ -4,6 +4,7 @@ import Comparison from "./_sections/Comparison";
 import Faq from "./_sections/Faq";
 import FinalCta from "./_sections/FinalCta";
 import Hero from "./_sections/Hero";
+import HomeSchema from "./_sections/HomeSchema";
 import LocalFeatures from "./_sections/LocalFeatures";
 import Modules from "./_sections/Modules";
 import OrderJourney from "./_sections/OrderJourney";
@@ -17,6 +18,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
   return (
     <main>
+      <HomeSchema lang={lang} t={t} />
       <Hero t={t.hero} numberLocale={t.formats.number} />
       <PainPoints t={t.painPoints} lang={lang} />
       <OrderJourney t={t.journey} />

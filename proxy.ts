@@ -27,6 +27,8 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip Next internals and files with an extension (favicon, logo.svg, ...).
-  matcher: ["/((?!_next|.*\\..*).*)"],
+  // Skip Next internals, the link preview image (app/opengraph-image.tsx,
+  // served without an extension) and files with an extension (favicon,
+  // logo.svg, ...).
+  matcher: ["/((?!_next|opengraph-image|.*\\..*).*)"],
 };

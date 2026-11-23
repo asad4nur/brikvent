@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Geist, Geist_Mono, Hind_Siliguri } from "next/font/google";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
+import { pageMetadata, siteUrl } from "@/lib/seo";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -31,8 +32,13 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
   if (!hasLocale(lang)) return {};
   const { meta } = getDictionary(lang);
   return {
+    // Defaults for the home page; other pages override these with their own
+    // pageMetadata().
+    ...pageMetadata({ lang, path: "", title: meta.title, description: meta.description }),
+    // Makes canonical, hreflang and og:image absolute, which link previews
+    // (Facebook, WhatsApp, X) need to fetch the image.
+    metadataBase: new URL(siteUrl),
     title: { default: meta.title, template: "%s | Brikvent" },
-    description: meta.description,
     keywords: [
       "inventory management",
       "POS",
@@ -44,17 +50,14 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
       "Bangladesh",
     ],
     applicationName: "Brikvent",
-    // hreflang links so search engines pair the English and Bangla pages.
-    alternates: {
-      canonical: `/${lang}`,
-      languages: { en: "/en", bn: "/bn", "x-default": "/en" },
-    },
-    openGraph: {
-      title: meta.title,
-      description: meta.description,
-      siteName: "Brikvent",
-      type: "website",
-      locale: lang === "bn" ? "bn_BD" : "en_US",
+    // Optional HTML-tag verification for Google Search Console and Bing
+    // Webmaster Tools: set the codes as Vercel environment variables.
+    // (Verifying the domain with a DNS TXT record needs neither.)
+    verification: {
+      google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+      other: process.env.BING_SITE_VERIFICATION
+        ? { "msvalidate.01": process.env.BING_SITE_VERIFICATION }
+        : undefined,
     },
   };
 }
@@ -68,7 +71,23 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
       lang={lang}
       className={`${geistSans.variable} ${geistMono.variable} ${hindSiliguri.variable} h-full antialiased`}
     >
+      {trackPage && (
+        <head>
+          {/* Google tag (Google Tag Manager container), first thing in <head>. */}
+          <script async src={`https://www.googletagmanager.com/gtm.js?id=${gtmId}`} />
+          <script
+            dangerouslySetInnerHTML={{
+              __html:
+                "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());",
+            }}
+          />
+        </head>
+      )}
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }
+
+const gtmId = "GTM-N676Z6KP";
+// Only the live site sends analytics; local and Vercel preview builds don't.
+const trackPage = process.env.VERCEL_ENV === "production";

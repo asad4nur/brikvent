@@ -11,6 +11,7 @@ import {
   Zap,
 } from "lucide-react";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/seo";
 import SignupForm from "@/components/signup-form";
 
 export async function generateStaticParams() {
@@ -26,11 +27,7 @@ export async function generateMetadata({
 
   return {
     title: t.signup.title,
-    description: t.signup.subtitle,
-    alternates: {
-      canonical: `/${lang}/signup`,
-      languages: { en: "/en/signup", bn: "/bn/signup" },
-    },
+    ...pageMetadata({ lang, path: "/signup", title: t.signup.title, description: t.signup.subtitle }),
   };
 }
 
