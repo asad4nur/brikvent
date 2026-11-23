@@ -110,11 +110,9 @@ export default function PainPoints({ t, lang }: { t: Dictionary["painPoints"]; l
           </div>
         </div>
 
-        <ul
-          id="problems-list"
-          role="tabpanel"
-          className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-14 lg:gap-5 xl:grid-cols-3"
-        >
+        {/* The tabpanel role sits on a wrapper so the <ul> stays a real list. */}
+        <div id="problems-list" role="tabpanel" aria-label={t.filters[filter]}>
+        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-14 lg:gap-5 xl:grid-cols-3">
           {items.map((item, i) => {
             const Pain = item.pain;
             const Fix = item.fix;
@@ -128,7 +126,7 @@ export default function PainPoints({ t, lang }: { t: Dictionary["painPoints"]; l
                   <span className="rounded-full bg-neutral-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-neutral-600">
                     {t.tags[item.for]}
                   </span>
-                  <span className="truncate text-[12px] font-medium text-neutral-400">{item.module}</span>
+                  <span className="truncate text-[12px] font-medium text-neutral-500">{item.module}</span>
                 </div>
 
                 {/* Before */}
@@ -137,7 +135,7 @@ export default function PainPoints({ t, lang }: { t: Dictionary["painPoints"]; l
                     <Pain size={19} strokeWidth={2} aria-hidden />
                   </span>
                   <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-wider text-red-500">{t.before}</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-red-600">{t.before}</p>
                     <h3 className="mt-0.5 text-base font-semibold text-neutral-800 sm:text-[17px]">{item.painTitle}</h3>
                     <p className="mt-1.5 text-sm leading-relaxed text-neutral-500">{item.painBody}</p>
                   </div>
@@ -169,6 +167,7 @@ export default function PainPoints({ t, lang }: { t: Dictionary["painPoints"]; l
             );
           })}
         </ul>
+        </div>
 
         {/* Closing line + CTA */}
         <div className="mt-12 flex flex-col items-center gap-5 rounded-3xl bg-deep px-6 py-8 text-center sm:px-10 lg:flex-row lg:justify-between lg:text-left">

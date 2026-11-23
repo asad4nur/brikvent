@@ -55,7 +55,7 @@ export default function Hero({ t, numberLocale }: { t: Dictionary["hero"]; numbe
                   {integrations.map((name) => (
                     <li
                       key={name}
-                      className="flex items-center whitespace-nowrap pr-8 text-[15px] font-semibold tracking-tight text-neutral-400 transition-colors hover:text-deep"
+                      className="flex items-center whitespace-nowrap pr-8 text-[15px] font-semibold tracking-tight text-neutral-500 transition-colors hover:text-deep"
                     >
                       <span aria-hidden className="mr-8 h-1 w-1 rounded-full bg-mint" />
                       {name}

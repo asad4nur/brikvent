@@ -10,16 +10,23 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+// Not preloaded: only the mock screens' numbers use it, and on slow mobile
+// connections every preloaded font competes with the CSS for first paint.
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: false,
 });
 
 // Geist has no Bengali glyphs; Bangla text falls through to this font.
+// Not preloaded (4 files, ~140 KB): English pages barely use it, and Bangla
+// pages fetch it from the CSS as soon as the text needs it (font-display:
+// swap, so text shows in the fallback font meanwhile).
 const hindSiliguri = Hind_Siliguri({
   variable: "--font-bangla",
   subsets: ["bengali"],
   weight: ["400", "500", "600", "700"],
+  preload: false,
 });
 
 // Cache Components needs every root param value up front.
