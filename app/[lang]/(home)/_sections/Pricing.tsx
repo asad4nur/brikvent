@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, ChevronDown, Minus } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, MessageCircle, Minus } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
 import Backdrop from "@/components/backdrop";
 import { fill } from "@/lib/i18n";
+import { company } from "@/lib/company";
 import {
   featureTable,
   planFeatures,
@@ -492,18 +493,29 @@ function PlanCard({ plan, yearly, t }: { plan: Plan; yearly: boolean; t: T }) {
         </p>
       </div>
 
-      {plan.trialDays !== null && (
-      <Link
-        href={`/${lang}/signup`}
-        className={`group mt-6 inline-flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-colors ${
-          plan.popular
-            ? "bg-deep text-white hover:bg-deep-soft"
-            : "border border-neutral-200 text-neutral-900 hover:border-neutral-300 hover:bg-neutral-50"
-        }`}
-      >
-        {fill(t.startTrial, { n: number(plan.trialDays) })}
-        <ArrowRight size={15} strokeWidth={2.25} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
-      </Link>
+      {plan.trialDays !== null ? (
+        <Link
+          href={`/${lang}/signup`}
+          className={`group mt-6 inline-flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-colors ${
+            plan.popular
+              ? "bg-deep text-white hover:bg-deep-soft"
+              : "border border-neutral-200 text-neutral-900 hover:border-neutral-300 hover:bg-neutral-50"
+          }`}
+        >
+          {fill(t.startTrial, { n: number(plan.trialDays) })}
+          <ArrowRight size={15} strokeWidth={2.25} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
+        </Link>
+      ) : (
+        // A plan without a free trial is arranged with the team: the chat opens with the plan named
+        <a
+          href={`${company.whatsappHref}?text=${encodeURIComponent(fill(t.whatsappMessage, { plan: plan.name }))}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group mt-6 inline-flex items-center justify-center gap-2 rounded-full border border-neutral-200 py-3 text-sm font-semibold text-neutral-900 transition-colors hover:border-neutral-300 hover:bg-neutral-50"
+        >
+          <MessageCircle size={16} strokeWidth={2.25} aria-hidden className="text-mint-ink" />
+          {t.contactWhatsapp}
+        </a>
       )}
 
       <ul className="mt-7 space-y-2.5 border-t border-neutral-100 pt-6 text-sm text-neutral-800">

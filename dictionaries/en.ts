@@ -351,7 +351,8 @@ const en = {
     orYearly: "or {price}/year",
     customContract: "Custom contract",
     startTrial: "Start {n}-day free trial",
-    bookDemo: "Book a demo call",
+    contactWhatsapp: "Contact us on WhatsApp",
+    whatsappMessage: "Hi Brikvent, I would like to know more about the {plan} plan.",
     taglines: {
       starter: "New and small page sellers with one shop",
       growth: "Growing brands with 2–3 outlets or warehouses",
@@ -401,7 +402,7 @@ const en = {
       custom: "Custom",
       from: "From",
       days: "{n} days",
-      demoCall: "Demo call",
+      demoCall: "Contact us",
     },
     included: "Included",
     notIncluded: "Not included",
@@ -508,7 +509,7 @@ const en = {
   faq: {
     eyebrow: "FAQ",
     title: "Questions sellers ask us",
-    body: "Can't find your answer? Book a demo and we'll walk you through it with your own products.",
+    body: "Can't find your answer? Message us on WhatsApp and we'll walk you through it with your own products.",
     items: [
       { q: "Do you take a commission on my sales?", a: "No. You pay a flat monthly plan in taka. There is no percentage cut, no setup fee and no traffic limit." },
       { q: "What happens if I go over my free orders?", a: "Your store keeps taking orders. Extra orders are added to that month's bill: ৳1 each on Starter and ৳0.50 each on Growth. Business and Enterprise include unlimited orders." },
@@ -517,7 +518,7 @@ const en = {
       { q: "Can I use only the POS, or only the online store?", a: "Yes. Turn on just the parts you need. Every plan includes both POS and the online store, and they always share the same stock." },
       { q: "How do the confirmation calls and SMS work?", a: "Calls and SMS use prepaid credits that you top up from your dashboard (1 credit = ৳1). You record your own greeting, and customers press 1 to confirm or 2 to cancel." },
       { q: "Can my staff log in with limited access?", a: "Yes. Create roles for cashiers, packers or managers and choose exactly which modules each role can open. The number of users depends on your plan." },
-      { q: "Is there a free trial?", a: "Every plan except Enterprise comes with a {trialDays}-day free trial. For Enterprise, book a demo call and we'll set it up with you." },
+      { q: "Is there a free trial?", a: "Every plan except Enterprise comes with a {trialDays}-day free trial. For Enterprise, message us on WhatsApp and we'll set it up with you." },
     ],
   },
 

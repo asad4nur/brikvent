@@ -256,7 +256,7 @@ const en: Record<LegalSlug, LegalDoc> = {
         list: [
           "Custom domains: connecting your own domain can take up to 48 hours while DNS updates.",
           "Calling and SMS credits are added to your account as soon as the top-up payment is confirmed.",
-          "Enterprise onboarding is scheduled with you after the demo call.",
+          "Enterprise onboarding is scheduled with you after you contact us.",
         ],
       },
       {
