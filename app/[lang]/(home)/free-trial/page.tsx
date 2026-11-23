@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getDictionary, hasLocale, locales } from "@/lib/i18n";
+import { hasLocale, locales } from "@/lib/i18n";
+import { getSiteDictionary } from "@/lib/site-dictionary";
 import SignupPage from "../signup/page";
 
 export async function generateStaticParams() {
@@ -12,7 +13,7 @@ export async function generateMetadata({
 }: PageProps<"/[lang]/free-trial">): Promise<Metadata> {
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
-  const t = getDictionary(lang);
+  const t = await getSiteDictionary(lang);
 
   return {
     title: t.signup.title,

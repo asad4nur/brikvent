@@ -10,7 +10,9 @@ import {
   Sparkles,
   Zap,
 } from "lucide-react";
-import { getDictionary, hasLocale, locales } from "@/lib/i18n";
+import { hasLocale, locales } from "@/lib/i18n";
+import { getSiteDictionary } from "@/lib/site-dictionary";
+import { getPricing } from "@/lib/pricing-api";
 import SignupForm from "@/components/signup-form";
 
 export async function generateStaticParams() {
@@ -22,7 +24,7 @@ export async function generateMetadata({
 }: PageProps<"/[lang]/signup">): Promise<Metadata> {
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
-  const t = getDictionary(lang);
+  const t = await getSiteDictionary(lang);
 
   return {
     title: t.signup.title,
@@ -39,7 +41,22 @@ const benefitIcons = [Clock, Boxes, Zap, Headphones];
 export default async function SignupPage({ params }: PageProps<"/[lang]/signup">) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
-  const t = getDictionary(lang);
+  const t = await getSiteDictionary(lang);
+  // Plans a visitor can start a free trial on (a plan without a trial is a demo call instead)
+  const { plans } = await getPricing();
+  const trialPlans = plans.flatMap((p) =>
+    p.trialDays
+      ? [{
+          code: p.id,
+          name: p.name,
+          monthly: p.monthly,
+          yearly: p.yearly,
+          trialDays: p.trialDays,
+          popular: Boolean(p.popular),
+          freeOrdersPerMonth: p.limits.freeOrdersPerMonth,
+        }]
+      : [],
+  );
 
   return (
     <main className="relative isolate overflow-hidden bg-neutral-50 py-12 sm:py-16 lg:py-20">
@@ -111,7 +128,7 @@ export default async function SignupPage({ params }: PageProps<"/[lang]/signup">
 
           {/* Right Column: Signup Form */}
           <div className="lg:col-span-6 xl:col-span-5">
-            <SignupForm t={t.signup} lang={lang} />
+            <SignupForm t={t.signup} lang={lang} plans={trialPlans} />
           </div>
         </div>
       </div>

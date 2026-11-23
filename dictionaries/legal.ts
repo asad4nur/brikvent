@@ -144,7 +144,7 @@ const en: Record<LegalSlug, LegalDoc> = {
       {
         heading: "Try before you pay",
         paragraphs: [
-          "Starter, Growth and Business plans include a 14-day free trial, so you can check that Brikvent fits your business before paying anything.",
+          "Every plan except Enterprise includes a {trialDays}-day free trial, so you can check that Brikvent fits your business before paying anything.",
         ],
       },
       {
@@ -398,7 +398,7 @@ const bn: Record<LegalSlug, LegalDoc> = {
       {
         heading: "টাকা দেওয়ার আগে ব্যবহার করে দেখুন",
         paragraphs: [
-          "Starter, Growth আর Business প্ল্যানে ১৪ দিনের ফ্রি ট্রায়াল আছে, যাতে কোনো টাকা দেওয়ার আগেই দেখে নিতে পারেন Brikvent আপনার ব্যবসার সাথে মানায় কিনা।",
+          "Enterprise ছাড়া প্রতিটি প্ল্যানে {trialDays} দিনের ফ্রি ট্রায়াল আছে, যাতে কোনো টাকা দেওয়ার আগেই দেখে নিতে পারেন Brikvent আপনার ব্যবসার সাথে মানায় কিনা।",
         ],
       },
       {

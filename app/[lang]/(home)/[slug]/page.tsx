@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { getLegalDoc, isLegalSlug, legalSlugs } from "@/dictionaries/legal";
 import { company } from "@/lib/company";
 import { fill, getDictionary, hasLocale, locales, type Locale } from "@/lib/i18n";
+import { getPricing } from "@/lib/pricing-api";
 
 // About and policy pages: /en/about, /bn/refund-policy, ...
 export async function generateStaticParams() {
@@ -30,8 +31,9 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/[slug]">):
   };
 }
 
-const withCompany = (text: string, lang: Locale) =>
+const withCompany = (text: string, lang: Locale, trialDays: string) =>
   fill(text, {
+    trialDays,
     parent: company.parent,
     email: company.email,
     phone: company.phone,
@@ -52,6 +54,8 @@ export default function LegalPage({ params }: PageProps<"/[lang]/[slug]">) {
 async function LegalContent({ params }: { params: PageProps<"/[lang]/[slug]">["params"] }) {
   const { lang, doc } = await resolve(params);
   const t = getDictionary(lang);
+  // The free trial length is set in the SaaS admin, like the plans
+  const trialDays = (await getPricing()).trialDays.toLocaleString(t.formats.number);
   const updated = new Intl.DateTimeFormat(t.formats.number, { dateStyle: "long" }).format(
     new Date(`${company.policiesUpdated}T00:00:00Z`),
   );
@@ -77,7 +81,7 @@ async function LegalContent({ params }: { params: PageProps<"/[lang]/[slug]">["p
       </div>
 
       <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-16">
-        <p className="text-lg leading-relaxed text-neutral-700">{withCompany(doc.intro, lang)}</p>
+        <p className="text-lg leading-relaxed text-neutral-700">{withCompany(doc.intro, lang, trialDays)}</p>
 
         {doc.sections.map((section) => (
           <section key={section.heading} className="mt-10">
@@ -86,7 +90,7 @@ async function LegalContent({ params }: { params: PageProps<"/[lang]/[slug]">["p
             </h2>
             {section.paragraphs?.map((p) => (
               <p key={p} className="mt-3 text-[15px] leading-relaxed text-neutral-700 sm:text-base">
-                {withCompany(p, lang)}
+                {withCompany(p, lang, trialDays)}
               </p>
             ))}
             {section.list && (
@@ -94,7 +98,7 @@ async function LegalContent({ params }: { params: PageProps<"/[lang]/[slug]">["p
                 {section.list.map((item) => (
                   <li key={item} className="flex gap-3 text-[15px] leading-relaxed text-neutral-700 sm:text-base">
                     <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
-                    {withCompany(item, lang)}
+                    {withCompany(item, lang, trialDays)}
                   </li>
                 ))}
               </ul>

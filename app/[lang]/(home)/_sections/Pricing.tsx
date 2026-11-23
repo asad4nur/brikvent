@@ -10,7 +10,6 @@ import {
   featureTable,
   planFeatures,
   planIncludes,
-  plans,
   type FeatureRow,
   type Plan,
 } from "@/lib/pricing";
@@ -25,6 +24,14 @@ function formatters(locale: string) {
   return { number, taka };
 }
 
+// "500 MB" under a gigabyte, otherwise "2 GB"; null = unlimited, "custom" = agreed per contract.
+function storageText(mb: number | null | "custom", t: T) {
+  const { number } = formatters(t.numberLocale);
+  if (mb === "custom") return t.values.custom;
+  if (mb === null) return t.values.unlimited;
+  return mb >= 1024 ? `${number(Math.round((mb / 1024) * 10) / 10)} GB` : `${number(mb)} MB`;
+}
+
 // What a plan costs in a month with `orders` sales orders, or null if the
 // plan has no fixed price (Enterprise).
 function monthlyCost(plan: Plan, orders: number) {
@@ -34,7 +41,7 @@ function monthlyCost(plan: Plan, orders: number) {
   return plan.monthly + Math.max(0, orders - free) * fee;
 }
 
-export default function Pricing({ t }: { t: T }) {
+export default function Pricing({ t, plans }: { t: T; plans: Plan[] }) {
   const [yearly, setYearly] = useState(false);
   const [orders, setOrders] = useState(500);
 
@@ -105,7 +112,10 @@ export default function Pricing({ t }: { t: T }) {
         </div>
 
         {/* Plan cards */}
-        <div className="reveal-group mt-12 grid gap-4 md:grid-cols-2 lg:mt-14 xl:grid-cols-4">
+        <div
+          className="reveal-group mt-12 grid gap-4 md:grid-cols-2 lg:mt-14 xl:[grid-template-columns:repeat(var(--plan-count),minmax(0,1fr))]"
+          style={{ "--plan-count": plans.length } as React.CSSProperties}
+        >
           {plans.map((plan) => (
             <PlanCard key={plan.id} plan={plan} yearly={yearly} t={t} />
           ))}
@@ -120,7 +130,7 @@ export default function Pricing({ t }: { t: T }) {
           ))}
         </ul>
 
-        <FeatureTable t={t} />
+        <FeatureTable t={t} plans={plans} />
 
         {/* Order calculator */}
         <div className="reveal mt-16 grid gap-8 rounded-[32px] border border-neutral-200 bg-white p-6 shadow-sm sm:p-8 lg:mt-20 lg:grid-cols-[1fr_1.2fr] lg:items-center lg:gap-14 lg:p-12">
@@ -204,18 +214,18 @@ function limitRows(t: T): { name: string; value: (p: Plan) => string }[] {
     { name: r.outlets, value: (p) => n(p.limits.outlets) },
     { name: r.skus, value: (p) => n(p.limits.skus) },
     { name: r.users, value: (p) => n(p.limits.users) },
-    { name: r.salesOrders, value: () => t.values.unlimited },
+    { name: r.salesOrders, value: (p) => n(p.limits.salesOrdersPerMonth) },
     { name: r.freeOrders, value: (p) => n(p.limits.freeOrdersPerMonth) },
     {
       name: r.overage,
       value: (p) => (p.limits.overagePerOrder === null ? "—" : taka(p.limits.overagePerOrder)),
     },
     { name: r.purchaseOrders, value: (p) => n(p.limits.purchaseOrdersPerMonth) },
+    { name: r.storage, value: (p) => storageText(p.limits.storageMb, t) },
     {
-      name: r.storage,
-      value: (p) => (typeof p.limits.storageGb === "number" ? `${number(p.limits.storageGb)} GB` : t.values.custom),
+      name: r.trial,
+      value: (p) => (p.trialDays === null ? t.values.demoCall : fill(t.values.days, { n: number(p.trialDays) })),
     },
-    { name: r.trial, value: (p) => (p.trial === "14-day" ? t.values.days14 : t.values.demoCall) },
   ];
 }
 
@@ -240,7 +250,7 @@ function FeatureLabel({ row, t }: { row: FeatureRow; t: T }) {
   );
 }
 
-function FeatureTable({ t }: { t: T }) {
+function FeatureTable({ t, plans }: { t: T; plans: Plan[] }) {
   const [open, setOpen] = useState(false);
   const rows = limitRows(t);
 
@@ -272,7 +282,7 @@ function FeatureTable({ t }: { t: T }) {
         }`}
       >
         <div className="min-h-0 overflow-hidden" inert={!open}>
-          <MobileFeatureList t={t} rows={rows} />
+          <MobileFeatureList t={t} rows={rows} plans={plans} />
           <div className="hidden overflow-hidden rounded-3xl border border-neutral-200 bg-white md:block">
             <table className="w-full border-collapse text-left text-sm">
               <thead>
@@ -297,7 +307,7 @@ function FeatureTable({ t }: { t: T }) {
                 </tr>
               </thead>
               <tbody>
-                <GroupRow name={t.limitsGroup} />
+                <GroupRow name={t.limitsGroup} columns={plans.length + 1} />
                 {rows.map((r) => (
                   <tr key={r.name} className="border-b border-neutral-100">
                     <th scope="row" className="bg-white px-5 py-3 font-medium text-neutral-700">
@@ -314,7 +324,7 @@ function FeatureTable({ t }: { t: T }) {
                   </tr>
                 ))}
                 {featureTable.map((g) => (
-                  <FeatureGroup key={g.group} group={g} t={t} />
+                  <FeatureGroup key={g.group} group={g} t={t} plans={plans} />
                 ))}
               </tbody>
             </table>
@@ -326,7 +336,7 @@ function FeatureTable({ t }: { t: T }) {
 }
 
 // Phones get one plan at a time instead of a four-column table.
-function MobileFeatureList({ t, rows }: { t: T; rows: ReturnType<typeof limitRows> }) {
+function MobileFeatureList({ t, rows, plans }: { t: T; rows: ReturnType<typeof limitRows>; plans: Plan[] }) {
   const [planId, setPlanId] = useState(plans.find((p) => p.popular)?.id ?? plans[0].id);
   const plan = plans.find((p) => p.id === planId)!;
   const groupLabel = "bg-neutral-50 px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-500";
@@ -336,7 +346,8 @@ function MobileFeatureList({ t, rows }: { t: T; rows: ReturnType<typeof limitRow
       <div
         role="radiogroup"
         aria-label={t.planLabel}
-        className="grid grid-cols-4 gap-1 border-b border-neutral-200 p-1.5"
+        className="grid gap-1 border-b border-neutral-200 p-1.5"
+        style={{ gridTemplateColumns: `repeat(${plans.length}, minmax(0, 1fr))` }}
       >
         {plans.map((p) => (
           <button
@@ -369,7 +380,7 @@ function MobileFeatureList({ t, rows }: { t: T; rows: ReturnType<typeof limitRow
             <p className={groupLabel}>{t.groups[g.group]}</p>
             <dl>
               {g.rows.map((r) => {
-                const included = r.plans.includes(plan.id);
+                const included = planIncludes(plan, r.id);
                 return (
                   <div
                     key={r.id}
@@ -392,12 +403,12 @@ function MobileFeatureList({ t, rows }: { t: T; rows: ReturnType<typeof limitRow
   );
 }
 
-function GroupRow({ name }: { name: string }) {
+function GroupRow({ name, columns }: { name: string; columns: number }) {
   return (
     <tr className="bg-neutral-50">
       <th
         scope="colgroup"
-        colSpan={plans.length + 1}
+        colSpan={columns}
         className="px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-500"
       >
         {name}
@@ -406,10 +417,10 @@ function GroupRow({ name }: { name: string }) {
   );
 }
 
-function FeatureGroup({ group, t }: { group: (typeof featureTable)[number]; t: T }) {
+function FeatureGroup({ group, t, plans }: { group: (typeof featureTable)[number]; t: T; plans: Plan[] }) {
   return (
     <>
-      <GroupRow name={t.groups[group.group]} />
+      <GroupRow name={t.groups[group.group]} columns={plans.length + 1} />
       {group.rows.map((r) => (
         <tr key={r.id} className="border-b border-neutral-100 last:border-0">
           <th scope="row" className="bg-white px-5 py-3 font-medium text-neutral-700">
@@ -418,7 +429,7 @@ function FeatureGroup({ group, t }: { group: (typeof featureTable)[number]; t: T
           {plans.map((p) => (
             <td key={p.id} className={`px-4 py-3 ${p.popular ? "bg-lime/15" : ""}`}>
               <span className="flex justify-center">
-                <IncludedMark included={r.plans.includes(p.id)} t={t} />
+                <IncludedMark included={planIncludes(p, r.id)} t={t} />
               </span>
             </td>
           ))}
@@ -442,7 +453,7 @@ function PlanCard({ plan, yearly, t }: { plan: Plan; yearly: boolean; t: T }) {
     l.freeOrdersPerMonth === null
       ? k.unlimitedOrders
       : fill(k.freeOrders, { n: n(l.freeOrdersPerMonth), fee: taka(l.overagePerOrder ?? 0) }),
-    fill(k.storage, { n: typeof l.storageGb === "number" ? `${number(l.storageGb)} GB` : t.values.custom }),
+    fill(k.storage, { n: storageText(l.storageMb, t) }),
   ];
 
   return (
@@ -459,7 +470,9 @@ function PlanCard({ plan, yearly, t }: { plan: Plan; yearly: boolean; t: T }) {
         </span>
       )}
       <h3 className="text-lg font-semibold text-deep">{plan.name}</h3>
-      <p className="mt-1 min-h-10 text-sm text-neutral-500">{t.taglines[plan.id]}</p>
+      <p className="mt-1 min-h-10 text-sm text-neutral-500">
+        {(t.taglines as Record<string, string>)[plan.id] ?? plan.tagline}
+      </p>
 
       <div className="mt-6 min-h-[72px]">
         <p className="flex items-baseline gap-1">
@@ -479,17 +492,19 @@ function PlanCard({ plan, yearly, t }: { plan: Plan; yearly: boolean; t: T }) {
         </p>
       </div>
 
+      {plan.trialDays !== null && (
       <Link
-        href={plan.trial === "demo-call" ? "#demo" : `/${lang}/signup`}
+        href={`/${lang}/signup`}
         className={`group mt-6 inline-flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-colors ${
           plan.popular
             ? "bg-deep text-white hover:bg-deep-soft"
             : "border border-neutral-200 text-neutral-900 hover:border-neutral-300 hover:bg-neutral-50"
         }`}
       >
-        {plan.trial === "demo-call" ? t.bookDemo : t.startTrial}
+        {fill(t.startTrial, { n: number(plan.trialDays) })}
         <ArrowRight size={15} strokeWidth={2.25} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
       </Link>
+      )}
 
       <ul className="mt-7 space-y-2.5 border-t border-neutral-100 pt-6 text-sm text-neutral-800">
         {limits.map((item, i) => (
@@ -501,7 +516,7 @@ function PlanCard({ plan, yearly, t }: { plan: Plan; yearly: boolean; t: T }) {
       </ul>
       <ul className="mt-5 space-y-2.5 border-t border-neutral-100 pt-5 text-sm">
         {planFeatures.map((id) => {
-          const included = planIncludes(plan.id, id);
+          const included = planIncludes(plan, id);
           return (
             <li
               key={id}

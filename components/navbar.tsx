@@ -256,12 +256,6 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
             {t.login}
           </a>
           <Link
-            href={`${home}#demo`}
-            className="hidden rounded-full border border-neutral-200 px-4 py-2 text-sm font-semibold text-deep transition-colors hover:border-deep xl:inline-flex"
-          >
-            {t.demo}
-          </Link>
-          <Link
             href={`${home}/signup`}
             className="group inline-flex items-center gap-2 rounded-full bg-deep py-2 pl-5 pr-2 text-sm font-semibold text-white transition-colors hover:bg-deep-soft"
           >
@@ -355,14 +349,7 @@ export default function Navbar({ t, lang }: { t: Dictionary["nav"]; lang: Locale
             >
               {t.trial}
             </Link>
-            <div className="grid grid-cols-2 gap-2">
-              <Link
-                href={`${home}#demo`}
-                onClick={closeAll}
-                className="rounded-full border border-neutral-200 py-3 text-center text-sm font-medium text-neutral-900"
-              >
-                {t.demo}
-              </Link>
+            <div className="grid grid-cols-1 gap-2">
               <a
                 href={getMerchantAdminUrl()}
                 onClick={closeAll}

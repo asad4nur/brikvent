@@ -1,40 +1,63 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   AlertCircle,
   ArrowRight,
-  Boxes,
   CheckCircle2,
-  Clock,
   Eye,
   EyeOff,
-  Headphones,
   Loader2,
   Mail,
-  ShieldCheck,
-  ShoppingBag,
-  Sparkles,
-  Store,
 } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
 import { fill, localizeDigits, type Locale } from "@/lib/i18n";
+import { useRouter } from "next/navigation";
 import { getApiUrl, getMerchantAdminUrl } from "@/lib/config";
+import { SIGNUP_RESULT_KEY } from "@/components/thank-you-content";
+
+// What the form needs of a plan; refreshed from the backend when the page opens
+export type SignupPlan = {
+  code: string;
+  name: string;
+  monthly: number;
+  yearly: number | null;
+  trialDays: number;
+  popular: boolean;
+  freeOrdersPerMonth: number | null;
+};
 
 interface SignupFormProps {
   t: Dictionary["signup"];
   lang: Locale;
+  plans: SignupPlan[];
 }
+
+type LivePlan = {
+  code: string;
+  name: string;
+  isPopular: boolean;
+  price: { monthly: number; yearly: number | null };
+  trialDays: number | null;
+  freeOrdersPerMonth: number | null;
+};
+
+// Same address the page uses for its own check of a Facebook page link (the server checks it again)
+const FACEBOOK_PAGE_URL = /^https?:\/\/(?:www\.|m\.|web\.|business\.)?(?:facebook\.com|fb\.com|fb\.me)\/[^\s/?#][^\s]*$/i;
 
 type SubdomainState = "idle" | "checking" | "available" | "taken" | "invalid";
 
-export default function SignupForm({ t, lang }: SignupFormProps) {
+export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormProps) {
   const [fullName, setFullName] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [storeSlug, setStoreSlug] = useState("");
   const [slugManuallyChanged, setSlugManuallyChanged] = useState(false);
-  const [businessType, setBusinessType] = useState<"retail" | "online" | "both">("both");
+  const [plans, setPlans] = useState<SignupPlan[]>(initialPlans);
+  const [planCode, setPlanCode] = useState(
+    () => (initialPlans.find((p) => p.popular) ?? initialPlans[0])?.code ?? "",
+  );
+  const [facebookUrl, setFacebookUrl] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -57,9 +80,7 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [successResult, setSuccessResult] = useState<any | null>(null);
-  const [countdown, setCountdown] = useState(5);
-  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
 
   const merchantAdminUrl = getMerchantAdminUrl();
   const apiUrl = getApiUrl();
@@ -157,26 +178,6 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
     }
   };
 
-  // Countdown timer for automatic redirect on success
-  useEffect(() => {
-    if (!successResult) return;
-
-    countdownIntervalRef.current = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
-          window.location.href = merchantAdminUrl;
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => {
-      if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
-    };
-  }, [successResult, merchantAdminUrl]);
-
   // Resend cooldown ticks down once a second
   useEffect(() => {
     if (resendIn <= 0) return;
@@ -194,7 +195,6 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
   useEffect(() => {
     return () => {
       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-      if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
     };
   }, []);
 
@@ -230,6 +230,16 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
       errs.phone = t.errors.phoneInvalid;
     }
 
+    if (!facebookUrl.trim()) {
+      errs.facebook = t.errors.facebookRequired;
+    } else if (!FACEBOOK_PAGE_URL.test(facebookUrl.trim())) {
+      errs.facebook = t.errors.facebookInvalid;
+    }
+
+    if (!plans.some((p) => p.code === planCode)) {
+      errs.plan = t.errors.planRequired;
+    }
+
     if (!password) {
       errs.password = t.errors.passwordRequired;
     } else if (password.length < 8) {
@@ -239,6 +249,45 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
     setFieldErrors(errs);
     return Object.keys(errs).length === 0;
   };
+
+  // Prices are read from the backend again when the page opens, so the owner always sees the
+  // plans as they are set right now (the page itself may be up to a minute old). A plan in the
+  // link (?plan=growth) is pre-selected.
+  useEffect(() => {
+    let cancelled = false;
+    const wanted = new URLSearchParams(window.location.search).get("plan");
+    fetch(`${apiUrl}/public/pricing-plans`, { headers: { Accept: "application/json" } })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
+      .then((body: { data?: { plans?: LivePlan[] } }) => {
+        const live = (body.data?.plans ?? [])
+          .filter((p) => p.trialDays !== null && p.trialDays > 0)
+          .map<SignupPlan>((p) => ({
+            code: p.code,
+            name: p.name,
+            monthly: p.price.monthly,
+            yearly: p.price.yearly,
+            trialDays: p.trialDays as number,
+            popular: p.isPopular,
+            freeOrdersPerMonth: p.freeOrdersPerMonth,
+          }));
+        if (cancelled || live.length === 0) return;
+        setPlans(live);
+        setPlanCode((current) =>
+          live.some((p) => p.code === wanted)
+            ? (wanted as string)
+            : live.some((p) => p.code === current)
+              ? current
+              : (live.find((p) => p.popular) ?? live[0]).code,
+        );
+      })
+      .catch(() => {
+        // Keep the plans the page came with
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const cleanEmail = () => email.trim().toLowerCase();
 
@@ -279,7 +328,8 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
         email: cleanEmail(),
         phone: phone.trim(),
         password: password,
-        businessType: businessType,
+        planCode,
+        facebookPageUrl: facebookUrl.trim(),
         verificationToken: token,
       };
 
@@ -296,7 +346,22 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
         throw new Error(readError(data, t.errors.genericError));
       }
       setVerificationToken(null);
-      setSuccessResult(data);
+      // Go to the thank-you page (its own address, for the ad conversion). The store details
+      // are handed over in this tab's sessionStorage, so they are not in the address.
+      try {
+        window.sessionStorage.setItem(
+          SIGNUP_RESULT_KEY,
+          JSON.stringify({
+            businessName: data.data?.businessName || businessName.trim(),
+            subdomain: data.data?.subdomain || storeSlug.trim().toLowerCase(),
+            adminEmail: data.data?.adminEmail || cleanEmail(),
+          }),
+        );
+      } catch {
+        // The page still works without them
+      }
+      router.push(`/${lang}/thank-you`);
+      return;
     } catch (err) {
       setFormError((err instanceof Error && err.message) || t.errors.genericError);
     } finally {
@@ -364,95 +429,6 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
   };
 
   // SUCCESS STATE
-  if (successResult) {
-    const data = successResult.data || {};
-    return (
-      <div className="mx-auto w-full max-w-2xl overflow-hidden rounded-3xl border border-neutral-200/80 bg-white p-8 shadow-2xl sm:p-12">
-        <div className="text-center">
-          <div className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-mint-wash text-brand ring-8 ring-mint/15">
-            <CheckCircle2 size={36} strokeWidth={2.2} className="text-brand" />
-          </div>
-
-          <span className="mt-5 inline-block rounded-full bg-mint-wash px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-neutral-900">
-            {t.success.badge}
-          </span>
-
-          <h2 className="mt-3 text-2xl font-bold tracking-tight text-deep sm:text-3xl">
-            {t.success.title}
-          </h2>
-          <p className="mt-2 text-sm text-neutral-600 sm:text-base">
-            {t.success.subtitle}
-          </p>
-        </div>
-
-        {/* Details Card */}
-        <div className="mt-8 rounded-2xl border border-neutral-200 bg-neutral-50/80 p-5 sm:p-6">
-          <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
-            <div>
-              <dt className="text-xs font-medium uppercase tracking-wide text-neutral-500">
-                {t.success.storeNameLabel}
-              </dt>
-              <dd className="mt-1 font-semibold text-neutral-900">
-                {data.businessName || businessName}
-              </dd>
-            </div>
-
-            <div>
-              <dt className="text-xs font-medium uppercase tracking-wide text-neutral-500">
-                {t.success.storeUrlLabel}
-              </dt>
-              <dd className="mt-1 font-semibold text-brand">
-                {data.subdomain ? `${data.subdomain}.brikvent.com` : `${storeSlug}.brikvent.com`}
-              </dd>
-            </div>
-
-            <div>
-              <dt className="text-xs font-medium uppercase tracking-wide text-neutral-500">
-                {t.success.adminEmailLabel}
-              </dt>
-              <dd className="mt-1 font-semibold text-neutral-900">
-                {data.adminEmail || email}
-              </dd>
-            </div>
-
-            <div>
-              <dt className="text-xs font-medium uppercase tracking-wide text-neutral-500">
-                {t.success.trialDurationLabel}
-              </dt>
-              <dd className="mt-1 inline-flex items-center gap-1.5 font-semibold text-brand">
-                <Clock size={14} />
-                {t.success.trialDurationValue}
-              </dd>
-            </div>
-          </dl>
-        </div>
-
-        {/* Action Button & Countdown */}
-        <div className="mt-8 text-center">
-          <a
-            href={merchantAdminUrl}
-            className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-deep py-3.5 px-6 text-base font-semibold text-white shadow-lg transition-all hover:bg-deep-soft"
-          >
-            <span>{t.success.ctaButton}</span>
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-mint text-deep transition-transform group-hover:translate-x-1">
-              <ArrowRight size={15} strokeWidth={2.5} />
-            </span>
-          </a>
-
-          <p className="mt-3 text-xs text-neutral-500">
-            {fill(t.success.redirectNotice, {
-              n: localizeDigits(String(countdown), lang === "bn" ? "bn-BD" : "en-US"),
-            })}
-          </p>
-
-          <p className="mt-6 text-xs text-neutral-400">
-            {t.success.contactSupport}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   // EMAIL VERIFICATION STATE
   if (step === "verify") {
     return (
@@ -665,57 +641,38 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
             )}
           </div>
 
-          {/* Business Type Selector */}
+          {/* Plan picker: live prices from the backend */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
-              {t.form.businessTypeLabel}
+              {t.form.planLabel} <span className="text-red-500">*</span>
             </label>
-            <div className="mt-1.5 grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => setBusinessType("both")}
-                className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all ${
-                  businessType === "both"
-                    ? "border-brand bg-brand/5 text-deep font-semibold shadow-sm ring-1 ring-brand/30"
-                    : "border-neutral-200 bg-neutral-50/50 text-neutral-600 hover:bg-neutral-100/60"
-                }`}
-              >
-                <Boxes size={18} className={businessType === "both" ? "text-brand" : "text-neutral-400"} />
-                <span className="mt-1 text-[11px] leading-tight sm:text-xs">
-                  {t.form.businessTypeOptions.both}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setBusinessType("online")}
-                className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all ${
-                  businessType === "online"
-                    ? "border-brand bg-brand/5 text-deep font-semibold shadow-sm ring-1 ring-brand/30"
-                    : "border-neutral-200 bg-neutral-50/50 text-neutral-600 hover:bg-neutral-100/60"
-                }`}
-              >
-                <ShoppingBag size={18} className={businessType === "online" ? "text-brand" : "text-neutral-400"} />
-                <span className="mt-1 text-[11px] leading-tight sm:text-xs">
-                  {t.form.businessTypeOptions.online}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setBusinessType("retail")}
-                className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all ${
-                  businessType === "retail"
-                    ? "border-brand bg-brand/5 text-deep font-semibold shadow-sm ring-1 ring-brand/30"
-                    : "border-neutral-200 bg-neutral-50/50 text-neutral-600 hover:bg-neutral-100/60"
-                }`}
-              >
-                <Store size={18} className={businessType === "retail" ? "text-brand" : "text-neutral-400"} />
-                <span className="mt-1 text-[11px] leading-tight sm:text-xs">
-                  {t.form.businessTypeOptions.retail}
-                </span>
-              </button>
-            </div>
+            <select
+              value={planCode}
+              onChange={(e) => {
+                setPlanCode(e.target.value);
+                if (fieldErrors.plan) setFieldErrors((p) => ({ ...p, plan: "" }));
+              }}
+              className={`mt-1.5 w-full rounded-xl border bg-neutral-50/50 px-4 py-2.5 text-sm text-neutral-900 transition-colors focus:bg-white focus:outline-none focus:ring-2 ${
+                fieldErrors.plan
+                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                  : "border-neutral-200 focus:border-brand focus:ring-brand/20"
+              }`}
+            >
+              {plans.map((plan) => (
+                <option key={plan.code} value={plan.code}>
+                  {`${plan.name} - ৳${localizeDigits(plan.monthly.toLocaleString("en-US"), lang)}${t.form.planPerMonth}`}
+                  {plan.freeOrdersPerMonth === null
+                    ? ` - ${t.form.planOrdersUnlimited}`
+                    : ` - ${fill(t.form.planOrders, { n: localizeDigits(plan.freeOrdersPerMonth.toLocaleString("en-US"), lang) })}`}
+                </option>
+              ))}
+            </select>
+            {plans.length === 0 && <p className="mt-1 text-xs text-red-600">{t.form.planLoadFailed}</p>}
+            {fieldErrors.plan ? (
+              <p className="mt-1 text-xs text-red-600">{fieldErrors.plan}</p>
+            ) : (
+              <p className="mt-1 text-xs text-neutral-400">{t.form.planHint}</p>
+            )}
           </div>
 
           {/* Email & Phone Grid */}
@@ -768,6 +725,37 @@ export default function SignupForm({ t, lang }: SignupFormProps) {
                 <p className="mt-1 text-xs text-red-600">{fieldErrors.phone}</p>
               )}
             </div>
+          </div>
+
+          {/* Facebook page (required) */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
+              {t.form.facebookLabel} <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="url"
+              inputMode="url"
+              value={facebookUrl}
+              onChange={(e) => {
+                setFacebookUrl(e.target.value);
+                if (fieldErrors.facebook) setFieldErrors((p) => ({ ...p, facebook: "" }));
+              }}
+              placeholder={t.form.facebookPlaceholder}
+              className={`mt-1.5 w-full rounded-xl border bg-neutral-50/50 px-4 py-2.5 text-sm text-neutral-900 transition-colors placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 ${
+                fieldErrors.facebook
+                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                  : "border-neutral-200 focus:border-brand focus:ring-brand/20"
+              }`}
+            />
+            {fieldErrors.facebook ? (
+              <p className="mt-1 text-xs text-red-600">{fieldErrors.facebook}</p>
+            ) : (
+              <p className="mt-1 text-xs text-neutral-400">{t.form.facebookHint}</p>
+            )}
+            <p className="mt-2 flex gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
+              <AlertCircle size={14} className="mt-0.5 shrink-0" aria-hidden />
+              {t.form.phoneNote}
+            </p>
           </div>
 
           {/* Password */}

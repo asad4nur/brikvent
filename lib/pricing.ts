@@ -1,12 +1,14 @@
-// Source: Brikvent_Pricing_Plan.pdf (draft proposal, 27 Oct 2026). All prices in BDT.
+// Plans, limits and prices come from the backend (see lib/pricing-api.ts), set in the SaaS admin.
+// This file keeps the types the pricing section uses, the feature list shown in the comparison, and
+// the draft plans (Brikvent_Pricing_Plan.pdf, 27 Oct 2026, BDT) used ONLY if the backend cannot be reached.
 
-export type PlanId = "starter" | "growth" | "business" | "enterprise";
+type StaticPlanId = "starter" | "growth" | "business" | "enterprise";
 
 // null = unlimited
 type Limit = number | null;
 
-export type Plan = {
-  id: PlanId;
+type StaticPlan = {
+  id: StaticPlanId;
   name: string;
   monthly: number;
   // null = custom contract
@@ -24,10 +26,10 @@ export type Plan = {
     purchaseOrdersPerMonth: Limit;
     storageGb: number | "custom";
   };
-  trial: "14-day" | "demo-call";
+  trial: "trial" | "demo-call";
 };
 
-export const plans: Plan[] = [
+const staticPlans: StaticPlan[] = [
   {
     id: "starter",
     name: "Starter",
@@ -42,7 +44,7 @@ export const plans: Plan[] = [
       purchaseOrdersPerMonth: 50,
       storageGb: 1,
     },
-    trial: "14-day",
+    trial: "trial",
   },
   {
     id: "growth",
@@ -59,7 +61,7 @@ export const plans: Plan[] = [
       purchaseOrdersPerMonth: 500,
       storageGb: 5,
     },
-    trial: "14-day",
+    trial: "trial",
   },
   {
     id: "business",
@@ -75,7 +77,7 @@ export const plans: Plan[] = [
       purchaseOrdersPerMonth: null,
       storageGb: 20,
     },
-    trial: "14-day",
+    trial: "trial",
   },
   {
     id: "enterprise",
@@ -96,7 +98,7 @@ export const plans: Plan[] = [
   },
 ];
 
-const ALL: PlanId[] = ["starter", "growth", "business", "enterprise"];
+const ALL: StaticPlanId[] = ["starter", "growth", "business", "enterprise"];
 
 // Labels for these ids live in the dictionaries (pricing.features / groups).
 export type FeatureId =
@@ -110,7 +112,8 @@ export type FeatureGroupId = "selling" | "orders" | "inventory" | "customers" | 
 
 export type FeatureRow = {
   id: FeatureId;
-  plans: PlanId[];
+  // Only the fallback plans read this; live plans get their features from the backend flags.
+  plans: StaticPlanId[];
   // Usage is paid with prepaid credits.
   credits?: true;
   // Not in the pricing PDF: inferred from the module the feature belongs to.
@@ -182,8 +185,65 @@ export const planFeatures: FeatureId[] = [
 ];
 
 const allRows = featureTable.flatMap((g) => g.rows);
-export const planIncludes = (plan: PlanId, feature: FeatureId) =>
-  allRows.find((r) => r.id === feature)?.plans.includes(plan) ?? false;
+
+// null = unlimited
+export type Plan = {
+  // The plan's code, for example "starter"
+  id: string;
+  name: string;
+  // Short description set in the SaaS admin; used when the dictionaries have no tagline for this plan
+  tagline: string | null;
+  monthly: number;
+  // null = no yearly price / custom contract
+  yearly: number | null;
+  // Priced "from" its monthly figure (only the fallback Enterprise plan)
+  startingFrom?: boolean;
+  popular?: boolean;
+  limits: {
+    outlets: Limit; // warehouses included
+    skus: Limit; // products + variants
+    users: Limit; // role-based users
+    salesOrdersPerMonth: Limit;
+    freeOrdersPerMonth: Limit;
+    // Charge per order once the free quota is used; null = not applicable.
+    overagePerOrder: number | null;
+    purchaseOrdersPerMonth: Limit;
+    // null = unlimited, "custom" = agreed per contract
+    storageMb: number | null | "custom";
+  };
+  // Free trial length in days; null = no trial (a demo call instead)
+  trialDays: number | null;
+  // Every feature this plan includes (ids of featureTable rows)
+  features: FeatureId[];
+};
+
+export const planIncludes = (plan: Plan, feature: FeatureId) => plan.features.includes(feature);
+
+// Free trial length of the draft plans, and of the site when the backend cannot be reached.
+export const FALLBACK_TRIAL_DAYS = 7;
+
+// The draft plans in the shape the pricing section uses.
+export const fallbackPlans: Plan[] = staticPlans.map((p) => ({
+  id: p.id,
+  name: p.name,
+  tagline: null,
+  monthly: p.monthly,
+  yearly: p.yearly,
+  startingFrom: p.startingFrom,
+  popular: p.popular,
+  limits: {
+    outlets: p.limits.outlets,
+    skus: p.limits.skus,
+    users: p.limits.users,
+    salesOrdersPerMonth: null,
+    freeOrdersPerMonth: p.limits.freeOrdersPerMonth,
+    overagePerOrder: p.limits.overagePerOrder,
+    purchaseOrdersPerMonth: p.limits.purchaseOrdersPerMonth,
+    storageMb: p.limits.storageGb === "custom" ? "custom" : p.limits.storageGb * 1024,
+  },
+  trialDays: p.trial === "trial" ? FALLBACK_TRIAL_DAYS : null,
+  features: allRows.filter((r) => r.plans.includes(p.id)).map((r) => r.id),
+}));
 
 // Monthly bill for a shop with 500 orders (average ৳1,500, ৳7,50,000 in
 // sales). Other platforms are shown by type, not by name; the figures come
@@ -201,4 +261,5 @@ export const costComparison: { id: CostRowId; cost: string; value: number; from?
   { id: "commission", cost: "৳11,250", value: 11250 },
 ];
 
-export const lowestMonthlyPrice = Math.min(...plans.map((p) => p.monthly));
+// The cheapest monthly price among the plans.
+export const lowestMonthlyPrice = (plans: Plan[]) => Math.min(...plans.map((p) => p.monthly));
