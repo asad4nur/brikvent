@@ -15,7 +15,7 @@
   --color-deep: #0a0a0a;
   --color-deep-soft: #171717;
   --color-mint: #ccff00;
-  --color-mint-ink: #00a63e;
+  --color-mint-ink: #007a2d; /* darker than brand green so small text passes WCAG AA (5.2:1 on mint-wash) */
   --color-mint-wash: #f4fce4; /* flat lime tint for chips and panels */
   --color-mint-line: #e2f3c6;
   --font-sans: var(--font-geist-sans), var(--font-bangla);

@@ -144,7 +144,7 @@ export default function Footer({
                 <Icon size={17} strokeWidth={2} aria-hidden />
               </span>
               <span className="min-w-0">
-                <span className="block text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+                <span className="block text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
                   {label}
                 </span>
                 {href ? (
@@ -161,7 +161,7 @@ export default function Footer({
       </div>
 
       <div className="relative border-t border-white/10">
-        <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-4 py-6 text-xs text-neutral-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
+        <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-4 py-6 text-xs text-neutral-400 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8 xl:px-12 min-[90rem]:px-20">
           <p>
             {copyBefore}
             <span className="font-medium text-neutral-200">{company.parent}</span>

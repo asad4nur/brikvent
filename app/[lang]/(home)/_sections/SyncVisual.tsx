@@ -289,7 +289,7 @@ function Step({ done, label }: { done: boolean; label: string }) {
   return (
     <p
       className={`mt-1.5 flex items-center gap-1.5 text-[11px] font-medium transition-colors duration-300 ${
-        done ? "text-deep" : "text-neutral-400"
+        done ? "text-deep" : "text-neutral-500"
       }`}
     >
       <span

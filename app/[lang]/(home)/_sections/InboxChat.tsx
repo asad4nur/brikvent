@@ -190,7 +190,7 @@ export default function InboxChat({ summary }: { summary: string }) {
         </div>
 
         <div className="flex items-center gap-2 border-t border-neutral-100 px-3 py-2">
-          <span className="flex-1 rounded-full bg-neutral-100 px-3 py-1.5 text-[11px] text-neutral-400">
+          <span className="flex-1 rounded-full bg-neutral-50 px-3 py-1.5 text-[11px] text-neutral-500">
             উত্তর লিখুন…
           </span>
           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-deep text-mint">
@@ -229,7 +229,7 @@ function ChatRow({
         )}
       </div>
       <p className="mt-1 truncate text-[11px] text-neutral-500">{preview}</p>
-      <p className="mt-0.5 text-[10px] font-medium text-neutral-400">{channelLabel[channel]}</p>
+      <p className="mt-0.5 text-[10px] font-medium text-neutral-500">{channelLabel[channel]}</p>
     </li>
   );
 }

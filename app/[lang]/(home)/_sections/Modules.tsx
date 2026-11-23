@@ -243,7 +243,7 @@ function StoreMock() {
                 look={look}
                 className="block aspect-[4/5] h-auto w-full transition-transform duration-500 group-hover:scale-105"
               />
-              <span className="absolute left-1.5 top-1.5 rounded-full bg-red-500 px-1.5 py-0.5 text-[9px] font-bold text-white">
+              <span className="absolute left-1.5 top-1.5 rounded-full bg-red-600 px-1.5 py-0.5 text-[9px] font-bold text-white">
                 −{Math.round((1 - parseInt(price.replace(/\D/g, "")) / parseInt(was.replace(/\D/g, ""))) * 100)}%
               </span>
             </div>
@@ -252,7 +252,7 @@ function StoreMock() {
                 <p className="truncate text-[11px] font-medium text-neutral-800 sm:text-xs">{name}</p>
                 <p className="truncate text-[11px] sm:text-xs">
                   <span className="font-semibold text-deep">{price}</span>{" "}
-                  <span className="text-neutral-400 line-through">{was}</span>
+                  <span className="text-neutral-500 line-through">{was}</span>
                 </p>
               </div>
               {/* Add-to-cart button, as on a real shop card (decorative in the mock). */}
@@ -403,7 +403,7 @@ function InboxMock() {
             <div className="flex items-center gap-2">
               <ChannelIcon channel={ch} size="sm" />
               <span className="text-xs font-semibold text-deep">{name}</span>
-              <span className="ml-auto text-[10px] text-neutral-400">{ch === "Website" ? "Live chat" : ch}</span>
+              <span className="ml-auto text-[10px] text-neutral-500">{ch === "Website" ? "Live chat" : ch}</span>
             </div>
             <p className="mt-1 truncate text-xs text-neutral-500">{msg}</p>
           </Card>
