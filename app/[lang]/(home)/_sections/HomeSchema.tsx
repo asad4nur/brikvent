@@ -1,12 +1,12 @@
 import { company } from "@/lib/company";
 import type { Dictionary, Locale } from "@/lib/i18n";
-import { plans } from "@/lib/pricing";
+import type { Plan } from "@/lib/pricing";
 import { jsonLd, siteUrl } from "@/lib/seo";
 
 // schema.org data for the home page, so search engines and AI answers can
 // read who Brikvent is, what it sells and for how much, and the FAQ.
 // Check changes with https://search.google.com/test/rich-results
-export default function HomeSchema({ lang, t }: { lang: Locale; t: Dictionary }) {
+export default function HomeSchema({ lang, t, plans }: { lang: Locale; t: Dictionary; plans: Plan[] }) {
   const org = `${siteUrl}/#organization`;
   const prices = plans.map((p) => p.monthly);
 

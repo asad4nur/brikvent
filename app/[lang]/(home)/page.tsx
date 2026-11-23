@@ -23,7 +23,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
   return (
     <main>
-      <HomeSchema lang={lang} t={t} />
+      <HomeSchema lang={lang} t={t} plans={plans} />
       <Hero t={t.hero} numberLocale={t.formats.number} />
       <PainPoints t={t.painPoints} lang={lang} />
       <OrderJourney t={t.journey} />
