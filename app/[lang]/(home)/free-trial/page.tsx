@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-<<<<<<< HEAD
-import { hasLocale, locales } from "@/lib/i18n";
 import { getSiteDictionary } from "@/lib/site-dictionary";
-=======
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import { pageMetadata } from "@/lib/seo";
->>>>>>> 4b5da3fe67fb33131325bc41c0d1b80f43ac6ad6
 import SignupPage from "../signup/page";
 
 export async function generateStaticParams() {

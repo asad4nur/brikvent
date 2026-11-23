@@ -6,11 +6,8 @@ import { ArrowLeft } from "lucide-react";
 import { getLegalDoc, isLegalSlug, legalSlugs } from "@/dictionaries/legal";
 import { company } from "@/lib/company";
 import { fill, getDictionary, hasLocale, locales, type Locale } from "@/lib/i18n";
-<<<<<<< HEAD
 import { getPricing } from "@/lib/pricing-api";
-=======
 import { jsonLd, pageMetadata, siteUrl } from "@/lib/seo";
->>>>>>> 4b5da3fe67fb33131325bc41c0d1b80f43ac6ad6
 
 // About and policy pages: /en/about, /bn/refund-policy, ...
 export async function generateStaticParams() {
