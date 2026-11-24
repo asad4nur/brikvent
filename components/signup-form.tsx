@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   AlertCircle,
   ArrowRight,
-  CheckCircle2,
   Eye,
   EyeOff,
   Loader2,
@@ -46,7 +45,9 @@ type LivePlan = {
 // Same address the page uses for its own check of a Facebook page link (the server checks it again)
 const FACEBOOK_PAGE_URL = /^https?:\/\/(?:www\.|m\.|web\.|business\.)?(?:facebook\.com|fb\.com|fb\.me)\/[^\s/?#][^\s]*$/i;
 
-type SubdomainState = "idle" | "checking" | "available" | "taken" | "invalid";
+// A domain like trendylifestyle.com (also accepts a pasted address with http://, www. or a path)
+const DOMAIN_NAME = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
+const cleanDomain = (v: string) => v.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/[/?#].*$/, "");
 
 const TRIAL_SIGNUP_TRACKED_KEY = "bv_trial_signup_tracked";
 
@@ -75,11 +76,13 @@ function trackTrialSignupComplete(plan: { code: string; trialDays: number } | un
   }
 }
 
+// 45 -> "45s", 125 -> "2:05"
+const formatWait = (s: number) => (s < 60 ? `${s}s` : `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`);
+
 export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormProps) {
   const [fullName, setFullName] = useState("");
   const [businessName, setBusinessName] = useState("");
-  const [storeSlug, setStoreSlug] = useState("");
-  const [slugManuallyChanged, setSlugManuallyChanged] = useState(false);
+  const [brandDomain, setBrandDomain] = useState("");
   const [plans, setPlans] = useState<SignupPlan[]>(initialPlans);
   const [planCode, setPlanCode] = useState(
     () => (initialPlans.find((p) => p.popular) ?? initialPlans[0])?.code ?? "",
@@ -97,11 +100,9 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
   const [verifiedEmail, setVerifiedEmail] = useState("");
   const [isSendingCode, setIsSendingCode] = useState(false);
   const [resendIn, setResendIn] = useState(0);
-
-  // Subdomain validation
-  const [subdomainState, setSubdomainState] = useState<SubdomainState>("idle");
-  const [subdomainMessage, setSubdomainMessage] = useState("");
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // Where the last code went: SMS to the phone (first choice) or the email
+  const [sentVia, setSentVia] = useState<{ channel: "sms" | "email"; destination: string }>({ channel: "email", destination: "" });
+  const [verifiedPhone, setVerifiedPhone] = useState("");
 
   // Form submission
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -112,96 +113,10 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
   const merchantAdminUrl = getMerchantAdminUrl();
   const apiUrl = getApiUrl();
 
-  // Helper to sanitize slug
-  const sanitizeSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 30);
-  };
-
-  // Check subdomain availability with backend
-  const checkSubdomain = async (slug: string) => {
-    const trimmed = slug.trim().toLowerCase();
-    if (!trimmed || trimmed.length < 3) {
-      setSubdomainState("idle");
-      setSubdomainMessage("");
-      return;
-    }
-
-    const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-    if (!slugRegex.test(trimmed)) {
-      setSubdomainState("invalid");
-      setSubdomainMessage(t.form.subdomainInvalid);
-      return;
-    }
-
-    setSubdomainState("checking");
-    setSubdomainMessage(t.form.checkingSubdomain);
-
-    try {
-      const res = await fetch(
-        `${apiUrl}/tenants/public/check-subdomain?subdomain=${encodeURIComponent(trimmed)}`,
-        {
-          headers: { Accept: "application/json" },
-        },
-      );
-      const data = await res.json();
-
-      if (res.ok && data.available) {
-        setSubdomainState("available");
-        setSubdomainMessage(t.form.subdomainAvailable);
-      } else {
-        setSubdomainState("taken");
-        setSubdomainMessage(data.message || t.form.subdomainUnavailable);
-      }
-    } catch {
-      // If network fails during check, don't hard block typing
-      setSubdomainState("idle");
-      setSubdomainMessage("");
-    }
-  };
-
-  // Auto-generate slug when businessName changes unless user typed slug manually
   const handleBusinessNameChange = (val: string) => {
     setBusinessName(val);
     if (fieldErrors.businessName) {
       setFieldErrors((prev) => ({ ...prev, businessName: "" }));
-    }
-
-    if (!slugManuallyChanged) {
-      const autoSlug = sanitizeSlug(val);
-      setStoreSlug(autoSlug);
-
-      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-      if (autoSlug.length >= 3) {
-        debounceTimerRef.current = setTimeout(() => {
-          checkSubdomain(autoSlug);
-        }, 350);
-      } else {
-        setSubdomainState("idle");
-        setSubdomainMessage("");
-      }
-    }
-  };
-
-  const handleSlugChange = (val: string) => {
-    setSlugManuallyChanged(true);
-    const sanitized = sanitizeSlug(val);
-    setStoreSlug(sanitized);
-    if (fieldErrors.storeSlug) {
-      setFieldErrors((prev) => ({ ...prev, storeSlug: "" }));
-    }
-
-    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-    if (sanitized.length >= 3) {
-      debounceTimerRef.current = setTimeout(() => {
-        checkSubdomain(sanitized);
-      }, 350);
-    } else {
-      setSubdomainState("idle");
-      setSubdomainMessage("");
     }
   };
 
@@ -218,13 +133,6 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
     return (typeof m === "string" && m) || fallback;
   };
 
-  // Clean up timers on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-    };
-  }, []);
-
   const validateForm = () => {
     const errs: Record<string, string> = {};
 
@@ -236,12 +144,8 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
       errs.businessName = t.errors.businessNameRequired;
     }
 
-    const cleanSlug = storeSlug.trim().toLowerCase();
-    const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-    if (!cleanSlug) {
-      errs.storeSlug = t.errors.storeSlugRequired;
-    } else if (cleanSlug.length < 3 || cleanSlug.length > 30 || !slugRegex.test(cleanSlug)) {
-      errs.storeSlug = t.errors.storeSlugInvalid;
+    if (brandDomain.trim() && !DOMAIN_NAME.test(cleanDomain(brandDomain))) {
+      errs.brandDomain = t.errors.brandDomainInvalid;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -286,6 +190,7 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
     fetch(`${apiUrl}/public/pricing-plans`, { headers: { Accept: "application/json" } })
       .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
       .then((body: { data?: { plans?: LivePlan[] } }) => {
+        // Only plans that come with a free trial
         const live = (body.data?.plans ?? [])
           .filter((p) => p.trialDays !== null && p.trialDays > 0)
           .map<SignupPlan>((p) => ({
@@ -326,7 +231,7 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
       const res = await fetch(`${apiUrl}/tenants/public/send-email-code`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ email: cleanEmail() }),
+        body: JSON.stringify({ email: cleanEmail(), phone: phone.trim() }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -334,6 +239,7 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
         throw new Error(readError(data, t.verify.sendFailed));
       }
       setResendIn(Number(data.resendAfterSeconds) || 60);
+      setSentVia({ channel: data.channel === "sms" ? "sms" : "email", destination: String(data.destination || "") });
       return true;
     } catch (err) {
       setFormError((err instanceof Error && err.message) || t.verify.sendFailed);
@@ -351,11 +257,11 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
       const payload = {
         fullName: fullName.trim(),
         businessName: businessName.trim(),
-        storeSlug: storeSlug.trim().toLowerCase(),
         email: cleanEmail(),
         phone: phone.trim(),
         password: password,
         planCode,
+        ...(brandDomain.trim() && { brandDomain: cleanDomain(brandDomain) }),
         facebookPageUrl: facebookUrl.trim(),
         verificationToken: token,
       };
@@ -383,7 +289,7 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
           SIGNUP_RESULT_KEY,
           JSON.stringify({
             businessName: data.data?.businessName || businessName.trim(),
-            subdomain: data.data?.subdomain || storeSlug.trim().toLowerCase(),
+            subdomain: data.data?.subdomain,
             adminEmail: data.data?.adminEmail || cleanEmail(),
           }),
         );
@@ -405,16 +311,8 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
 
     if (!validateForm()) return;
 
-    if (subdomainState === "taken" || subdomainState === "invalid") {
-      setFieldErrors((prev) => ({
-        ...prev,
-        storeSlug: subdomainMessage || t.errors.storeSlugInvalid,
-      }));
-      return;
-    }
-
     // Already verified this exact email: no need to send another code
-    if (verificationToken && verifiedEmail === cleanEmail()) {
+    if (verificationToken && verifiedEmail === cleanEmail() && verifiedPhone === phone.trim()) {
       await createStore(verificationToken);
       return;
     }
@@ -444,6 +342,7 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
       }
       setVerificationToken(data.verificationToken);
       setVerifiedEmail(cleanEmail());
+      setVerifiedPhone(phone.trim());
       setIsSubmitting(false);
       await createStore(data.verificationToken);
     } catch (err) {
@@ -468,8 +367,8 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
             <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-mint-wash text-brand ring-8 ring-mint/15">
               <Mail size={26} strokeWidth={2.2} />
             </div>
-            <h2 className="mt-4 text-xl font-bold tracking-tight text-deep sm:text-2xl">{t.verify.title}</h2>
-            <p className="mt-1 text-sm text-neutral-500">{fill(t.verify.subtitle, { email: cleanEmail() })}</p>
+            <h2 className="mt-4 text-xl font-bold tracking-tight text-deep sm:text-2xl">{sentVia.channel === "sms" ? t.verify.titleSms : t.verify.title}</h2>
+            <p className="mt-1 text-sm text-neutral-500">{sentVia.channel === "sms" ? fill(t.verify.subtitleSms, { phone: sentVia.destination }) : fill(t.verify.subtitle, { email: cleanEmail() })}</p>
           </div>
 
           {formError && (
@@ -498,7 +397,7 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
                 placeholder={t.verify.codePlaceholder}
                 className="mt-1.5 w-full rounded-xl border border-neutral-200 bg-neutral-50/50 px-4 py-3 text-center text-2xl font-semibold tracking-[0.5em] text-neutral-900 transition-colors placeholder:text-neutral-300 focus:border-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/20"
               />
-              <p className="mt-2 text-xs text-neutral-400">{t.verify.codeSentNote}</p>
+              <p className="mt-2 text-xs text-neutral-400">{sentVia.channel === "sms" ? t.verify.codeSentNoteSms : t.verify.codeSentNote}</p>
             </div>
 
             <button
@@ -531,7 +430,7 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
                 {isSendingCode
                   ? t.verify.sendingButton
                   : resendIn > 0
-                    ? fill(t.verify.resendIn, { n: localizeDigits(String(resendIn), lang === "bn" ? "bn-BD" : "en-US") })
+                    ? fill(t.verify.resendIn, { n: localizeDigits(formatWait(resendIn), lang === "bn" ? "bn-BD" : "en-US") })
                     : t.verify.resend}
               </button>
               <button
@@ -618,56 +517,31 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
             )}
           </div>
 
-          {/* Store Subdomain / URL */}
+          {/* Brand domain (optional): kept as a domain that is not verified yet */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
-              {t.form.storeSlugLabel} <span className="text-red-500">*</span>
+              {t.form.brandDomainLabel}
             </label>
-            <div className="relative mt-1.5 flex items-center">
-              <input
-                type="text"
-                value={storeSlug}
-                onChange={(e) => handleSlugChange(e.target.value)}
-                placeholder={t.form.storeSlugPlaceholder}
-                className={`w-full rounded-xl border bg-neutral-50/50 py-2.5 pl-4 pr-32 text-sm text-neutral-900 lowercase transition-colors placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 ${
-                  fieldErrors.storeSlug || subdomainState === "taken" || subdomainState === "invalid"
-                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                    : subdomainState === "available"
-                      ? "border-mint focus:border-brand focus:ring-mint/30"
-                      : "border-neutral-200 focus:border-brand focus:ring-brand/20"
-                }`}
-              />
-              <span className="pointer-events-none absolute right-3 text-xs font-medium text-neutral-500">
-                .brikvent.com
-              </span>
-            </div>
-
-            {/* Subdomain validation feedback */}
-            <div className="mt-1.5 flex items-center gap-1.5 text-xs">
-              {subdomainState === "checking" && (
-                <span className="inline-flex items-center gap-1 text-neutral-500">
-                  <Loader2 size={12} className="animate-spin text-neutral-400" />
-                  {subdomainMessage}
-                </span>
-              )}
-              {subdomainState === "available" && (
-                <span className="inline-flex items-center gap-1 font-medium text-brand">
-                  <CheckCircle2 size={13} className="text-brand" />
-                  &quot;{storeSlug}.brikvent.com&quot; {subdomainMessage}
-                </span>
-              )}
-              {(subdomainState === "taken" || subdomainState === "invalid") && (
-                <span className="inline-flex items-center gap-1 font-medium text-red-600">
-                  <AlertCircle size={13} className="text-red-500" />
-                  {subdomainMessage}
-                </span>
-              )}
-              {subdomainState === "idle" && (
-                <span className="text-neutral-400">{t.form.storeSlugHint}</span>
-              )}
-            </div>
-            {fieldErrors.storeSlug && subdomainState !== "taken" && subdomainState !== "invalid" && (
-              <p className="mt-1 text-xs text-red-600">{fieldErrors.storeSlug}</p>
+            <input
+              type="text"
+              inputMode="url"
+              autoCapitalize="none"
+              value={brandDomain}
+              onChange={(e) => {
+                setBrandDomain(e.target.value);
+                if (fieldErrors.brandDomain) setFieldErrors((p) => ({ ...p, brandDomain: "" }));
+              }}
+              placeholder={t.form.brandDomainPlaceholder}
+              className={`mt-1.5 w-full rounded-xl border bg-neutral-50/50 px-4 py-2.5 text-sm text-neutral-900 lowercase transition-colors placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 ${
+                fieldErrors.brandDomain
+                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                  : "border-neutral-200 focus:border-brand focus:ring-brand/20"
+              }`}
+            />
+            {fieldErrors.brandDomain ? (
+              <p className="mt-1 text-xs text-red-600">{fieldErrors.brandDomain}</p>
+            ) : (
+              <p className="mt-1 text-xs text-neutral-400">{t.form.brandDomainHint}</p>
             )}
           </div>
 
@@ -703,6 +577,37 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
             ) : (
               <p className="mt-1 text-xs text-neutral-400">{t.form.planHint}</p>
             )}
+          </div>
+
+          {/* Facebook page (required) */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
+              {t.form.facebookLabel} <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="url"
+              inputMode="url"
+              value={facebookUrl}
+              onChange={(e) => {
+                setFacebookUrl(e.target.value);
+                if (fieldErrors.facebook) setFieldErrors((p) => ({ ...p, facebook: "" }));
+              }}
+              placeholder={t.form.facebookPlaceholder}
+              className={`mt-1.5 w-full rounded-xl border bg-neutral-50/50 px-4 py-2.5 text-sm text-neutral-900 transition-colors placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 ${
+                fieldErrors.facebook
+                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                  : "border-neutral-200 focus:border-brand focus:ring-brand/20"
+              }`}
+            />
+            {fieldErrors.facebook ? (
+              <p className="mt-1 text-xs text-red-600">{fieldErrors.facebook}</p>
+            ) : (
+              <p className="mt-1 text-xs text-neutral-400">{t.form.facebookHint}</p>
+            )}
+            <p className="mt-2 flex gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
+              <AlertCircle size={14} className="mt-0.5 shrink-0" aria-hidden />
+              {t.form.phoneNote}
+            </p>
           </div>
 
           {/* Email & Phone Grid */}
@@ -757,37 +662,6 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
             </div>
           </div>
 
-          {/* Facebook page (required) */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
-              {t.form.facebookLabel} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="url"
-              inputMode="url"
-              value={facebookUrl}
-              onChange={(e) => {
-                setFacebookUrl(e.target.value);
-                if (fieldErrors.facebook) setFieldErrors((p) => ({ ...p, facebook: "" }));
-              }}
-              placeholder={t.form.facebookPlaceholder}
-              className={`mt-1.5 w-full rounded-xl border bg-neutral-50/50 px-4 py-2.5 text-sm text-neutral-900 transition-colors placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 ${
-                fieldErrors.facebook
-                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                  : "border-neutral-200 focus:border-brand focus:ring-brand/20"
-              }`}
-            />
-            {fieldErrors.facebook ? (
-              <p className="mt-1 text-xs text-red-600">{fieldErrors.facebook}</p>
-            ) : (
-              <p className="mt-1 text-xs text-neutral-400">{t.form.facebookHint}</p>
-            )}
-            <p className="mt-2 flex gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
-              <AlertCircle size={14} className="mt-0.5 shrink-0" aria-hidden />
-              {t.form.phoneNote}
-            </p>
-          </div>
-
           {/* Password */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
@@ -838,7 +712,7 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
                 </>
               ) : (
                 <>
-                  <span>{verificationToken && verifiedEmail === cleanEmail() ? t.form.submitButton : t.verify.continueButton}</span>
+                  <span>{verificationToken && verifiedEmail === cleanEmail() && verifiedPhone === phone.trim() ? t.form.submitButton : t.verify.continueButton}</span>
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-mint text-deep transition-transform group-hover:translate-x-1">
                     <ArrowRight size={14} strokeWidth={2.5} />
                   </span>
