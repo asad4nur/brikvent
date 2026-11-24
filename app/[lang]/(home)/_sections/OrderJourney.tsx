@@ -117,23 +117,33 @@ export default function OrderJourney({ t }: { t: Dictionary["journey"] }) {
                     {isDone ? <Check size={16} strokeWidth={2.75} aria-hidden /> : i + 1}
                   </span>
 
-                  <div
-                    className={`transition-opacity duration-500 ${
-                      isActive ? "opacity-100" : "lg:opacity-40"
-                    }`}
-                  >
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
-                      <span className="text-neutral-500">{step.time}</span>
+                  {/* Inactive steps fade on desktop: the large title strongly, the
+                      small text only slightly, so both stay above WCAG AA contrast. */}
+                  <div>
+                    <div
+                      className={`flex flex-wrap items-center gap-2 text-xs font-medium transition-opacity duration-500 ${
+                        isActive ? "opacity-100" : "lg:opacity-80"
+                      }`}
+                    >
+                      <span className="text-neutral-600">{step.time}</span>
                       <span className="h-1 w-1 rounded-full bg-neutral-300" />
-                      <span className="inline-flex items-center gap-1 rounded-full bg-mint-wash px-2 py-0.5 font-semibold text-mint-ink">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-mint-wash px-2 py-0.5 font-semibold text-mint-ink-deep">
                         <step.icon size={12} strokeWidth={2.25} aria-hidden />
                         {step.module}
                       </span>
                     </div>
-                    <h3 className="mt-3 text-xl font-semibold tracking-tight text-deep sm:text-2xl">
+                    <h3
+                      className={`mt-3 text-xl font-semibold tracking-tight text-deep transition-opacity duration-500 sm:text-2xl ${
+                        isActive ? "opacity-100" : "lg:opacity-50"
+                      }`}
+                    >
                       {step.title}
                     </h3>
-                    <p className="mt-2 max-w-md text-[15px] leading-relaxed text-neutral-600 sm:text-base">
+                    <p
+                      className={`mt-2 max-w-md text-[15px] leading-relaxed text-neutral-600 transition-opacity duration-500 sm:text-base ${
+                        isActive ? "opacity-100" : "lg:opacity-80"
+                      }`}
+                    >
                       {step.body}
                     </p>
 
