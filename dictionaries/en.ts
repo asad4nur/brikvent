@@ -10,7 +10,7 @@ const en = {
     // Search result title (~60 chars) and snippet (~155 chars).
     title: "Brikvent: POS, Online Store & Inventory App for Bangladesh",
     description:
-      "All-in-one commerce app for Bangladesh: online store, POS, Facebook & WhatsApp orders, courier booking and accounts on one shared stock. 14 days free.",
+      "All-in-one commerce app for Bangladesh: online store, POS, Facebook & WhatsApp orders, courier booking and accounts on one shared stock. 7 days free.",
   },
 
   nav: {

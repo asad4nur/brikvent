@@ -54,20 +54,40 @@ const TRIAL_SIGNUP_TRACKED_KEY = "bv_trial_signup_tracked";
 // Tells GTM (GTM-N676Z6KP, wired to `trial_signup_complete`) that a signup went
 // through. Once per browser session: a sessionStorage flag stops repeats on
 // retries, re-renders, back/forward or reload. No personal data goes in the push.
-function trackTrialSignupComplete(plan: { code: string; trialDays: number } | undefined) {
+// GTM's "Meta Pixel - StartTrial" tag reads `value`, `currency` and `event_id` from this push,
+// so the Pixel is not called from code.
+function trackTrialSignupComplete(
+  plan: { code: string; trialDays: number; monthly: number } | undefined,
+  tenantId: string | undefined,
+) {
   try {
     if (window.sessionStorage.getItem(TRIAL_SIGNUP_TRACKED_KEY)) return;
   } catch {
     // Storage blocked: still push, the redirect follows anyway.
   }
+  // Enterprise is a demo call, not a trial.
+  if (plan?.code === "enterprise") return;
+  // The monthly BDT price of the chosen plan, as a plain number above 0. Anything else would be
+  // rejected by Meta, so nothing is sent.
+  const value = plan ? Number(plan.monthly) : NaN;
+  if (!plan || !Number.isFinite(value) || value <= 0) {
+    console.warn("[tracking] StartTrial skipped: the price of the selected plan is missing or invalid.", plan?.code);
+    return;
+  }
+  // The new store's id lets a later server-side (Conversions API) event dedupe against this one;
+  // a random id is the fallback when the backend does not return it.
+  const eventId = tenantId || (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
   const w = window as Window & { dataLayer?: Record<string, unknown>[] };
   w.dataLayer = w.dataLayer || [];
   w.dataLayer.push({
     event: "trial_signup_complete",
     signup_method: "email_otp",
     // The plan the owner picked and the trial length it gives (both are set in the SaaS admin)
-    plan: plan ? `${plan.trialDays}_day_free_trial` : "free_trial",
-    plan_code: plan?.code,
+    plan: `${plan.trialDays}_day_free_trial`,
+    plan_code: plan.code,
+    value,
+    currency: "BDT",
+    event_id: eventId,
   });
   try {
     window.sessionStorage.setItem(TRIAL_SIGNUP_TRACKED_KEY, "1");
@@ -280,7 +300,11 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
       }
       // The email code was verified (start-trial only accepts a verified token)
       // and the store exists: record it before the thank-you page redirect starts.
-      trackTrialSignupComplete(plans.find((p) => p.code === planCode));
+      trackTrialSignupComplete(
+        plans.find((p) => p.code === planCode),
+        // The id key is not confirmed in the start-trial response: the first one found is used
+        [data.data?.tenantId, data.data?.tenant?.id, data.data?.id].find((v) => typeof v === "string" || typeof v === "number")?.toString(),
+      );
       setVerificationToken(null);
       // Go to the thank-you page (its own address, for the ad conversion). The store details
       // are handed over in this tab's sessionStorage, so they are not in the address.
