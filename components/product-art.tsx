@@ -1,8 +1,8 @@
 import Image, { type StaticImageData } from "next/image";
-import blueSilkThreePiece from "@/public/products/blue-silk-three-piece.jpg";
 import bluePanjabi from "@/public/products/blue-panjabi.jpg";
 import cottonPanjabi from "@/public/products/cotton-panjabi.jpg";
 import greenThreePiece from "@/public/products/green-three-piece.jpg";
+import kidsPartyFrock from "@/public/products/kids-party-frock.jpg";
 import roseKurti from "@/public/products/rose-kurti.jpg";
 import whiteFloralKurti from "@/public/products/white-floral-kurti.jpg";
 
@@ -11,7 +11,7 @@ import whiteFloralKurti from "@/public/products/white-floral-kurti.jpg";
 // use, no attribution required). The two full-length shots stay 2:3,
 // the rest are cropped to 4:5:
 //   green-three-piece      unsplash.com/photos/Oa02eUVr1-Q (2:3)
-//   blue-silk-three-piece  unsplash.com/photos/r-wZVBhqyGo
+//   kids-party-frock       unsplash.com/photos/kPXq-jxhMkk
 //   white-floral-kurti     unsplash.com/photos/Yci8aYzkjpk
 //   rose-kurti             unsplash.com/photos/kN3tHdXDDrs
 //   cotton-panjabi         unsplash.com/photos/hEuVOYuq1l4
@@ -20,7 +20,7 @@ export const productLooks = {
   linenKurti: whiteFloralKurti,
   roseKurti,
   tealThreePiece: greenThreePiece,
-  silkThreePiece: blueSilkThreePiece,
+  kidsPartyFrock,
   bluePanjabi,
   cottonPanjabi,
 } satisfies Record<string, StaticImageData>;
