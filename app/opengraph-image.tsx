@@ -2,10 +2,10 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import Logo from "@/components/logo";
-import { getDictionary } from "@/lib/i18n";
+import { getSiteDictionary } from "@/lib/site-dictionary";
 
 // Link preview card (Facebook, WhatsApp, Messenger, LinkedIn, X, Slack...).
-// Prerendered once at build time and inherited by every /en and /bn page.
+// Prerendered and inherited by every /en and /bn page. The trial length comes from the backend.
 // The text stays in English for both locales: the image renderer cannot
 // shape Bangla script (vowel signs and conjuncts come out broken).
 
@@ -21,7 +21,8 @@ const geistMedium = readFile(join(fontDir, "Geist-Medium.ttf"));
 const features = ["POS", "Online store", "WhatsApp & Messenger", "Courier", "Accounts"];
 
 export default async function OpenGraphImage() {
-  const { hero } = getDictionary("en");
+  // Fills "{trialDays}" in the text with the real number of free trial days
+  const { hero } = await getSiteDictionary("en");
   const [bold, medium] = await Promise.all([geistBold, geistMedium]);
 
   return new ImageResponse(
