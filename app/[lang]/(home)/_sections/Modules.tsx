@@ -209,6 +209,18 @@ function Chip({ tone = "neutral", children }: { tone?: "neutral" | "green" | "am
   );
 }
 
+// Add-to-cart button, as on a real shop card (decorative in the mock).
+function CartButton({ className }: { className: string }) {
+  return (
+    <span
+      aria-hidden
+      className={`h-7 w-7 shrink-0 items-center justify-center rounded-full bg-deep text-lime transition-colors group-hover:bg-brand group-hover:text-white ${className}`}
+    >
+      <ShoppingCart size={13} strokeWidth={2.25} />
+    </span>
+  );
+}
+
 function StoreMock() {
   const products: [string, string, string, ProductLook][] = [
     ["Floral Kurti", "৳1,250", "৳1,600", "linenKurti"],
@@ -237,8 +249,10 @@ function StoreMock() {
         </span>
       </div>
       <div className="grid grid-cols-3 gap-2 px-3 pb-3">
+        {/* A narrow card (phones, small laptops) puts the cart button on the photo, so the name
+            and price get the full width; a wider card keeps it beside them. */}
         {products.map(([name, price, was, look], i) => (
-          <div key={name} className="rise group" style={delay(150 + i * 100)}>
+          <div key={name} className="rise group @container min-w-0" style={delay(150 + i * 100)}>
             <div className="relative overflow-hidden rounded-lg">
               <ProductArt
                 look={look}
@@ -247,22 +261,17 @@ function StoreMock() {
               <span className="absolute left-1.5 top-1.5 rounded-full bg-red-600 px-1.5 py-0.5 text-[9px] font-bold text-white">
                 −{Math.round((1 - parseInt(price.replace(/\D/g, "")) / parseInt(was.replace(/\D/g, ""))) * 100)}%
               </span>
+              <CartButton className="absolute bottom-1.5 right-1.5 flex ring-1 ring-white/40 @min-[8.5rem]:hidden" />
             </div>
             <div className="mt-2 flex items-end justify-between gap-1.5">
               <div className="min-w-0">
-                <p className="truncate text-[11px] font-medium text-neutral-800 sm:text-xs">{name}</p>
-                <p className="truncate text-[11px] sm:text-xs">
-                  <span className="font-semibold text-deep">{price}</span>{" "}
+                <p className="text-[11px] font-medium leading-snug text-neutral-800 sm:text-xs @min-[8.5rem]:truncate">{name}</p>
+                <p className="flex flex-wrap gap-x-1 text-[11px] leading-snug sm:text-xs">
+                  <span className="font-semibold text-deep">{price}</span>
                   <span className="text-neutral-500 line-through">{was}</span>
                 </p>
               </div>
-              {/* Add-to-cart button, as on a real shop card (decorative in the mock). */}
-              <span
-                aria-hidden
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-deep text-lime transition-colors group-hover:bg-brand group-hover:text-white"
-              >
-                <ShoppingCart size={13} strokeWidth={2.25} />
-              </span>
+              <CartButton className="hidden @min-[8.5rem]:flex" />
             </div>
           </div>
         ))}
