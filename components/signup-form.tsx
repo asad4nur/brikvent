@@ -5,10 +5,12 @@ import Link from "next/link";
 import {
   AlertCircle,
   ArrowRight,
+  ChevronDown,
   Eye,
   EyeOff,
   Loader2,
   Mail,
+  ShieldCheck,
 } from "lucide-react";
 import type { Dictionary } from "@/dictionaries/en";
 import { fill, localizeDigits, type Locale } from "@/lib/i18n";
@@ -50,6 +52,17 @@ const DOMAIN_NAME = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9
 const cleanDomain = (v: string) => v.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/[/?#].*$/, "");
 
 const TRIAL_SIGNUP_TRACKED_KEY = "bv_trial_signup_tracked";
+
+// Shared look of the fields: 16px text (stops iOS zooming in on focus), 48px tall, visible borders.
+const labelClass = "block text-sm font-semibold text-neutral-900";
+const hintClass = "mt-1.5 text-xs leading-relaxed text-neutral-600";
+const errorClass = "mt-1.5 text-sm font-medium text-red-700";
+const inputClass = (invalid: boolean) =>
+  `mt-1.5 block h-12 w-full rounded-xl border bg-white px-4 text-base text-neutral-900 transition-colors placeholder:text-neutral-500 focus:outline-none focus:ring-2 ${
+    invalid
+      ? "border-red-500 focus:border-red-600 focus:ring-red-200"
+      : "border-[#8a8a8a] focus:border-brand focus:ring-brand/25"
+  }`;
 
 // Tells GTM (GTM-N676Z6KP, wired to `trial_signup_complete`) that a signup went
 // through. Once per browser session: a sessionStorage flag stops repeats on
@@ -333,7 +346,11 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
     e.preventDefault();
     setFormError(null);
 
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      // The first field with a problem takes focus, so a tap on the button at the bottom is never silent
+      requestAnimationFrame(() => document.querySelector<HTMLElement>('form [aria-invalid="true"]')?.focus());
+      return;
+    }
 
     // Already verified this exact email: no need to send another code
     if (verificationToken && verifiedEmail === cleanEmail() && verifiedPhone === phone.trim()) {
@@ -391,12 +408,12 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
             <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-mint-wash text-brand ring-8 ring-mint/15">
               <Mail size={26} strokeWidth={2.2} />
             </div>
-            <h2 className="mt-4 text-xl font-bold tracking-tight text-deep sm:text-2xl">{sentVia.channel === "sms" ? t.verify.titleSms : t.verify.title}</h2>
+            <h1 className="mt-4 text-xl font-bold tracking-tight text-deep sm:text-2xl">{sentVia.channel === "sms" ? t.verify.titleSms : t.verify.title}</h1>
             <p className="mt-1 text-sm text-neutral-500">{sentVia.channel === "sms" ? fill(t.verify.subtitleSms, { phone: sentVia.destination }) : fill(t.verify.subtitle, { email: cleanEmail() })}</p>
           </div>
 
           {formError && (
-            <div className="mt-6 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+            <div role="alert" className="mt-6 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
               <AlertCircle size={18} className="mt-0.5 shrink-0 text-red-600" />
               <div className="leading-snug">{formError}</div>
             </div>
@@ -404,10 +421,12 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
 
           <form onSubmit={handleVerify} className="mt-6 space-y-4" noValidate>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
+              <label htmlFor="signup-code" className={labelClass}>
                 {t.verify.codeLabel}
               </label>
               <input
+                id="signup-code"
+                name="code"
                 type="text"
                 inputMode="numeric"
                 autoComplete="one-time-code"
@@ -421,7 +440,7 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
                 placeholder={t.verify.codePlaceholder}
                 className="mt-1.5 w-full rounded-xl border border-neutral-200 bg-neutral-50/50 px-4 py-3 text-center text-2xl font-semibold tracking-[0.5em] text-neutral-900 transition-colors placeholder:text-neutral-300 focus:border-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/20"
               />
-              <p className="mt-2 text-xs text-neutral-400">{sentVia.channel === "sms" ? t.verify.codeSentNoteSms : t.verify.codeSentNote}</p>
+              <p className="mt-2 text-xs text-neutral-600">{sentVia.channel === "sms" ? t.verify.codeSentNoteSms : t.verify.codeSentNote}</p>
             </div>
 
             <button
@@ -449,7 +468,7 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
                 type="button"
                 onClick={handleResend}
                 disabled={resendIn > 0 || isSendingCode}
-                className="font-semibold text-brand hover:underline disabled:cursor-not-allowed disabled:text-neutral-400 disabled:no-underline"
+                className="inline-flex min-h-11 items-center font-semibold text-brand hover:underline disabled:cursor-not-allowed disabled:text-neutral-500 disabled:no-underline"
               >
                 {isSendingCode
                   ? t.verify.sendingButton
@@ -464,7 +483,7 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
                   setFormError(null);
                   setCode("");
                 }}
-                className="text-neutral-500 hover:text-neutral-800 hover:underline"
+                className="inline-flex min-h-11 items-center text-neutral-600 hover:text-neutral-900 hover:underline"
               >
                 {t.verify.changeEmail}
               </button>
@@ -476,172 +495,198 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
   }
 
   // ACTIVE FORM STATE
+  const alreadyVerified = Boolean(
+    verificationToken && verifiedEmail === cleanEmail() && verifiedPhone === phone.trim(),
+  );
+  // Sizing, spacing and focus styles for the fields live in the shared classes at the top of the file.
   return (
     <div className="mx-auto w-full max-w-xl">
-      <div className="overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-6 shadow-xl sm:p-8 md:p-10">
-        <div className="mb-6">
-          <h2 className="text-xl font-bold tracking-tight text-deep sm:text-2xl">
-            {t.form.title}
-          </h2>
-          <p className="mt-1 text-sm text-neutral-500">
-            {t.form.subtitle}
+      <div className="sm:rounded-3xl sm:border sm:border-neutral-200/90 sm:bg-white sm:p-8 sm:shadow-xl lg:p-9">
+        <div className="mb-5 sm:mb-6">
+          <h1 className="text-2xl font-bold leading-tight tracking-tight text-deep sm:text-3xl">
+            {t.form.heading}
+          </h1>
+          <p className="mt-2 flex items-start gap-2 text-sm font-medium text-neutral-700 sm:text-base">
+            <ShieldCheck size={18} className="mt-0.5 shrink-0 text-brand" aria-hidden />
+            {t.form.reassurance}
           </p>
         </div>
 
-        {formError && (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-            <AlertCircle size={18} className="mt-0.5 shrink-0 text-red-600" />
-            <div className="leading-snug">{formError}</div>
-          </div>
-        )}
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5" noValidate>
+          {/* Full Name & Business Name */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+            <div>
+              <label htmlFor="signup-full-name" className={labelClass}>
+                {t.form.fullNameLabel} <span className="text-red-600" aria-hidden>*</span>
+              </label>
+              <input
+                id="signup-full-name"
+                name="fullName"
+                type="text"
+                autoComplete="name"
+                aria-required="true"
+                aria-invalid={Boolean(fieldErrors.fullName)}
+                aria-describedby={fieldErrors.fullName ? "signup-full-name-error" : undefined}
+                value={fullName}
+                onChange={(e) => {
+                  setFullName(e.target.value);
+                  if (fieldErrors.fullName) setFieldErrors((p) => ({ ...p, fullName: "" }));
+                }}
+                placeholder={t.form.fullNamePlaceholder}
+                className={inputClass(Boolean(fieldErrors.fullName))}
+              />
+              {fieldErrors.fullName && (
+                <p id="signup-full-name-error" className={errorClass}>{fieldErrors.fullName}</p>
+              )}
+            </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-          {/* Full Name */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
-              {t.form.fullNameLabel} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={fullName}
-              onChange={(e) => {
-                setFullName(e.target.value);
-                if (fieldErrors.fullName) setFieldErrors((p) => ({ ...p, fullName: "" }));
-              }}
-              placeholder={t.form.fullNamePlaceholder}
-              className={`mt-1.5 w-full rounded-xl border bg-neutral-50/50 px-4 py-2.5 text-sm text-neutral-900 transition-colors placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 ${
-                fieldErrors.fullName
-                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                  : "border-neutral-200 focus:border-brand focus:ring-brand/20"
-              }`}
-            />
-            {fieldErrors.fullName && (
-              <p className="mt-1 text-xs text-red-600">{fieldErrors.fullName}</p>
-            )}
-          </div>
-
-          {/* Business Name */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
-              {t.form.businessNameLabel} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={businessName}
-              onChange={(e) => handleBusinessNameChange(e.target.value)}
-              placeholder={t.form.businessNamePlaceholder}
-              className={`mt-1.5 w-full rounded-xl border bg-neutral-50/50 px-4 py-2.5 text-sm text-neutral-900 transition-colors placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 ${
-                fieldErrors.businessName
-                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                  : "border-neutral-200 focus:border-brand focus:ring-brand/20"
-              }`}
-            />
-            {fieldErrors.businessName && (
-              <p className="mt-1 text-xs text-red-600">{fieldErrors.businessName}</p>
-            )}
+            <div>
+              <label htmlFor="signup-business-name" className={labelClass}>
+                {t.form.businessNameLabel} <span className="text-red-600" aria-hidden>*</span>
+              </label>
+              <input
+                id="signup-business-name"
+                name="businessName"
+                type="text"
+                autoComplete="organization"
+                aria-required="true"
+                aria-invalid={Boolean(fieldErrors.businessName)}
+                aria-describedby={fieldErrors.businessName ? "signup-business-name-error" : undefined}
+                value={businessName}
+                onChange={(e) => handleBusinessNameChange(e.target.value)}
+                placeholder={t.form.businessNamePlaceholder}
+                className={inputClass(Boolean(fieldErrors.businessName))}
+              />
+              {fieldErrors.businessName && (
+                <p id="signup-business-name-error" className={errorClass}>{fieldErrors.businessName}</p>
+              )}
+            </div>
           </div>
 
           {/* Brand domain (optional): kept as a domain that is not verified yet */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
+            <label htmlFor="signup-brand-domain" className={labelClass}>
               {t.form.brandDomainLabel}
             </label>
             <input
+              id="signup-brand-domain"
+              name="brandDomain"
               type="text"
               inputMode="url"
               autoCapitalize="none"
+              autoComplete="off"
+              spellCheck={false}
+              aria-invalid={Boolean(fieldErrors.brandDomain)}
+              aria-describedby={fieldErrors.brandDomain ? "signup-brand-domain-error" : "signup-brand-domain-hint"}
               value={brandDomain}
               onChange={(e) => {
                 setBrandDomain(e.target.value);
                 if (fieldErrors.brandDomain) setFieldErrors((p) => ({ ...p, brandDomain: "" }));
               }}
               placeholder={t.form.brandDomainPlaceholder}
-              className={`mt-1.5 w-full rounded-xl border bg-neutral-50/50 px-4 py-2.5 text-sm text-neutral-900 lowercase transition-colors placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 ${
-                fieldErrors.brandDomain
-                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                  : "border-neutral-200 focus:border-brand focus:ring-brand/20"
-              }`}
+              className={`${inputClass(Boolean(fieldErrors.brandDomain))} lowercase`}
             />
             {fieldErrors.brandDomain ? (
-              <p className="mt-1 text-xs text-red-600">{fieldErrors.brandDomain}</p>
+              <p id="signup-brand-domain-error" className={errorClass}>{fieldErrors.brandDomain}</p>
             ) : (
-              <p className="mt-1 text-xs text-neutral-400">{t.form.brandDomainHint}</p>
+              <p id="signup-brand-domain-hint" className={hintClass}>{t.form.brandDomainHint}</p>
             )}
           </div>
 
           {/* Plan picker: live prices from the backend */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
-              {t.form.planLabel} <span className="text-red-500">*</span>
+            <label htmlFor="signup-plan" className={labelClass}>
+              {t.form.planLabel} <span className="text-red-600" aria-hidden>*</span>
             </label>
-            <select
-              value={planCode}
-              onChange={(e) => {
-                setPlanCode(e.target.value);
-                if (fieldErrors.plan) setFieldErrors((p) => ({ ...p, plan: "" }));
-              }}
-              className={`mt-1.5 w-full rounded-xl border bg-neutral-50/50 px-4 py-2.5 text-sm text-neutral-900 transition-colors focus:bg-white focus:outline-none focus:ring-2 ${
-                fieldErrors.plan
-                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                  : "border-neutral-200 focus:border-brand focus:ring-brand/20"
-              }`}
-            >
-              {plans.map((plan) => (
-                <option key={plan.code} value={plan.code}>
-                  {`${plan.name} - ৳${localizeDigits(plan.monthly.toLocaleString("en-US"), lang)}${t.form.planPerMonth}`}
-                  {plan.freeOrdersPerMonth === null
-                    ? ` - ${t.form.planOrdersUnlimited}`
-                    : ` - ${fill(t.form.planOrders, { n: localizeDigits(plan.freeOrdersPerMonth.toLocaleString("en-US"), lang) })}`}
-                </option>
-              ))}
-            </select>
-            {plans.length === 0 && <p className="mt-1 text-xs text-red-600">{t.form.planLoadFailed}</p>}
+            <div className="relative">
+              <select
+                id="signup-plan"
+                name="plan"
+                aria-required="true"
+                aria-invalid={Boolean(fieldErrors.plan)}
+                aria-describedby={fieldErrors.plan ? "signup-plan-error" : "signup-plan-hint"}
+                value={planCode}
+                onChange={(e) => {
+                  setPlanCode(e.target.value);
+                  if (fieldErrors.plan) setFieldErrors((p) => ({ ...p, plan: "" }));
+                }}
+                className={`${inputClass(Boolean(fieldErrors.plan))} appearance-none truncate pr-11`}
+              >
+                {plans.map((plan) => (
+                  <option key={plan.code} value={plan.code}>
+                    {`${plan.name} - ৳${localizeDigits(plan.monthly.toLocaleString("en-US"), lang)}${t.form.planPerMonth}`}
+                    {plan.freeOrdersPerMonth === null
+                      ? ` - ${t.form.planOrdersUnlimited}`
+                      : ` - ${fill(t.form.planOrders, { n: localizeDigits(plan.freeOrdersPerMonth.toLocaleString("en-US"), lang) })}`}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={18}
+                aria-hidden
+                className="pointer-events-none absolute right-4 top-1/2 mt-[3px] -translate-y-1/2 text-neutral-600"
+              />
+            </div>
+            {plans.length === 0 && <p className={errorClass}>{t.form.planLoadFailed}</p>}
             {fieldErrors.plan ? (
-              <p className="mt-1 text-xs text-red-600">{fieldErrors.plan}</p>
+              <p id="signup-plan-error" className={errorClass}>{fieldErrors.plan}</p>
             ) : (
-              <p className="mt-1 text-xs text-neutral-400">{t.form.planHint}</p>
+              <p id="signup-plan-hint" className={hintClass}>{t.form.planHint}</p>
             )}
           </div>
 
           {/* Facebook page (required) */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
-              {t.form.facebookLabel} <span className="text-red-500">*</span>
+            <label htmlFor="signup-facebook" className={labelClass}>
+              {t.form.facebookLabel} <span className="text-red-600" aria-hidden>*</span>
             </label>
             <input
+              id="signup-facebook"
+              name="facebookPageUrl"
               type="url"
               inputMode="url"
+              autoCapitalize="none"
+              autoComplete="off"
+              spellCheck={false}
+              aria-required="true"
+              aria-invalid={Boolean(fieldErrors.facebook)}
+              aria-describedby={fieldErrors.facebook ? "signup-facebook-error" : "signup-facebook-hint"}
               value={facebookUrl}
               onChange={(e) => {
                 setFacebookUrl(e.target.value);
                 if (fieldErrors.facebook) setFieldErrors((p) => ({ ...p, facebook: "" }));
               }}
               placeholder={t.form.facebookPlaceholder}
-              className={`mt-1.5 w-full rounded-xl border bg-neutral-50/50 px-4 py-2.5 text-sm text-neutral-900 transition-colors placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 ${
-                fieldErrors.facebook
-                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                  : "border-neutral-200 focus:border-brand focus:ring-brand/20"
-              }`}
+              className={inputClass(Boolean(fieldErrors.facebook))}
             />
             {fieldErrors.facebook ? (
-              <p className="mt-1 text-xs text-red-600">{fieldErrors.facebook}</p>
+              <p id="signup-facebook-error" className={errorClass}>{fieldErrors.facebook}</p>
             ) : (
-              <p className="mt-1 text-xs text-neutral-400">{t.form.facebookHint}</p>
+              <p id="signup-facebook-hint" className={hintClass}>{t.form.facebookHint}</p>
             )}
-            <p className="mt-2 flex gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
+            <p className="mt-2.5 flex gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
               <AlertCircle size={14} className="mt-0.5 shrink-0" aria-hidden />
               {t.form.phoneNote}
             </p>
           </div>
 
-          {/* Email & Phone Grid */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {/* Email & Phone */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
-                {t.form.emailLabel} <span className="text-red-500">*</span>
+              <label htmlFor="signup-email" className={labelClass}>
+                {t.form.emailLabel} <span className="text-red-600" aria-hidden>*</span>
               </label>
               <input
+                id="signup-email"
+                name="email"
                 type="email"
+                inputMode="email"
+                autoComplete="email"
+                autoCapitalize="none"
+                spellCheck={false}
+                aria-required="true"
+                aria-invalid={Boolean(fieldErrors.email)}
+                aria-describedby={fieldErrors.email ? "signup-email-error" : undefined}
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -651,83 +696,93 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
                   if (fieldErrors.email) setFieldErrors((p) => ({ ...p, email: "" }));
                 }}
                 placeholder={t.form.emailPlaceholder}
-                className={`mt-1.5 w-full rounded-xl border bg-neutral-50/50 px-4 py-2.5 text-sm text-neutral-900 transition-colors placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 ${
-                  fieldErrors.email
-                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                    : "border-neutral-200 focus:border-brand focus:ring-brand/20"
-                }`}
+                className={inputClass(Boolean(fieldErrors.email))}
               />
               {fieldErrors.email && (
-                <p className="mt-1 text-xs text-red-600">{fieldErrors.email}</p>
+                <p id="signup-email-error" className={errorClass}>{fieldErrors.email}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
-                {t.form.phoneLabel} <span className="text-red-500">*</span>
+              <label htmlFor="signup-phone" className={labelClass}>
+                {t.form.phoneLabel} <span className="text-red-600" aria-hidden>*</span>
               </label>
               <input
+                id="signup-phone"
+                name="phone"
                 type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                aria-required="true"
+                aria-invalid={Boolean(fieldErrors.phone)}
+                aria-describedby={fieldErrors.phone ? "signup-phone-error" : undefined}
                 value={phone}
                 onChange={(e) => {
                   setPhone(e.target.value);
                   if (fieldErrors.phone) setFieldErrors((p) => ({ ...p, phone: "" }));
                 }}
                 placeholder={t.form.phonePlaceholder}
-                className={`mt-1.5 w-full rounded-xl border bg-neutral-50/50 px-4 py-2.5 text-sm text-neutral-900 transition-colors placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 ${
-                  fieldErrors.phone
-                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                    : "border-neutral-200 focus:border-brand focus:ring-brand/20"
-                }`}
+                className={inputClass(Boolean(fieldErrors.phone))}
               />
               {fieldErrors.phone && (
-                <p className="mt-1 text-xs text-red-600">{fieldErrors.phone}</p>
+                <p id="signup-phone-error" className={errorClass}>{fieldErrors.phone}</p>
               )}
             </div>
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700">
-              {t.form.passwordLabel} <span className="text-red-500">*</span>
+            <label htmlFor="signup-password" className={labelClass}>
+              {t.form.passwordLabel} <span className="text-red-600" aria-hidden>*</span>
             </label>
-            <div className="relative mt-1.5">
+            <div className="relative">
               <input
+                id="signup-password"
+                name="password"
                 type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
+                aria-required="true"
+                aria-invalid={Boolean(fieldErrors.password)}
+                aria-describedby={fieldErrors.password ? "signup-password-error" : "signup-password-hint"}
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   if (fieldErrors.password) setFieldErrors((p) => ({ ...p, password: "" }));
                 }}
                 placeholder={t.form.passwordPlaceholder}
-                className={`w-full rounded-xl border bg-neutral-50/50 py-2.5 pl-4 pr-11 text-sm text-neutral-900 transition-colors placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 ${
-                  fieldErrors.password
-                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                    : "border-neutral-200 focus:border-brand focus:ring-brand/20"
-                }`}
+                className={`${inputClass(Boolean(fieldErrors.password))} pr-12`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((p) => !p)}
                 aria-label="Toggle password visibility"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 transition-colors hover:text-neutral-700"
+                aria-pressed={showPassword}
+                className="absolute right-0 top-1.5 flex h-12 w-12 items-center justify-center rounded-xl text-neutral-600 transition-colors hover:text-neutral-900 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand"
               >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
             {fieldErrors.password ? (
-              <p className="mt-1 text-xs text-red-600">{fieldErrors.password}</p>
+              <p id="signup-password-error" className={errorClass}>{fieldErrors.password}</p>
             ) : (
-              <p className="mt-1 text-xs text-neutral-400">{t.form.passwordHint}</p>
+              <p id="signup-password-hint" className={hintClass}>{t.form.passwordHint}</p>
             )}
           </div>
 
+          {/* A problem from the server is shown right above the button, where the visitor just tapped */}
+          {formError && (
+            <div role="alert" className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+              <AlertCircle size={18} className="mt-0.5 shrink-0 text-red-600" />
+              <div className="leading-snug">{formError}</div>
+            </div>
+          )}
+
           {/* Submit Button */}
-          <div className="pt-2">
+          <div className="pt-1">
             <button
               type="submit"
               disabled={isSubmitting || isSendingCode}
-              className="group relative flex w-full items-center justify-center gap-2 rounded-full bg-deep py-3.5 px-6 text-sm font-semibold text-white shadow-lg transition-all hover:bg-deep-soft disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
+              className="group relative flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-deep px-6 py-3.5 text-base font-semibold text-white shadow-lg transition-all hover:bg-deep-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isSubmitting || isSendingCode ? (
                 <>
@@ -736,34 +791,37 @@ export default function SignupForm({ t, lang, plans: initialPlans }: SignupFormP
                 </>
               ) : (
                 <>
-                  <span>{verificationToken && verifiedEmail === cleanEmail() && verifiedPhone === phone.trim() ? t.form.submitButton : t.verify.continueButton}</span>
+                  <span>{alreadyVerified ? t.form.submitButton : t.verify.continueButton}</span>
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-mint text-deep transition-transform group-hover:translate-x-1">
                     <ArrowRight size={14} strokeWidth={2.5} />
                   </span>
                 </>
               )}
             </button>
+            {!alreadyVerified && (
+              <p className="mt-2.5 text-center text-xs leading-relaxed text-neutral-600 sm:text-sm">{t.form.verifyNote}</p>
+            )}
           </div>
 
           {/* Terms & Privacy */}
-          <p className="text-center text-[11px] leading-relaxed text-neutral-400 sm:text-xs">
+          <p className="text-center text-xs leading-relaxed text-neutral-600">
             {t.form.termsAgreement}{" "}
-            <Link href={`/${lang}/terms`} className="font-medium text-neutral-600 underline hover:text-neutral-900">
+            <Link href={`/${lang}/terms`} className="-my-2.5 inline-block py-2.5 font-medium text-neutral-800 underline hover:text-deep">
               {t.form.termsLink}
             </Link>{" "}
             &amp;{" "}
-            <Link href={`/${lang}/privacy-policy`} className="font-medium text-neutral-600 underline hover:text-neutral-900">
+            <Link href={`/${lang}/privacy-policy`} className="-my-2.5 inline-block py-2.5 font-medium text-neutral-800 underline hover:text-deep">
               {t.form.privacyLink}
             </Link>
             .
           </p>
 
           {/* Already have store / login */}
-          <div className="border-t border-neutral-100 pt-3 text-center text-xs text-neutral-500">
+          <div className="border-t border-neutral-200 pt-3 text-center text-sm text-neutral-700">
             {t.form.alreadyHaveAccount}{" "}
             <a
               href={merchantAdminUrl}
-              className="font-semibold text-brand hover:underline"
+              className="inline-flex min-h-11 items-center font-semibold text-brand underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
             >
               {t.form.loginLink}
             </a>
