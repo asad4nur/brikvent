@@ -571,6 +571,9 @@ const en = {
     title: "Launch your retail & online business in minutes",
     subtitle:
       "All-in-one POS, eCommerce website, courier automation and multi-branch inventory. No credit card required.",
+    // Shown beside the form on large screens only
+    salesHeadline: "Everything you need to sell and grow, in one platform.",
+    salesDescription: "Manage your online store, POS, inventory, orders, couriers and more, all from Brikvent.",
     benefits: [
       {
         title: "Full access for {trialDays} days",
@@ -592,6 +595,9 @@ const en = {
     form: {
       title: "Create your store account",
       subtitle: "Get your free {trialDays}-day trial started immediately",
+      heading: "Start your {trialDays}-day free trial",
+      reassurance: "No credit card required. No upfront payment.",
+      verifyNote: "Next, we'll send a 6-digit code to your phone or email to verify your account.",
       fullNameLabel: "Full Name",
       fullNamePlaceholder: "e.g. Tanvir Hasan",
       businessNameLabel: "Business / Store Name",
