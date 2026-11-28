@@ -212,7 +212,7 @@ function Chip({ tone = "neutral", children }: { tone?: "neutral" | "green" | "am
 function StoreMock() {
   const products: [string, string, string, ProductLook][] = [
     ["Floral Kurti", "৳1,250", "৳1,600", "linenKurti"],
-    ["Silk Three-Piece", "৳2,450", "৳3,100", "silkThreePiece"],
+    ["Kids Kurti Set", "৳1,350", "৳1,750", "kidsKurtiSet"],
     ["Cotton Panjabi", "৳1,850", "৳2,300", "cottonPanjabi"],
   ];
   return (
@@ -223,6 +223,7 @@ function StoreMock() {
           <span>Home</span>
           <span>Women</span>
           <span>Men</span>
+          <span>Kids</span>
           <span>Offers</span>
         </span>
       </div>

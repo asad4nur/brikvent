@@ -16,11 +16,11 @@ export const company = {
     bn: "বাসা ৩৫, ৩য় তলা, রোড ৪, নিকুঞ্জ ২, খিলক্ষেত, ঢাকা, বাংলাদেশ",
   },
   tradeLicense: "TRAD/DNCC/022419/2026",
-  // Webbriks profiles until Brikvent has its own pages.
+  // LinkedIn is Brikvent's own page; Facebook and Instagram are Webbriks until Brikvent has its own.
   socials: [
     { name: "Facebook", href: "https://facebook.com/webbriks" },
     { name: "Instagram", href: "https://www.instagram.com/webbriks/" },
-    { name: "LinkedIn", href: "https://linkedin.com/company/webbriks" },
+    { name: "LinkedIn", href: "https://www.linkedin.com/company/brikvent" },
   ],
   // Date shown as "Last updated" on the policy pages.
   policiesUpdated: "2026-10-28",
